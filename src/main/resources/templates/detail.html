@@ -1,0 +1,572 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org" lang="vi">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title th:text="${perfume.ten_sp} + ' — Halo'">Chi Tiết Sản Phẩm</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600&display=swap" rel="stylesheet">
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.0/font/bootstrap-icons.css" rel="stylesheet">
+    <style>
+        :root {
+            --gold: #c9a96e;
+            --gold-light: #e8d5b0;
+            --gold-dark: #a07840;
+            --dark: #0d0d1a;
+            --dark-2: #141428;
+            --dark-3: #1c1c35;
+            --text-primary: #f0ece4;
+            --text-muted: rgba(240, 236, 228, 0.5);
+            --border: rgba(201, 169, 110, 0.2);
+        }
+
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+
+        body {
+            background-color: var(--dark);
+            font-family: 'Inter', sans-serif;
+            color: var(--text-primary);
+            min-height: 100vh;
+        }
+
+        /* ====== NAVBAR ====== */
+        .navbar-custom {
+            background: rgba(13, 13, 26, 0.95);
+            backdrop-filter: blur(20px);
+            border-bottom: 1px solid var(--border);
+            position: sticky;
+            top: 0;
+            z-index: 1000;
+        }
+
+        .navbar-custom .container {
+            display: flex; align-items: center; justify-content: space-between; height: 70px;
+        }
+
+        .brand-name {
+            font-family: 'Inter', sans-serif; font-size: 1.6rem; font-weight: 600;
+            color: var(--gold) !important; text-decoration: none; letter-spacing: 1px;
+        }
+
+        .nav-links { display: flex; align-items: center; gap: 8px; list-style: none; margin: 0; }
+
+        .nav-link-item {
+            color: rgba(240, 236, 228, 0.75); text-decoration: none; font-size: 0.875rem;
+            padding: 8px 16px; border-radius: 8px; transition: all 0.2s;
+            display: flex; align-items: center; gap: 6px;
+        }
+
+        .nav-link-item:hover { color: var(--gold); background: rgba(201, 169, 110, 0.1); }
+
+        .btn-home-nav {
+            background: rgba(201, 169, 110, 0.12);
+            border: 1px solid rgba(201, 169, 110, 0.3);
+            color: var(--gold) !important;
+        }
+
+        .user-dropdown .dropdown-toggle {
+            background: rgba(201, 169, 110, 0.1);
+            border: 1px solid rgba(201, 169, 110, 0.25);
+            border-radius: 10px;
+            padding: 8px 16px;
+            color: var(--text-primary);
+            font-size: 0.875rem;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            text-decoration: none;
+            transition: all 0.2s;
+        }
+
+        .user-dropdown .dropdown-toggle:hover { border-color: var(--gold); color: var(--gold); }
+
+        .user-avatar {
+            width: 28px; height: 28px;
+            background: linear-gradient(135deg, var(--gold), var(--gold-dark));
+            border-radius: 50%;
+            display: flex; align-items: center; justify-content: center;
+            color: #1a1a1a; font-size: 12px;
+        }
+
+        .dropdown-menu-custom {
+            background: var(--dark-3);
+            border: 1px solid var(--border);
+            border-radius: 12px;
+            padding: 8px;
+            min-width: 200px;
+            box-shadow: 0 16px 40px rgba(0,0,0,0.5);
+        }
+
+        .dropdown-menu-custom .dropdown-item {
+            color: var(--text-primary);
+            border-radius: 8px;
+            padding: 10px 14px;
+            font-size: 0.875rem;
+            display: flex; align-items: center; gap: 8px;
+            transition: all 0.2s;
+        }
+
+        .dropdown-menu-custom .dropdown-item:hover { background: rgba(255,255,255,0.06); color: var(--gold); }
+        .dropdown-menu-custom .dropdown-item.text-danger { color: #ff6b6b !important; }
+        .dropdown-menu-custom .dropdown-item.text-danger:hover { background: rgba(220,53,69,0.12); }
+
+        /* ====== PRODUCT DETAIL ====== */
+        .detail-section { padding: 50px 0 80px; }
+
+        .back-link {
+            display: inline-flex;
+            align-items: center;
+            gap: 6px;
+            color: var(--text-muted);
+            text-decoration: none;
+            font-size: 0.875rem;
+            margin-bottom: 30px;
+            transition: color 0.2s;
+        }
+
+        .back-link:hover { color: var(--gold); }
+
+        .product-container {
+            background: var(--dark-2);
+            border: 1px solid var(--border);
+            border-radius: 20px;
+            overflow: hidden;
+            display: flex;
+            flex-wrap: wrap;
+        }
+
+        .product-image-col {
+            width: 50%;
+            padding: 40px;
+            background: rgba(0,0,0,0.2);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            position: relative;
+        }
+
+        .product-image {
+            max-width: 100%;
+            max-height: 500px;
+            object-fit: contain;
+            filter: drop-shadow(0 20px 30px rgba(0,0,0,0.5));
+            transition: transform 0.4s;
+        }
+
+        .product-image:hover { transform: scale(1.05); }
+
+        .product-brand-badge {
+            position: absolute;
+            top: 24px;
+            left: 24px;
+            background: rgba(13, 13, 26, 0.8);
+            backdrop-filter: blur(8px);
+            border: 1px solid var(--border);
+            border-radius: 8px;
+            padding: 6px 14px;
+            font-size: 0.75rem;
+            color: var(--gold);
+            font-weight: 500;
+            letter-spacing: 1px;
+            text-transform: uppercase;
+        }
+
+        .product-info-col {
+            width: 50%;
+            padding: 50px;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+        }
+
+        .product-title {
+            font-size: 2.2rem;
+            font-weight: 600;
+            color: #ffffff;
+            margin-bottom: 12px;
+            line-height: 1.2;
+        }
+
+        .product-price {
+            font-size: 1.8rem;
+            font-weight: 600;
+            color: var(--gold);
+            margin-bottom: 24px;
+        }
+
+        .product-desc {
+            color: var(--text-muted);
+            font-size: 0.95rem;
+            line-height: 1.6;
+            margin-bottom: 30px;
+            padding-bottom: 30px;
+            border-bottom: 1px solid rgba(255,255,255,0.06);
+        }
+
+        .attributes-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 16px;
+            margin-bottom: 40px;
+        }
+
+        .attr-box {
+            background: rgba(255,255,255,0.03);
+            border: 1px solid rgba(255,255,255,0.06);
+            border-radius: 12px;
+            padding: 16px;
+        }
+
+        .attr-label {
+            display: block;
+            font-size: 0.75rem;
+            color: var(--text-muted);
+            margin-bottom: 4px;
+        }
+
+        .attr-value {
+            display: block;
+            font-size: 1rem;
+            color: #ffffff;
+            font-weight: 500;
+        }
+
+        .stock-info {
+            display: flex;
+            align-items: center;
+            gap: 6px;
+            margin-bottom: 20px;
+            font-size: 0.875rem;
+            color: var(--text-muted);
+        }
+
+        .stock-info strong { color: #6fcf97; font-weight: 600; }
+
+        .action-row {
+            display: flex;
+            gap: 16px;
+            align-items: stretch;
+        }
+
+        .qty-wrapper {
+            display: flex;
+            align-items: center;
+            background: rgba(0,0,0,0.3);
+            border: 1px solid rgba(255,255,255,0.1);
+            border-radius: 12px;
+            padding: 0 5px;
+            width: 140px;
+        }
+
+        .qty-btn {
+            background: transparent;
+            border: none;
+            color: var(--text-primary);
+            width: 36px;
+            height: 36px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            cursor: pointer;
+            font-size: 1.2rem;
+            opacity: 0.7;
+        }
+
+        .qty-btn:hover { opacity: 1; color: var(--gold); }
+
+        .qty-input {
+            width: 100%;
+            text-align: center;
+            background: transparent;
+            border: none;
+            color: #ffffff;
+            font-weight: 600;
+            font-size: 1rem;
+        }
+
+        .qty-input:focus { outline: none; }
+
+        /* Ẩn mũi tên của thẻ input number */
+        .qty-input::-webkit-outer-spin-button,
+        .qty-input::-webkit-inner-spin-button {
+            -webkit-appearance: none;
+            margin: 0;
+        }
+        .qty-input[type=number] {
+            -moz-appearance: textfield;
+        }
+
+        .btn-add-cart {
+            flex: 1;
+            background: linear-gradient(135deg, var(--gold), var(--gold-dark));
+            border: none;
+            border-radius: 12px;
+            color: #1a1a1a;
+            font-size: 1rem;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 8px;
+            font-family: 'Inter', sans-serif;
+        }
+
+        .btn-add-cart:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 8px 25px rgba(201, 169, 110, 0.3);
+        }
+
+        .btn-add-cart:disabled {
+            background: rgba(255,255,255,0.1);
+            color: rgba(255,255,255,0.3);
+            box-shadow: none;
+            transform: none;
+            cursor: not-allowed;
+        }
+
+        /* ====== TOAST ====== */
+        .toast-container-custom {
+            position: fixed;
+            bottom: 30px;
+            right: 30px;
+            z-index: 9999;
+            display: flex;
+            flex-direction: column;
+            gap: 12px;
+        }
+
+        .toast-custom {
+            background: rgba(13, 13, 26, 0.95);
+            backdrop-filter: blur(10px);
+            border: 1px solid var(--border);
+            padding: 14px 20px;
+            border-radius: 12px;
+            color: var(--text-primary);
+            font-size: 0.9rem;
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.5);
+            animation: slideInRight 0.4s ease forwards;
+        }
+
+        .toast-success { border-left: 4px solid #6fcf97; }
+        .toast-error { border-left: 4px solid #ff6b6b; }
+
+        @keyframes slideInRight {
+            from { transform: translateX(100%); opacity: 0; }
+            to { transform: translateX(0); opacity: 1; }
+        }
+
+        /* Responsive */
+        @media (max-width: 768px) {
+            .product-image-col, .product-info-col { width: 100%; padding: 30px 20px; }
+            .product-title { font-size: 1.8rem; }
+            .action-row { flex-direction: column; }
+            .qty-wrapper { width: 100%; height: 50px; }
+            .btn-add-cart { height: 50px; }
+        }
+    </style>
+</head>
+
+<body>
+
+    <!-- ====== NAVBAR ====== -->
+    <nav class="navbar-custom">
+        <div class="container">
+            <a class="brand-name" href="/">🌸 Halo</a>
+            <ul class="nav-links">
+                <li>
+                    <a href="/" class="nav-link-item btn-home-nav">
+                        <i class="bi bi-shop"></i> Cửa hàng
+                    </a>
+                </li>
+                <li>
+                    <a href="/cart" class="nav-link-item">
+                        <i class="bi bi-bag"></i> Giỏ hàng
+                    </a>
+                </li>
+                <li>
+                    <a href="/orders" class="nav-link-item">
+                        <i class="bi bi-receipt"></i> Đơn hàng của tôi
+                    </a>
+                </li>
+
+                <li class="user-dropdown dropdown" th:if="${session.loggedInUser != null}">
+                    <a href="#" class="dropdown-toggle" data-bs-toggle="dropdown" id="userDropdown">
+                        <div class="user-avatar"><i class="bi bi-person-fill"></i></div>
+                        <span th:text="${session.loggedInUser.fullName != null ? session.loggedInUser.fullName : session.loggedInUser.email}">Khách</span>
+                        <i class="bi bi-chevron-down" style="font-size: 11px; opacity: 0.6;"></i>
+                    </a>
+                    <ul class="dropdown-menu dropdown-menu-custom dropdown-menu-end">
+                        <li>
+                            <span class="dropdown-item" style="cursor: default; opacity: 0.5; font-size: 0.78rem;">
+                                <i class="bi bi-envelope"></i>
+                                <span th:text="${session.loggedInUser.email}">email</span>
+                            </span>
+                        </li>
+                        <li><hr style="border-color: rgba(255,255,255,0.07); margin: 6px 0;"></li>
+                        <li>
+                            <a class="dropdown-item text-danger" href="/logout">
+                                <i class="bi bi-box-arrow-right"></i> Đăng xuất
+                            </a>
+                        </li>
+                    </ul>
+                </li>
+
+                <li th:if="${session.loggedInUser == null}">
+                    <a href="/login" class="nav-link-item" style="background: linear-gradient(135deg, var(--gold), var(--gold-dark)); color: #1a1a1a !important; font-weight: 600; border-radius: 10px;">Đăng nhập</a>
+                </li>
+            </ul>
+        </div>
+    </nav>
+
+    <!-- ====== PRODUCT DETAIL ====== -->
+    <section class="detail-section">
+        <div class="container">
+            <a href="/" class="back-link">
+                <i class="bi bi-arrow-left"></i> Trở về cửa hàng
+            </a>
+
+            <div class="product-container">
+                <!-- Hình ảnh -->
+                <div class="product-image-col">
+                    <div class="product-brand-badge" th:text="${perfume.thuong_hieu}">Brand</div>
+                    <img src="https://images.unsplash.com/photo-1594035910387-fea47794261f?auto=format&fit=crop&w=800&q=80" 
+                         alt="Perfume Image" 
+                         class="product-image">
+                </div>
+
+                <!-- Thông tin -->
+                <div class="product-info-col">
+                    <h1 class="product-title" th:text="${perfume.ten_sp}">Tên Sản Phẩm</h1>
+                    <div class="product-price">
+                        <span th:text="${#numbers.formatDecimal(perfume.gia_ban, 0, 'COMMA', 0, 'POINT')}">0</span> đ
+                    </div>
+                    
+                    <!-- Mô tả chung (Fallback vì DB không có mô tả chi tiết) -->
+                    <p class="product-desc">
+                        Tuyệt tác hương thơm mang lại sự sang trọng và tinh tế. Một lựa chọn hoàn hảo để khẳng định phong cách cá nhân của bạn, phù hợp cho mọi dịp đặc biệt.
+                    </p>
+
+                    <div class="attributes-grid">
+                        <div class="attr-box">
+                            <span class="attr-label">Thương hiệu</span>
+                            <span class="attr-value" th:text="${perfume.thuong_hieu}">Tên hãng</span>
+                        </div>
+                        <div class="attr-box">
+                            <span class="attr-label">Nhóm hương</span>
+                            <span class="attr-value" th:if="${perfume.nhom_huong != null}" th:text="${perfume.nhom_huong}">Hương hoa cỏ</span>
+                            <span class="attr-value" th:if="${perfume.nhom_huong == null}">Chưa cập nhật</span>
+                        </div>
+                        <div class="attr-box">
+                            <span class="attr-label">Dung tích</span>
+                            <span class="attr-value" th:if="${perfume.dung_tich != null}" th:text="${perfume.dung_tich}">100ml</span>
+                            <span class="attr-value" th:if="${perfume.dung_tich == null}">Chưa cập nhật</span>
+                        </div>
+                    </div>
+
+                    <div class="stock-info" th:if="${perfume.ton_kho > 0}">
+                        <i class="bi bi-box-seam" style="color: var(--gold)"></i>
+                        <span>Còn sẵn <strong th:text="${perfume.ton_kho}">0</strong> chai trong kho</span>
+                    </div>
+
+                    <div class="stock-info" th:if="${perfume.ton_kho <= 0}" style="color: #ff6b6b">
+                        <i class="bi bi-x-circle"></i>
+                        <span>Sản phẩm tạm thời hết hàng</span>
+                    </div>
+
+                    <div class="action-row">
+                        <div class="qty-wrapper">
+                            <button type="button" class="qty-btn" onclick="decreaseQty()">-</button>
+                            <input type="number" id="qtyInput" class="qty-input" value="1" min="1" th:max="${perfume.ton_kho > 0 ? perfume.ton_kho : 1}" readonly>
+                            <button type="button" class="qty-btn" onclick="increaseQty()">+</button>
+                        </div>
+                        <button type="button" class="btn-add-cart" 
+                                th:disabled="${perfume.ton_kho <= 0}" 
+                                th:onclick="'addToCartDetail(' + ${perfume.id_nuoc_hoa} + ')'">
+                            <i class="bi bi-bag-plus"></i> Thêm vào giỏ hàng
+                        </button>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Toast container -->
+    <div class="toast-container-custom" id="toastContainer"></div>
+
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+    <script th:inline="javascript">
+        // Khởi tạo các giá trị từ server sang biến JS
+        const userId = /*[[${session.loggedInUser != null ? session.loggedInUser.id_user : null}]]*/ null;
+        const maxStock = /*[[${perfume.ton_kho}]]*/ 1;
+
+        // Xử lý tăng giảm số lượng
+        const qtyInput = document.getElementById('qtyInput');
+        
+        function decreaseQty() {
+            let val = parseInt(qtyInput.value) || 1;
+            if (val > 1) qtyInput.value = val - 1;
+        }
+
+        function increaseQty() {
+            let val = parseInt(qtyInput.value) || 1;
+            if (val < maxStock) qtyInput.value = val + 1;
+        }
+
+        // Hiển thị toast thông báo
+        function showToast(message, type = 'success') {
+            const container = document.getElementById('toastContainer');
+            const toast = document.createElement('div');
+            toast.className = `toast-custom toast-${type}`;
+            const icon = type === 'success' ? '✅' : '❌';
+            toast.innerHTML = `<span class="toast-icon">${icon}</span><span class="toast-msg">${message}</span>`;
+            container.appendChild(toast);
+            
+            setTimeout(() => {
+                toast.style.opacity = '0';
+                toast.style.transition = 'opacity 0.4s';
+                setTimeout(() => toast.remove(), 400);
+            }, 3000);
+        }
+
+        // Thêm vào giỏ hàng thông qua API
+        function addToCartDetail(idNuocHoa) {
+            if (userId == null) {
+                showToast('Vui lòng đăng nhập để thêm vào giỏ hàng!', 'error');
+                setTimeout(() => window.location.href = '/login', 1500);
+                return;
+            }
+
+            const qty = parseInt(qtyInput.value) || 1;
+
+            const requestBody = {
+                user: { id_user: userId },
+                perfume: { id_nuoc_hoa: idNuocHoa },
+                so_luong: qty
+            };
+
+            fetch('/api/cart/add', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify(requestBody)
+            })
+            .then(response => {
+                if (response.ok) {
+                    showToast('Đã thêm thành công vào giỏ hàng!', 'success');
+                } else {
+                    response.text().then(msg => showToast(msg, 'error'));
+                }
+            })
+            .catch(() => showToast('Không thể kết nối, vui lòng thử lại.', 'error'));
+        }
+    </script>
+</body>
+</html>

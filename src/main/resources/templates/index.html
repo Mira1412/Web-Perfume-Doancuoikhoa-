@@ -1,0 +1,827 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org" lang="vi">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Halo — Nước Hoa Cao Cấp</title>
+    <meta name="description" content="Khám phá bộ sưu tập nước hoa cao cấp tại Halo. Hàng chính hãng, giá tốt, giao hàng toàn quốc.">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=family=Inter:wght@300;400;500;600&display=swap" rel="stylesheet">
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.0/font/bootstrap-icons.css" rel="stylesheet">
+    <style>
+        :root {
+            --gold: #c9a96e;
+            --gold-light: #e8d5b0;
+            --gold-dark: #a07840;
+            --dark: #0d0d1a;
+            --dark-2: #141428;
+            --dark-3: #1c1c35;
+            --text-primary: #f0ece4;
+            --text-muted: rgba(240, 236, 228, 0.5);
+            --border: rgba(201, 169, 110, 0.2);
+        }
+
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+
+        body {
+            background-color: var(--dark);
+            font-family: 'Inter', sans-serif;
+            color: var(--text-primary);
+            min-height: 100vh;
+        }
+
+        /* ==================== NAVBAR ==================== */
+        .navbar-custom {
+            background: rgba(13, 13, 26, 0.95);
+            backdrop-filter: blur(20px);
+            -webkit-backdrop-filter: blur(20px);
+            border-bottom: 1px solid var(--border);
+            padding: 0 0;
+            position: sticky;
+            top: 0;
+            z-index: 1000;
+            transition: background 0.3s;
+        }
+
+        .navbar-custom .container {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            height: 70px;
+        }
+
+        .brand-name {
+            font-family: 'Inter', sans-serif;
+            font-size: 1.6rem;
+            font-weight: 600;
+            color: var(--gold) !important;
+            text-decoration: none;
+            letter-spacing: 1px;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .brand-name:hover { color: var(--gold-light) !important; }
+
+        .nav-links {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            list-style: none;
+        }
+
+        .nav-links .nav-link-item {
+            color: rgba(240, 236, 228, 0.75);
+            text-decoration: none;
+            font-size: 0.875rem;
+            font-weight: 400;
+            padding: 8px 16px;
+            border-radius: 8px;
+            transition: all 0.2s;
+            display: flex;
+            align-items: center;
+            gap: 6px;
+        }
+
+        .nav-links .nav-link-item:hover {
+            color: var(--gold);
+            background: rgba(201, 169, 110, 0.1);
+        }
+
+        .btn-cart {
+            background: rgba(201, 169, 110, 0.12);
+            border: 1px solid rgba(201, 169, 110, 0.3);
+            color: var(--gold) !important;
+            padding: 8px 18px !important;
+            border-radius: 10px !important;
+            font-weight: 500 !important;
+        }
+
+        .btn-cart:hover {
+            background: rgba(201, 169, 110, 0.22) !important;
+            border-color: var(--gold) !important;
+        }
+
+        .btn-login-nav {
+            background: linear-gradient(135deg, var(--gold), var(--gold-dark));
+            color: #1a1a1a !important;
+            padding: 8px 20px !important;
+            border-radius: 10px !important;
+            font-weight: 600 !important;
+            font-size: 0.875rem;
+            transition: all 0.3s;
+        }
+
+        .btn-login-nav:hover {
+            transform: translateY(-1px);
+            box-shadow: 0 4px 16px rgba(201, 169, 110, 0.4);
+            background: linear-gradient(135deg, #d4b880, #b8863a) !important;
+        }
+
+        /* Dropdown người dùng */
+        .user-dropdown .dropdown-toggle {
+            background: rgba(201, 169, 110, 0.1);
+            border: 1px solid rgba(201, 169, 110, 0.25);
+            border-radius: 10px;
+            padding: 8px 16px;
+            color: var(--text-primary);
+            font-size: 0.875rem;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            transition: all 0.2s;
+            text-decoration: none;
+        }
+
+        .user-dropdown .dropdown-toggle:hover {
+            border-color: var(--gold);
+            color: var(--gold);
+        }
+
+        .user-avatar {
+            width: 30px;
+            height: 30px;
+            background: linear-gradient(135deg, var(--gold), var(--gold-dark));
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: #1a1a1a;
+            font-size: 13px;
+            font-weight: 700;
+        }
+
+        .dropdown-menu-custom {
+            background: var(--dark-3);
+            border: 1px solid var(--border);
+            border-radius: 12px;
+            padding: 8px;
+            min-width: 200px;
+            box-shadow: 0 16px 40px rgba(0,0,0,0.5);
+        }
+
+        .dropdown-menu-custom .dropdown-item {
+            color: var(--text-primary);
+            border-radius: 8px;
+            padding: 10px 14px;
+            font-size: 0.875rem;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            transition: all 0.2s;
+        }
+
+        .dropdown-menu-custom .dropdown-item:hover {
+            background: rgba(255,255,255,0.06);
+            color: var(--gold);
+        }
+
+        .dropdown-menu-custom .dropdown-item.text-danger { color: #ff6b6b !important; }
+        .dropdown-menu-custom .dropdown-item.text-danger:hover { background: rgba(220,53,69,0.12); }
+
+        /* ==================== HERO SECTION ==================== */
+        .hero-section {
+            background: linear-gradient(135deg, var(--dark) 0%, var(--dark-2) 40%, #1a0a2e 100%);
+            padding: 72px 0 60px;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .hero-section::before {
+            content: '';
+            position: absolute;
+            width: 600px;
+            height: 600px;
+            background: radial-gradient(circle, rgba(201, 169, 110, 0.08) 0%, transparent 65%);
+            top: -200px;
+            right: -100px;
+            border-radius: 50%;
+            pointer-events: none;
+        }
+
+        .hero-section::after {
+            content: '';
+            position: absolute;
+            width: 400px;
+            height: 400px;
+            background: radial-gradient(circle, rgba(120, 80, 200, 0.1) 0%, transparent 65%);
+            bottom: -100px;
+            left: -100px;
+            border-radius: 50%;
+            pointer-events: none;
+        }
+
+        .hero-badge {
+            display: inline-flex;
+            align-items: center;
+            gap: 6px;
+            background: rgba(201, 169, 110, 0.12);
+            border: 1px solid rgba(201, 169, 110, 0.3);
+            color: var(--gold);
+            font-size: 0.78rem;
+            font-weight: 500;
+            padding: 6px 14px;
+            border-radius: 20px;
+            margin-bottom: 20px;
+            letter-spacing: 0.5px;
+        }
+
+        .hero-title {
+            font-family: 'Inter', sans-serif;
+            font-size: clamp(2.5rem, 5vw, 3.8rem);
+            font-weight: 600;
+            line-height: 1.15;
+            color: #ffffff;
+            margin-bottom: 16px;
+        }
+
+        .hero-title .text-gold {
+            color: var(--gold);
+            font-style: italic;
+        }
+
+        .hero-desc {
+            font-size: 1rem;
+            color: var(--text-muted);
+            line-height: 1.7;
+            max-width: 520px;
+            margin-bottom: 32px;
+            font-weight: 300;
+        }
+
+        .hero-stats {
+            display: flex;
+            gap: 40px;
+            margin-top: 16px;
+        }
+
+        .stat-item { text-align: left; }
+        .stat-number {
+            font-family: 'Inter', sans-serif;
+            font-size: 2rem;
+            font-weight: 600;
+            color: var(--gold);
+            line-height: 1;
+        }
+        .stat-label {
+            font-size: 0.75rem;
+            color: var(--text-muted);
+            margin-top: 4px;
+        }
+
+        /* ==================== SECTION TIÊU ĐỀ ==================== */
+        .section-header {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            margin-bottom: 36px;
+            padding-bottom: 20px;
+            border-bottom: 1px solid var(--border);
+        }
+
+        .section-title {
+            font-family: 'Inter', sans-serif;
+            font-size: 2rem;
+            font-weight: 600;
+            color: #ffffff;
+        }
+
+        .section-title span {
+            color: var(--gold);
+        }
+
+        .section-count {
+            font-size: 0.8rem;
+            color: var(--text-muted);
+            background: rgba(255,255,255,0.05);
+            border: 1px solid var(--border);
+            padding: 5px 12px;
+            border-radius: 20px;
+        }
+
+        /* ==================== PRODUCT CARD ==================== */
+        .products-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(240px, 1fr));
+            gap: 24px;
+        }
+
+        .product-card {
+            background: var(--dark-2);
+            border: 1px solid var(--border);
+            border-radius: 18px;
+            overflow: hidden;
+            transition: all 0.35s cubic-bezier(0.4, 0, 0.2, 1);
+            position: relative;
+        }
+
+        .product-card:hover {
+            transform: translateY(-6px);
+            box-shadow: 0 20px 50px rgba(0,0,0,0.5), 0 0 0 1px rgba(201, 169, 110, 0.3);
+            border-color: rgba(201, 169, 110, 0.4);
+        }
+
+        .product-img-wrapper {
+            position: relative;
+            overflow: hidden;
+            height: 220px;
+            background: linear-gradient(135deg, #1c1c35, #141428);
+        }
+
+        .product-img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+            transition: transform 0.5s ease;
+        }
+
+        .product-card:hover .product-img {
+            transform: scale(1.07);
+        }
+
+        .product-brand-badge {
+            position: absolute;
+            top: 12px;
+            left: 12px;
+            background: rgba(13, 13, 26, 0.8);
+            backdrop-filter: blur(8px);
+            border: 1px solid var(--border);
+            border-radius: 8px;
+            padding: 4px 10px;
+            font-size: 0.7rem;
+            color: var(--gold);
+            font-weight: 500;
+            letter-spacing: 0.5px;
+        }
+
+        .product-stock-badge {
+            position: absolute;
+            top: 12px;
+            right: 12px;
+            border-radius: 8px;
+            padding: 4px 10px;
+            font-size: 0.7rem;
+            font-weight: 500;
+        }
+
+        .badge-in-stock {
+            background: rgba(40, 167, 69, 0.2);
+            border: 1px solid rgba(40, 167, 69, 0.4);
+            color: #6fcf97;
+        }
+
+        .badge-low-stock {
+            background: rgba(255, 152, 0, 0.2);
+            border: 1px solid rgba(255, 152, 0, 0.4);
+            color: #ffb74d;
+        }
+
+        .badge-out-stock {
+            background: rgba(220, 53, 69, 0.2);
+            border: 1px solid rgba(220, 53, 69, 0.4);
+            color: #ff8a8a;
+        }
+
+        .product-body {
+            padding: 18px 18px 14px;
+        }
+
+        .product-name {
+            font-family: 'Inter', sans-serif;
+            font-size: 1.15rem;
+            font-weight: 600;
+            color: #ffffff;
+            margin-bottom: 4px;
+            line-height: 1.3;
+            display: -webkit-box;
+            -webkit-line-clamp: 2;
+            -webkit-box-orient: vertical;
+            overflow: hidden;
+        }
+
+        .product-meta {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            margin-bottom: 14px;
+        }
+
+        .product-meta-tag {
+            font-size: 0.72rem;
+            color: var(--text-muted);
+            background: rgba(255,255,255,0.04);
+            border: 1px solid rgba(255,255,255,0.08);
+            border-radius: 6px;
+            padding: 3px 8px;
+        }
+
+        .product-price {
+            font-family: 'Inter', sans-serif;
+            font-size: 1.35rem;
+            font-weight: 600;
+            color: var(--gold);
+            margin-bottom: 0;
+        }
+
+        .product-price-unit {
+            font-size: 0.8rem;
+            font-weight: 400;
+            color: var(--text-muted);
+            font-family: 'Inter', sans-serif;
+        }
+
+        .product-stock-info {
+            display: flex;
+            align-items: center;
+            gap: 5px;
+            margin-top: 8px;
+            font-size: 0.78rem;
+            color: var(--text-muted);
+        }
+
+        .product-stock-info i {
+            font-size: 13px;
+            color: var(--gold);
+            opacity: 0.7;
+        }
+
+        .product-stock-info strong {
+            color: #6fcf97; /* xanh lá — mặc định còn hàng */
+            font-weight: 600;
+        }
+
+        .product-footer {
+            padding: 0 18px 18px;
+        }
+
+        .btn-add-cart {
+            width: 100%;
+            padding: 11px;
+            background: transparent;
+            border: 1px solid rgba(201, 169, 110, 0.4);
+            border-radius: 10px;
+            color: var(--gold);
+            font-size: 0.875rem;
+            font-weight: 500;
+            cursor: pointer;
+            transition: all 0.3s;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 7px;
+            font-family: 'Inter', sans-serif;
+        }
+
+        .btn-add-cart:hover {
+            background: linear-gradient(135deg, var(--gold), var(--gold-dark));
+            border-color: transparent;
+            color: #1a1a1a;
+            transform: translateY(-1px);
+            box-shadow: 0 6px 20px rgba(201, 169, 110, 0.35);
+        }
+
+        .btn-add-cart:disabled {
+            opacity: 0.4;
+            cursor: not-allowed;
+            transform: none;
+        }
+
+        /* ==================== EMPTY STATE ==================== */
+        .empty-state {
+            text-align: center;
+            padding: 80px 20px;
+            grid-column: 1 / -1;
+        }
+
+        .empty-state .empty-icon {
+            font-size: 4rem;
+            margin-bottom: 16px;
+            opacity: 0.4;
+        }
+
+        .empty-state h4 {
+            color: var(--text-muted);
+            font-weight: 400;
+        }
+
+        /* ==================== TOAST NOTIFICATION ==================== */
+        .toast-container-custom {
+            position: fixed;
+            bottom: 28px;
+            right: 28px;
+            z-index: 9999;
+            display: flex;
+            flex-direction: column;
+            gap: 10px;
+        }
+
+        .toast-custom {
+            background: var(--dark-3);
+            border: 1px solid var(--border);
+            border-radius: 14px;
+            padding: 16px 20px;
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            min-width: 280px;
+            max-width: 360px;
+            box-shadow: 0 12px 36px rgba(0,0,0,0.5);
+            animation: slideInRight 0.35s ease-out;
+        }
+
+        .toast-custom.toast-success { border-color: rgba(40, 167, 69, 0.4); }
+        .toast-custom.toast-error { border-color: rgba(220, 53, 69, 0.4); }
+
+        .toast-icon { font-size: 22px; flex-shrink: 0; }
+        .toast-msg { font-size: 0.875rem; color: var(--text-primary); }
+
+        @keyframes slideInRight {
+            from { opacity: 0; transform: translateX(40px); }
+            to { opacity: 1; transform: translateX(0); }
+        }
+
+        /* ==================== FOOTER ==================== */
+        .footer {
+            margin-top: 80px;
+            border-top: 1px solid var(--border);
+            padding: 36px 0 24px;
+            background: var(--dark-2);
+        }
+
+        .footer-brand {
+            font-family: 'Inter', sans-serif;
+            font-size: 1.4rem;
+            color: var(--gold);
+            margin-bottom: 8px;
+        }
+
+        .footer-desc {
+            font-size: 0.83rem;
+            color: var(--text-muted);
+            line-height: 1.6;
+        }
+
+        .footer-bottom {
+            margin-top: 28px;
+            padding-top: 20px;
+            border-top: 1px solid rgba(255,255,255,0.05);
+            text-align: center;
+            font-size: 0.78rem;
+            color: var(--text-muted);
+        }
+
+        /* ==================== RESPONSIVE ==================== */
+        @media (max-width: 768px) {
+            .hero-stats { gap: 24px; }
+            .products-grid { grid-template-columns: repeat(auto-fill, minmax(180px, 1fr)); gap: 16px; }
+            .hero-section { padding: 48px 0 40px; }
+        }
+    </style>
+</head>
+
+<body>
+
+    <!-- ==================== NAVBAR ==================== -->
+    <nav class="navbar-custom">
+        <div class="container">
+            <a class="brand-name" href="/">🌸 Halo</a>
+
+            <ul class="nav-links">
+                <li>
+                    <a href="/cart" class="nav-link-item btn-cart">
+                        <i class="bi bi-bag"></i> Giỏ hàng
+                    </a>
+                </li>
+                <li>
+                    <a href="/orders" class="nav-link-item">
+                        <i class="bi bi-receipt"></i> Đơn hàng của tôi
+                    </a>
+                </li>
+
+                <!-- Chưa đăng nhập -->
+                <li th:if="${session.loggedInUser == null}">
+                    <a href="/register" class="nav-link-item" style="color: rgba(240,236,228,0.6)">Đăng ký</a>
+                </li>
+                <li th:if="${session.loggedInUser == null}">
+                    <a href="/login" class="nav-link-item btn-login-nav">Đăng nhập</a>
+                </li>
+
+                <!-- Đã đăng nhập -->
+                <li class="user-dropdown dropdown" th:if="${session.loggedInUser != null}">
+                    <a href="#" class="dropdown-toggle" data-bs-toggle="dropdown" aria-expanded="false" id="userDropdown">
+                        <div class="user-avatar">
+                            <i class="bi bi-person-fill"></i>
+                        </div>
+                        <span th:text="${session.loggedInUser.fullName != null ? session.loggedInUser.fullName : session.loggedInUser.email}">Khách</span>
+                        <i class="bi bi-chevron-down" style="font-size: 11px; opacity: 0.6;"></i>
+                    </a>
+                    <ul class="dropdown-menu dropdown-menu-custom dropdown-menu-end" aria-labelledby="userDropdown">
+                        <li>
+                            <span class="dropdown-item" style="cursor: default; opacity: 0.5; font-size: 0.78rem;">
+                                <i class="bi bi-envelope"></i>
+                                <span th:text="${session.loggedInUser.email}">email</span>
+                            </span>
+                        </li>
+                        <li><hr style="border-color: rgba(255,255,255,0.07); margin: 6px 0;"></li>
+                        <li>
+                            <a class="dropdown-item text-danger" href="/logout">
+                                <i class="bi bi-box-arrow-right"></i> Đăng xuất
+                            </a>
+                        </li>
+                    </ul>
+                </li>
+            </ul>
+        </div>
+    </nav>
+
+    <!-- ==================== HERO SECTION ==================== -->
+    <section class="hero-section">
+        <div class="container">
+            <div class="row align-items-center">
+                <div class="col-lg-7">
+                    <div class="hero-badge">
+                        <i class="bi bi-stars"></i> Bộ sưu tập mới nhất 2025
+                    </div>
+                    <h1 class="hero-title">
+                        Tinh tế trong<br>
+                        từng <span class="text-gold">hương thơm</span>
+                    </h1>
+                    <p class="hero-desc">
+                        Khám phá bộ sưu tập nước hoa cao cấp được tuyển chọn kỹ lưỡng từ các thương hiệu danh tiếng thế giới. Mỗi chai nước hoa là một câu chuyện, một ký ức riêng của bạn.
+                    </p>
+                    <div class="hero-stats">
+                        <div class="stat-item">
+                            <div class="stat-number">50+</div>
+                            <div class="stat-label">Sản phẩm</div>
+                        </div>
+                        <div class="stat-item">
+                            <div class="stat-number">20+</div>
+                            <div class="stat-label">Thương hiệu</div>
+                        </div>
+                        <div class="stat-item">
+                            <div class="stat-number">100%</div>
+                            <div class="stat-label">Chính hãng</div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- ==================== DANH SÁCH SẢN PHẨM ==================== -->
+    <section style="padding: 60px 0 40px;">
+        <div class="container">
+            <div class="section-header">
+                <h2 class="section-title">Bộ Sưu Tập <span>Nước Hoa</span></h2>
+                <span class="section-count" th:if="${perfumes != null}">
+                    <i class="bi bi-grid-3x3-gap"></i>
+                    <span th:text="${#lists.size(perfumes)}">0</span> sản phẩm
+                </span>
+            </div>
+
+            <div class="products-grid">
+                <!-- Trạng thái giỏ rỗng -->
+                <div class="empty-state" th:if="${perfumes == null or #lists.isEmpty(perfumes)}">
+                    <div class="empty-icon">🌸</div>
+                    <h4>Chưa có sản phẩm nào</h4>
+                    <p style="color: var(--text-muted); font-size: 0.875rem; margin-top: 8px;">Sản phẩm sẽ được cập nhật sớm nhất!</p>
+                </div>
+
+                <!-- Lặp qua từng sản phẩm -->
+                <div class="product-card" th:each="perfume : ${perfumes}">
+                    <!-- Ảnh sản phẩm -->
+                    <a th:href="@{'/product/' + ${perfume.id_nuoc_hoa}}" class="product-img-wrapper" style="display: block; text-decoration: none;">
+                        <img src="https://images.unsplash.com/photo-1594035910387-fea47794261f?auto=format&fit=crop&w=400&q=80"
+                            class="product-img"
+                            th:alt="${perfume.ten_sp}"
+                            alt="Nước hoa">
+
+                        <!-- Badge thương hiệu -->
+                        <div class="product-brand-badge" th:text="${perfume.thuong_hieu}">Brand</div>
+
+                        <!-- Badge tồn kho -->
+                        <div th:if="${perfume.ton_kho > 10}" class="product-stock-badge badge-in-stock">
+                            <i class="bi bi-check-circle-fill"></i> Còn hàng
+                        </div>
+                        <div th:if="${perfume.ton_kho > 0 and perfume.ton_kho <= 10}" class="product-stock-badge badge-low-stock">
+                            <i class="bi bi-exclamation-circle-fill"></i> Sắp hết
+                        </div>
+                        <div th:if="${perfume.ton_kho <= 0}" class="product-stock-badge badge-out-stock">
+                            <i class="bi bi-x-circle-fill"></i> Hết hàng
+                        </div>
+                    </a>
+
+                    <!-- Thông tin sản phẩm -->
+                    <div class="product-body">
+                        <a th:href="@{'/product/' + ${perfume.id_nuoc_hoa}}" style="text-decoration: none;">
+                            <h3 class="product-name" th:text="${perfume.ten_sp}">Tên Sản Phẩm</h3>
+                        </a>
+                        <div class="product-meta">
+                            <span class="product-meta-tag" th:if="${perfume.nhom_huong}" th:text="${perfume.nhom_huong}">Hương</span>
+                            <span class="product-meta-tag" th:if="${perfume.dung_tich}" th:text="${perfume.dung_tich}">Dung tích</span>
+                        </div>
+                        <div class="product-price">
+                            <span th:text="${#numbers.formatDecimal(perfume.gia_ban, 0, 'COMMA', 0, 'POINT')}">0</span>
+                            <span class="product-price-unit"> đ</span>
+                        </div>
+
+                        <!-- Tồn kho -->
+                        <div class="product-stock-info">
+                            <i class="bi bi-box-seam"></i>
+                            <span>Còn </span>
+                            <strong th:text="${perfume.ton_kho}">0</strong>
+                            <span> chai</span>
+                        </div>
+                    </div>
+
+                    <!-- Nút thêm vào giỏ -->
+                    <div class="product-footer">
+                        <button class="btn-add-cart"
+                            th:disabled="${perfume.ton_kho <= 0}"
+                            th:onclick="${perfume.ton_kho > 0} ? 'addToCart(' + ${perfume.id_nuoc_hoa} + ')' : 'return false'">
+                            <i class="bi bi-bag-plus"></i>
+                            <span th:text="${perfume.ton_kho > 0} ? 'Thêm vào giỏ' : 'Hết hàng'">Thêm vào giỏ</span>
+                        </button>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- ==================== FOOTER ==================== -->
+    <footer class="footer">
+        <div class="container">
+            <div class="row">
+                <div class="col-md-5">
+                    <div class="footer-brand">🌸 Halo</div>
+                    <p class="footer-desc">Mang đến những trải nghiệm hương thơm đẳng cấp, tinh tế và sang trọng cho khách hàng Việt Nam.</p>
+                </div>
+                <div class="col-md-3 offset-md-4 text-end d-none d-md-block">
+                    <p class="footer-desc" style="font-size: 0.78rem;">Liên hệ hỗ trợ</p>
+                    <p style="color: var(--gold); font-size: 0.875rem; margin-top: 4px;"><i class="bi bi-envelope"></i> support@khaan.vn</p>
+                </div>
+            </div>
+            <div class="footer-bottom">
+                © 2025 Halo · Đồ án Thực tập cuối khóa
+            </div>
+        </div>
+    </footer>
+
+    <!-- Toast container -->
+    <div class="toast-container-custom" id="toastContainer"></div>
+
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+    <script th:inline="javascript">
+        const userId = /*[[${session.loggedInUser != null ? session.loggedInUser.id_user : null}]]*/ null;
+
+        // Hiển thị toast thông báo đẹp thay cho alert()
+        function showToast(message, type = 'success') {
+            const container = document.getElementById('toastContainer');
+            const toast = document.createElement('div');
+            toast.className = `toast-custom toast-${type}`;
+            const icon = type === 'success' ? '✅' : '❌';
+            toast.innerHTML = `<span class="toast-icon">${icon}</span><span class="toast-msg">${message}</span>`;
+            container.appendChild(toast);
+            setTimeout(() => {
+                toast.style.opacity = '0';
+                toast.style.transition = 'opacity 0.4s';
+                setTimeout(() => toast.remove(), 400);
+            }, 3000);
+        }
+
+        function addToCart(idNuocHoa) {
+            if (userId == null) {
+                showToast('Vui lòng đăng nhập để thêm vào giỏ hàng!', 'error');
+                setTimeout(() => window.location.href = '/login', 1500);
+                return;
+            }
+
+            const requestBody = {
+                user: { id_user: userId },
+                perfume: { id_nuoc_hoa: idNuocHoa },
+                so_luong: 1
+            };
+
+            fetch('/api/cart/add', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify(requestBody)
+            })
+            .then(response => {
+                if (response.ok) {
+                    showToast('Đã thêm vào giỏ hàng của bạn!', 'success');
+                } else {
+                    showToast('Có lỗi xảy ra, vui lòng thử lại.', 'error');
+                }
+            })
+            .catch(() => showToast('Không thể kết nối, vui lòng thử lại.', 'error'));
+        }
+    </script>
+</body>
+
+</html>
