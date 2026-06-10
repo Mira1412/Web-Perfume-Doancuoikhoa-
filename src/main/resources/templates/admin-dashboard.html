@@ -1,0 +1,473 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org" lang="vi">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Dashboard Thống Kê — Halo Admin</title>
+    <meta name="description" content="Trang tổng quan thống kê doanh thu và đơn hàng tại Halo.">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.0/font/bootstrap-icons.css" rel="stylesheet">
+    <style>
+        :root {
+            --gold: #c9a96e;
+            --gold-light: #e8d5b0;
+            --gold-dark: #a07840;
+            --dark: #0d0d1a;
+            --dark-2: #141428;
+            --dark-3: #1c1c35;
+            --text-primary: #f0ece4;
+            --text-muted: rgba(240, 236, 228, 0.5);
+            --border: rgba(201, 169, 110, 0.2);
+        }
+
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+
+        body {
+            background-color: var(--dark);
+            font-family: 'Inter', sans-serif;
+            color: var(--text-primary);
+            min-height: 100vh;
+        }
+
+        /* ====== NAVBAR (dùng chung) ====== */
+        .navbar-custom {
+            background: rgba(13, 13, 26, 0.95);
+            backdrop-filter: blur(20px);
+            border-bottom: 1px solid var(--border);
+            position: sticky;
+            top: 0;
+            z-index: 1000;
+        }
+
+        .navbar-custom .container {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            height: 70px;
+        }
+
+        .brand-name {
+            font-size: 1.6rem;
+            font-weight: 600;
+            color: var(--gold) !important;
+            text-decoration: none;
+            letter-spacing: 1px;
+        }
+
+        .nav-links {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            list-style: none;
+        }
+
+        .nav-link-item {
+            color: rgba(240, 236, 228, 0.75);
+            text-decoration: none;
+            font-size: 0.875rem;
+            padding: 8px 16px;
+            border-radius: 8px;
+            transition: all 0.2s;
+            display: flex;
+            align-items: center;
+            gap: 6px;
+        }
+
+        .nav-link-item:hover { color: var(--gold); background: rgba(201, 169, 110, 0.1); }
+
+        .btn-home-nav {
+            background: rgba(201, 169, 110, 0.12);
+            border: 1px solid rgba(201, 169, 110, 0.3);
+            color: var(--gold) !important;
+        }
+
+        /* ====== PAGE HEADER ====== */
+        .page-header {
+            background: linear-gradient(to right, var(--dark-2), var(--dark));
+            border-bottom: 1px solid var(--border);
+            padding: 40px 0 32px;
+        }
+
+        .page-header h1 {
+            font-size: 2.2rem;
+            font-weight: 600;
+            color: #ffffff;
+            margin-bottom: 6px;
+        }
+
+        .page-header .breadcrumb-custom {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            font-size: 0.8rem;
+            color: var(--text-muted);
+        }
+
+        .page-header .breadcrumb-custom a {
+            color: var(--gold);
+            text-decoration: none;
+        }
+
+        /* ====== DASHBOARD SECTION ====== */
+        .dashboard-section { padding: 40px 0 80px; }
+
+        /* ====== WELCOME BANNER ====== */
+        .welcome-banner {
+            background: linear-gradient(135deg, rgba(201, 169, 110, 0.12), rgba(201, 169, 110, 0.03));
+            border: 1px solid var(--border);
+            border-radius: 18px;
+            padding: 28px 30px;
+            margin-bottom: 30px;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+        }
+
+        .welcome-text h2 {
+            font-size: 1.4rem;
+            font-weight: 600;
+            color: #ffffff;
+            margin-bottom: 6px;
+        }
+
+        .welcome-text p {
+            font-size: 0.875rem;
+            color: var(--text-muted);
+            margin: 0;
+        }
+
+        .welcome-emoji {
+            font-size: 3rem;
+            opacity: 0.8;
+        }
+
+        /* ====== STAT CARDS ====== */
+        .stat-card {
+            background: var(--dark-2);
+            border: 1px solid var(--border);
+            border-radius: 18px;
+            padding: 28px 24px;
+            position: relative;
+            overflow: hidden;
+            transition: all 0.3s ease;
+            height: 100%;
+        }
+
+        .stat-card:hover {
+            transform: translateY(-4px);
+            border-color: rgba(201, 169, 110, 0.4);
+            box-shadow: 0 12px 40px rgba(0, 0, 0, 0.3);
+        }
+
+        .stat-card::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            height: 3px;
+            border-radius: 18px 18px 0 0;
+        }
+
+        .stat-card.revenue::before { background: linear-gradient(90deg, #c9a96e, #e8d5b0); }
+        .stat-card.orders::before { background: linear-gradient(90deg, #6ea5c9, #b0d5e8); }
+        .stat-card.delivered::before { background: linear-gradient(90deg, #6fc97a, #b0e8b8); }
+        .stat-card.products::before { background: linear-gradient(90deg, #c96ea5, #e8b0d5); }
+
+        .stat-icon {
+            width: 52px;
+            height: 52px;
+            border-radius: 14px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 1.4rem;
+            margin-bottom: 20px;
+        }
+
+        .stat-card.revenue .stat-icon {
+            background: rgba(201, 169, 110, 0.15);
+            color: var(--gold);
+        }
+        .stat-card.orders .stat-icon {
+            background: rgba(110, 165, 201, 0.15);
+            color: #6ea5c9;
+        }
+        .stat-card.delivered .stat-icon {
+            background: rgba(111, 201, 122, 0.15);
+            color: #6fc97a;
+        }
+        .stat-card.products .stat-icon {
+            background: rgba(201, 110, 165, 0.15);
+            color: #c96ea5;
+        }
+
+        .stat-label {
+            font-size: 0.78rem;
+            font-weight: 500;
+            text-transform: uppercase;
+            letter-spacing: 0.8px;
+            color: var(--text-muted);
+            margin-bottom: 8px;
+        }
+
+        .stat-value {
+            font-size: 2rem;
+            font-weight: 700;
+            color: #ffffff;
+            line-height: 1.2;
+        }
+
+        .stat-card.revenue .stat-value { color: var(--gold-light); }
+
+        .stat-suffix {
+            font-size: 0.9rem;
+            font-weight: 400;
+            color: var(--text-muted);
+            margin-left: 4px;
+        }
+
+        /* ====== QUICK LINKS ====== */
+        .quick-links-card {
+            background: var(--dark-2);
+            border: 1px solid var(--border);
+            border-radius: 18px;
+            padding: 28px 24px;
+            margin-top: 30px;
+        }
+
+        .quick-links-title {
+            font-size: 1.1rem;
+            font-weight: 600;
+            color: #ffffff;
+            margin-bottom: 20px;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .quick-links-title i { color: var(--gold); }
+
+        .quick-link-btn {
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+            padding: 12px 22px;
+            background: var(--dark-3);
+            border: 1px solid rgba(255, 255, 255, 0.08);
+            border-radius: 12px;
+            color: var(--text-primary);
+            text-decoration: none;
+            font-size: 0.875rem;
+            font-weight: 500;
+            transition: all 0.25s ease;
+            margin-right: 12px;
+            margin-bottom: 12px;
+        }
+
+        .quick-link-btn:hover {
+            border-color: var(--gold);
+            color: var(--gold);
+            background: rgba(201, 169, 110, 0.08);
+            transform: translateY(-2px);
+            box-shadow: 0 6px 20px rgba(0, 0, 0, 0.2);
+        }
+
+        .quick-link-btn i { font-size: 1.1rem; }
+
+        /* ====== FOOTER TEXT ====== */
+        .footer-credit {
+            text-align: center;
+            color: var(--text-muted);
+            font-size: 0.82rem;
+            margin-top: 50px;
+            padding-top: 24px;
+            border-top: 1px solid rgba(255,255,255,0.05);
+        }
+
+        .footer-credit strong {
+            color: var(--gold);
+            font-weight: 600;
+        }
+
+        /* ====== ANIMATIONS ====== */
+        @keyframes fadeInUp {
+            from {
+                opacity: 0;
+                transform: translateY(20px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        .animate-in {
+            animation: fadeInUp 0.5s ease forwards;
+            opacity: 0;
+        }
+
+        .delay-1 { animation-delay: 0.05s; }
+        .delay-2 { animation-delay: 0.1s; }
+        .delay-3 { animation-delay: 0.15s; }
+        .delay-4 { animation-delay: 0.2s; }
+        .delay-5 { animation-delay: 0.3s; }
+        .delay-6 { animation-delay: 0.4s; }
+
+        /* ====== RESPONSIVE ====== */
+        @media (max-width: 768px) {
+            .welcome-banner { flex-direction: column; text-align: center; gap: 16px; }
+            .stat-value { font-size: 1.6rem; }
+            .page-header h1 { font-size: 1.6rem; }
+            .nav-links { gap: 4px; }
+            .nav-link-item { padding: 6px 10px; font-size: 0.78rem; }
+        }
+    </style>
+</head>
+
+<body>
+
+    <!-- ====== NAVBAR ====== -->
+    <nav class="navbar-custom">
+        <div class="container">
+            <a class="brand-name" href="/">🌸 Halo Admin</a>
+            <ul class="nav-links">
+                <li>
+                    <a href="/" class="nav-link-item btn-home-nav">
+                        <i class="bi bi-shop"></i> Cửa hàng
+                    </a>
+                </li>
+                <li>
+                    <a href="/admin/dashboard" class="nav-link-item" style="color: var(--gold);">
+                        <i class="bi bi-speedometer2"></i> Dashboard
+                    </a>
+                </li>
+                <li>
+                    <a href="/admin/products" class="nav-link-item">
+                        <i class="bi bi-box-seam"></i> Sản phẩm
+                    </a>
+                </li>
+                <li>
+                    <a href="/admin/orders" class="nav-link-item">
+                        <i class="bi bi-receipt"></i> Đơn hàng
+                    </a>
+                </li>
+            </ul>
+        </div>
+    </nav>
+
+    <!-- ====== PAGE HEADER ====== -->
+    <div class="page-header">
+        <div class="container">
+            <h1><i class="bi bi-speedometer2" style="color: var(--gold); font-size: 1.8rem; margin-right: 12px;"></i>Tổng Quan Thống Kê</h1>
+            <div class="breadcrumb-custom" style="margin-top: 8px;">
+                <a href="/"><i class="bi bi-house"></i> Trang chủ</a>
+                <i class="bi bi-chevron-right" style="font-size: 10px;"></i>
+                <span>Dashboard</span>
+            </div>
+        </div>
+    </div>
+
+    <!-- ====== DASHBOARD CONTENT ====== -->
+    <section class="dashboard-section">
+        <div class="container">
+
+            <!-- Welcome Banner -->
+            <div class="welcome-banner animate-in delay-1">
+                <div class="welcome-text">
+                    <h2>Chào mừng trở lại, Admin! 👋</h2>
+                    <p>Dưới đây là tổng quan nhanh về hoạt động kinh doanh của cửa hàng.</p>
+                </div>
+                <div class="welcome-emoji">📊</div>
+            </div>
+
+            <!-- Stat Cards Row -->
+            <div class="row g-4">
+
+                <!-- Card 1: Doanh thu -->
+                <div class="col-lg-3 col-md-6 animate-in delay-2">
+                    <div class="stat-card revenue">
+                        <div class="stat-icon">
+                            <i class="bi bi-cash-coin"></i>
+                        </div>
+                        <div class="stat-label">Tổng Doanh Thu (Đã giao)</div>
+                        <div class="stat-value" th:text="${#numbers.formatDecimal(totalRevenue, 0, 'COMMA', 0, 'POINT')}">0</div>
+                        <span class="stat-suffix">VNĐ</span>
+                    </div>
+                </div>
+
+                <!-- Card 2: Tổng đơn hàng -->
+                <div class="col-lg-3 col-md-6 animate-in delay-3">
+                    <div class="stat-card orders">
+                        <div class="stat-icon">
+                            <i class="bi bi-bag-check"></i>
+                        </div>
+                        <div class="stat-label">Tổng Đơn Hàng</div>
+                        <div class="stat-value" th:text="${totalOrders}">0</div>
+                        <span class="stat-suffix">đơn</span>
+                    </div>
+                </div>
+
+                <!-- Card 3: Giao thành công -->
+                <div class="col-lg-3 col-md-6 animate-in delay-4">
+                    <div class="stat-card delivered">
+                        <div class="stat-icon">
+                            <i class="bi bi-truck"></i>
+                        </div>
+                        <div class="stat-label">Giao Thành Công</div>
+                        <div class="stat-value" th:text="${deliveredOrders}">0</div>
+                        <span class="stat-suffix">đơn</span>
+                    </div>
+                </div>
+
+                <!-- Card 4: Tổng sản phẩm -->
+                <div class="col-lg-3 col-md-6 animate-in delay-5">
+                    <div class="stat-card products">
+                        <div class="stat-icon">
+                            <i class="bi bi-droplet-half"></i>
+                        </div>
+                        <div class="stat-label">Sản Phẩm Trong Kho</div>
+                        <div class="stat-value" th:text="${totalProducts}">0</div>
+                        <span class="stat-suffix">nước hoa</span>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Quick Links -->
+            <div class="quick-links-card animate-in delay-6">
+                <div class="quick-links-title">
+                    <i class="bi bi-lightning-charge-fill"></i>
+                    Truy cập nhanh
+                </div>
+                <div>
+                    <a href="/admin/products/add" class="quick-link-btn">
+                        <i class="bi bi-plus-circle"></i> Thêm sản phẩm mới
+                    </a>
+                    <a href="/admin/products" class="quick-link-btn">
+                        <i class="bi bi-box-seam"></i> Quản lý sản phẩm
+                    </a>
+                    <a href="/admin/orders" class="quick-link-btn">
+                        <i class="bi bi-receipt"></i> Quản lý đơn hàng
+                    </a>
+                    <a href="/" class="quick-link-btn">
+                        <i class="bi bi-shop"></i> Xem cửa hàng
+                    </a>
+                </div>
+            </div>
+
+            <!-- Footer Credit -->
+            <div class="footer-credit">
+                <p>Hệ thống quản trị được xây dựng bởi <strong>Phạm Hà An</strong></p>
+            </div>
+
+        </div>
+    </section>
+
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+</body>
+
+</html>

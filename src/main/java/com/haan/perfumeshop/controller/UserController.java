@@ -36,7 +36,15 @@ public class UserController {
             User loggedInUser = userService.loginUser(email, password);
             // Lưu thông tin người dùng vào Session để mang đi khắp các trang
             session.setAttribute("loggedInUser", loggedInUser);
-            return "redirect:/"; // Đăng nhập thành công thì quay về trang chủ
+
+            // Kiểm tra quyền của user và lưu vào Session
+            if ("ADMIN".equals(loggedInUser.getRole())) {
+                session.setAttribute("userRole", "ADMIN"); // Chiếc chìa khóa vào trang Admin
+                return "redirect:/admin/dashboard"; // Admin → vào Dashboard quản trị
+            }
+
+            session.setAttribute("userRole", "CUSTOMER");
+            return "redirect:/"; // Khách hàng → quay về trang chủ
         } catch (Exception e) {
             model.addAttribute("error", e.getMessage());
             return "login"; // Đăng nhập lỗi thì đứng lại trang login và báo lỗi
@@ -47,6 +55,7 @@ public class UserController {
     @GetMapping("/logout")
     public String logout(HttpSession session) {
         session.removeAttribute("loggedInUser"); // Xóa trí nhớ của hệ thống về user này
+        session.removeAttribute("userRole");     // Xóa quyền đã lưu
         return "redirect:/";
     }
 

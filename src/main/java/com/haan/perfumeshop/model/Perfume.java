@@ -16,6 +16,7 @@ public class Perfume {
     private String dung_tich;
     private Double gia_ban;
     private Integer ton_kho;
+    private String hinh_anh;
 
     // Tự viết hàm Get thủ công để sửa lỗi undefined
     public Long getId_nuoc_hoa() {

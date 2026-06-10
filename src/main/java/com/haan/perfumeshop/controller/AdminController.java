@@ -2,29 +2,184 @@ package com.haan.perfumeshop.controller;
 
 import com.haan.perfumeshop.model.Perfume;
 import com.haan.perfumeshop.repository.PerfumeRepository;
+import java.util.List;
+import java.io.IOException;
+import java.nio.file.Files;
+import java.nio.file.Path;
+import java.nio.file.Paths;
+import java.util.UUID;
+import com.haan.perfumeshop.repository.OrderRepository; // Bổ sung thư viện Order
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.multipart.MultipartFile;
 
 @Controller
 @RequestMapping("/admin")
 public class AdminController {
 
+    // Thư mục lưu ảnh upload (nằm ở gốc project)
+    private final String UPLOAD_DIR = "uploads/";
+
     @Autowired
     private PerfumeRepository perfumeRepository;
 
-    // Hiển thị danh sách sản phẩm cho Admin quản lý
+    @Autowired
+    private OrderRepository orderRepository; // Bổ sung Repository để gọi database đơn hàng
+
+    // 1. Hiển thị danh sách sản phẩm cho Admin quản lý
     @GetMapping("/products")
     public String listProducts(Model model) {
         model.addAttribute("perfumes", perfumeRepository.findAll());
-        return "admin/products"; // File nằm trong templates/admin/products.html
+        return "products"; // File nằm trong templates/products.html
     }
 
-    // Xóa sản phẩm
+    // 2. Xóa sản phẩm
     @GetMapping("/products/delete/{id}")
     public String deleteProduct(@PathVariable("id") Long id) {
         perfumeRepository.deleteById(id);
         return "redirect:/admin/products";
+    }
+
+    // ==========================================
+    // CÁC HÀM XỬ LÝ: THÊM SẢN PHẨM MỚI
+    // ==========================================
+
+    // 3. Hiển thị form thêm sản phẩm mới
+    @GetMapping("/products/add")
+    public String showAddForm(Model model) {
+        // Gửi một đối tượng Perfume rỗng sang form để hứng dữ liệu người dùng nhập
+        model.addAttribute("perfume", new Perfume());
+        return "add-product"; // File nằm trong templates/add-product.html
+    }
+
+    // 4. Lưu sản phẩm vào database sau khi điền form (có upload ảnh)
+    @PostMapping("/products/save")
+    public String saveProduct(@ModelAttribute("perfume") Perfume perfume,
+                              @RequestParam("imageFile") MultipartFile imageFile) throws IOException {
+        
+        // Nếu người dùng có chọn file ảnh thì lưu vào thư mục uploads/
+        if (!imageFile.isEmpty()) {
+            // Tạo thư mục uploads nếu chưa tồn tại
+            Path uploadPath = Paths.get(UPLOAD_DIR);
+            if (!Files.exists(uploadPath)) {
+                Files.createDirectories(uploadPath);
+            }
+            
+            // Tạo tên file duy nhất để tránh trùng: UUID + tên gốc
+            String originalFilename = imageFile.getOriginalFilename();
+            String uniqueFilename = UUID.randomUUID().toString() + "_" + originalFilename;
+            
+            // Lưu file vào thư mục uploads/
+            Path filePath = uploadPath.resolve(uniqueFilename);
+            imageFile.transferTo(filePath.toFile());
+            
+            // Lưu đường dẫn vào database để hiển thị trên web
+            perfume.setHinh_anh("/uploads/" + uniqueFilename);
+        }
+        
+        // Lưu dữ liệu vào MySQL
+        perfumeRepository.save(perfume);
+        // Lưu xong thì quay thẳng về trang danh sách sản phẩm
+        return "redirect:/admin/products";
+    }
+
+    // ==========================================
+    // CÁC HÀM XỬ LÝ: SỬA SẢN PHẨM 
+    // ==========================================
+
+    // 5. Hiển thị form Sửa sản phẩm (đã lấy sẵn dữ liệu cũ)
+    @GetMapping("/products/edit/{id}")
+    public String showEditForm(@PathVariable("id") Long id, Model model) {
+        // Tìm sản phẩm theo ID, nếu không thấy thì báo lỗi
+        Perfume perfume = perfumeRepository.findById(id)
+                            .orElseThrow(() -> new RuntimeException("Không tìm thấy nước hoa này!"));
+        
+        // Đẩy dữ liệu sản phẩm cũ sang giao diện
+        model.addAttribute("perfume", perfume);
+        return "edit-product"; // File nằm trong templates/edit-product.html
+    }
+
+    // 6. Xử lý cập nhật sản phẩm vào database (có upload ảnh mới)
+    @PostMapping("/products/update")
+    public String updateProduct(@ModelAttribute("perfume") Perfume perfume,
+                                @RequestParam("imageFile") MultipartFile imageFile) throws IOException {
+        
+        // Nếu người dùng chọn ảnh mới thì upload và cập nhật
+        if (!imageFile.isEmpty()) {
+            Path uploadPath = Paths.get(UPLOAD_DIR);
+            if (!Files.exists(uploadPath)) {
+                Files.createDirectories(uploadPath);
+            }
+            
+            String originalFilename = imageFile.getOriginalFilename();
+            String uniqueFilename = UUID.randomUUID().toString() + "_" + originalFilename;
+            
+            Path filePath = uploadPath.resolve(uniqueFilename);
+            imageFile.transferTo(filePath.toFile());
+            
+            perfume.setHinh_anh("/uploads/" + uniqueFilename);
+        }
+        // Nếu không chọn ảnh mới, giữ nguyên ảnh cũ (hinh_anh đã có sẵn từ hidden input)
+        
+        perfumeRepository.save(perfume);
+        return "redirect:/admin/products";
+    }
+
+    // ==========================================
+    // CÁC HÀM XỬ LÝ: QUẢN LÝ ĐƠN HÀNG
+    // ==========================================
+
+    // 7. Hiển thị danh sách tất cả đơn hàng cho Admin
+    @GetMapping("/orders")
+    public String listOrders(Model model) {
+        // Lấy tất cả đơn hàng từ database đẩy sang View
+        model.addAttribute("orders", orderRepository.findAllOrdersDesc());
+        // Trả về file admin-orders.html để không bị trùng với trang lịch sử đơn hàng của khách
+        return "admin-orders"; 
+    }
+
+    // 8. Cập nhật trạng thái đơn hàng
+    @PostMapping("/orders/update-status")
+    public String updateOrderStatus(@RequestParam("id") Long id, @RequestParam("status") String status) {
+        // Tìm đơn hàng trong database
+        com.haan.perfumeshop.model.Order order = orderRepository.findById(id)
+                .orElseThrow(() -> new RuntimeException("Không tìm thấy đơn hàng!"));
+        
+        // Cập nhật trạng thái mới và lưu lại
+        order.setTrang_thai(status);
+        orderRepository.save(order);
+        
+        return "redirect:/admin/orders";
+    }
+
+    // ==========================================
+    // CÁC HÀM XỬ LÝ: THỐNG KÊ DASHBOARD
+    // ==========================================
+
+    // 9. Hiển thị trang Tổng quan Thống kê
+    @GetMapping("/dashboard")
+    public String showDashboard(Model model) {
+        List<com.haan.perfumeshop.model.Order> allOrders = orderRepository.findAll();
+        
+        double totalRevenue = 0; // Tổng doanh thu
+        int deliveredOrders = 0; // Đơn giao thành công
+        
+        // Dùng vòng lặp để tính tổng tiền của các đơn đã giao thành công
+        for (com.haan.perfumeshop.model.Order o : allOrders) {
+            if ("Delivered".equals(o.getTrang_thai())) {
+                totalRevenue += o.getTong_tien();
+                deliveredOrders++;
+            }
+        }
+        
+        // Gửi các con số thống kê ra ngoài giao diện
+        model.addAttribute("totalRevenue", totalRevenue);
+        model.addAttribute("totalOrders", allOrders.size());
+        model.addAttribute("deliveredOrders", deliveredOrders);
+        model.addAttribute("totalProducts", perfumeRepository.count()); // Đếm tổng số nước hoa trong kho
+        
+        return "admin-dashboard"; // File giao diện sẽ tạo ở bước 2
     }
 }
