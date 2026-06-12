@@ -23,7 +23,11 @@
             --border: rgba(201, 169, 110, 0.2);
         }
 
-        * { margin: 0; padding: 0; box-sizing: border-box; }
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
 
         body {
             background-color: var(--dark);
@@ -43,23 +47,45 @@
         }
 
         .navbar-custom .container {
-            display: flex; align-items: center; justify-content: space-between; height: 70px;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            height: 70px;
         }
 
         .brand-name {
-            font-family: 'Inter', sans-serif; font-size: 1.6rem; font-weight: 600;
-            color: var(--gold) !important; text-decoration: none; letter-spacing: 1px;
+            font-family: 'Inter', sans-serif;
+            font-size: 1.6rem;
+            font-weight: 600;
+            color: var(--gold) !important;
+            text-decoration: none;
+            letter-spacing: 1px;
         }
 
-        .nav-links { display: flex; align-items: center; gap: 8px; list-style: none; margin: 0; }
+        .nav-links {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            list-style: none;
+            margin: 0;
+        }
 
         .nav-link-item {
-            color: rgba(240, 236, 228, 0.75); text-decoration: none; font-size: 0.875rem;
-            padding: 8px 16px; border-radius: 8px; transition: all 0.2s;
-            display: flex; align-items: center; gap: 6px;
+            color: rgba(240, 236, 228, 0.75);
+            text-decoration: none;
+            font-size: 0.875rem;
+            padding: 8px 16px;
+            border-radius: 8px;
+            transition: all 0.2s;
+            display: flex;
+            align-items: center;
+            gap: 6px;
         }
 
-        .nav-link-item:hover { color: var(--gold); background: rgba(201, 169, 110, 0.1); }
+        .nav-link-item:hover {
+            color: var(--gold);
+            background: rgba(201, 169, 110, 0.1);
+        }
 
         .btn-home-nav {
             background: rgba(201, 169, 110, 0.12);
@@ -82,14 +108,21 @@
             transition: all 0.2s;
         }
 
-        .user-dropdown .dropdown-toggle:hover { border-color: var(--gold); color: var(--gold); }
+        .user-dropdown .dropdown-toggle:hover {
+            border-color: var(--gold);
+            color: var(--gold);
+        }
 
         .user-avatar {
-            width: 28px; height: 28px;
+            width: 28px;
+            height: 28px;
             background: linear-gradient(135deg, var(--gold), var(--gold-dark));
             border-radius: 50%;
-            display: flex; align-items: center; justify-content: center;
-            color: #1a1a1a; font-size: 12px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: #1a1a1a;
+            font-size: 12px;
         }
 
         .dropdown-menu-custom {
@@ -98,7 +131,7 @@
             border-radius: 12px;
             padding: 8px;
             min-width: 200px;
-            box-shadow: 0 16px 40px rgba(0,0,0,0.5);
+            box-shadow: 0 16px 40px rgba(0, 0, 0, 0.5);
         }
 
         .dropdown-menu-custom .dropdown-item {
@@ -106,16 +139,29 @@
             border-radius: 8px;
             padding: 10px 14px;
             font-size: 0.875rem;
-            display: flex; align-items: center; gap: 8px;
+            display: flex;
+            align-items: center;
+            gap: 8px;
             transition: all 0.2s;
         }
 
-        .dropdown-menu-custom .dropdown-item:hover { background: rgba(255,255,255,0.06); color: var(--gold); }
-        .dropdown-menu-custom .dropdown-item.text-danger { color: #ff6b6b !important; }
-        .dropdown-menu-custom .dropdown-item.text-danger:hover { background: rgba(220,53,69,0.12); }
+        .dropdown-menu-custom .dropdown-item:hover {
+            background: rgba(255, 255, 255, 0.06);
+            color: var(--gold);
+        }
+
+        .dropdown-menu-custom .dropdown-item.text-danger {
+            color: #ff6b6b !important;
+        }
+
+        .dropdown-menu-custom .dropdown-item.text-danger:hover {
+            background: rgba(220, 53, 69, 0.12);
+        }
 
         /* ====== PRODUCT DETAIL ====== */
-        .detail-section { padding: 50px 0 80px; }
+        .detail-section {
+            padding: 50px 0 80px;
+        }
 
         .back-link {
             display: inline-flex;
@@ -128,7 +174,9 @@
             transition: color 0.2s;
         }
 
-        .back-link:hover { color: var(--gold); }
+        .back-link:hover {
+            color: var(--gold);
+        }
 
         .product-container {
             background: var(--dark-2);
@@ -142,7 +190,7 @@
         .product-image-col {
             width: 50%;
             padding: 40px;
-            background: rgba(0,0,0,0.2);
+            background: rgba(0, 0, 0, 0.2);
             display: flex;
             align-items: center;
             justify-content: center;
@@ -153,11 +201,13 @@
             max-width: 100%;
             max-height: 500px;
             object-fit: contain;
-            filter: drop-shadow(0 20px 30px rgba(0,0,0,0.5));
+            filter: drop-shadow(0 20px 30px rgba(0, 0, 0, 0.5));
             transition: transform 0.4s;
         }
 
-        .product-image:hover { transform: scale(1.05); }
+        .product-image:hover {
+            transform: scale(1.05);
+        }
 
         .product-brand-badge {
             position: absolute;
@@ -204,7 +254,7 @@
             line-height: 1.6;
             margin-bottom: 30px;
             padding-bottom: 30px;
-            border-bottom: 1px solid rgba(255,255,255,0.06);
+            border-bottom: 1px solid rgba(255, 255, 255, 0.06);
         }
 
         .attributes-grid {
@@ -215,8 +265,8 @@
         }
 
         .attr-box {
-            background: rgba(255,255,255,0.03);
-            border: 1px solid rgba(255,255,255,0.06);
+            background: rgba(255, 255, 255, 0.03);
+            border: 1px solid rgba(255, 255, 255, 0.06);
             border-radius: 12px;
             padding: 16px;
         }
@@ -244,7 +294,10 @@
             color: var(--text-muted);
         }
 
-        .stock-info strong { color: #6fcf97; font-weight: 600; }
+        .stock-info strong {
+            color: #6fcf97;
+            font-weight: 600;
+        }
 
         .action-row {
             display: flex;
@@ -255,8 +308,8 @@
         .qty-wrapper {
             display: flex;
             align-items: center;
-            background: rgba(0,0,0,0.3);
-            border: 1px solid rgba(255,255,255,0.1);
+            background: rgba(0, 0, 0, 0.3);
+            border: 1px solid rgba(255, 255, 255, 0.1);
             border-radius: 12px;
             padding: 0 5px;
             width: 140px;
@@ -276,7 +329,10 @@
             opacity: 0.7;
         }
 
-        .qty-btn:hover { opacity: 1; color: var(--gold); }
+        .qty-btn:hover {
+            opacity: 1;
+            color: var(--gold);
+        }
 
         .qty-input {
             width: 100%;
@@ -288,7 +344,9 @@
             font-size: 1rem;
         }
 
-        .qty-input:focus { outline: none; }
+        .qty-input:focus {
+            outline: none;
+        }
 
         /* Ẩn mũi tên của thẻ input number */
         .qty-input::-webkit-outer-spin-button,
@@ -296,6 +354,7 @@
             -webkit-appearance: none;
             margin: 0;
         }
+
         .qty-input[type=number] {
             -moz-appearance: textfield;
         }
@@ -323,8 +382,8 @@
         }
 
         .btn-add-cart:disabled {
-            background: rgba(255,255,255,0.1);
-            color: rgba(255,255,255,0.3);
+            background: rgba(255, 255, 255, 0.1);
+            color: rgba(255, 255, 255, 0.3);
             box-shadow: none;
             transform: none;
             cursor: not-allowed;
@@ -352,32 +411,61 @@
             display: flex;
             align-items: center;
             gap: 12px;
-            box-shadow: 0 10px 30px rgba(0,0,0,0.5);
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.5);
             animation: slideInRight 0.4s ease forwards;
         }
 
-        .toast-success { border-left: 4px solid #6fcf97; }
-        .toast-error { border-left: 4px solid #ff6b6b; }
+        .toast-success {
+            border-left: 4px solid #6fcf97;
+        }
+
+        .toast-error {
+            border-left: 4px solid #ff6b6b;
+        }
 
         @keyframes slideInRight {
-            from { transform: translateX(100%); opacity: 0; }
-            to { transform: translateX(0); opacity: 1; }
+            from {
+                transform: translateX(100%);
+                opacity: 0;
+            }
+
+            to {
+                transform: translateX(0);
+                opacity: 1;
+            }
         }
 
         /* Responsive */
         @media (max-width: 768px) {
-            .product-image-col, .product-info-col { width: 100%; padding: 30px 20px; }
-            .product-title { font-size: 1.8rem; }
-            .action-row { flex-direction: column; }
-            .qty-wrapper { width: 100%; height: 50px; }
-            .btn-add-cart { height: 50px; }
+
+            .product-image-col,
+            .product-info-col {
+                width: 100%;
+                padding: 30px 20px;
+            }
+
+            .product-title {
+                font-size: 1.8rem;
+            }
+
+            .action-row {
+                flex-direction: column;
+            }
+
+            .qty-wrapper {
+                width: 100%;
+                height: 50px;
+            }
+
+            .btn-add-cart {
+                height: 50px;
+            }
         }
     </style>
 </head>
 
 <body>
 
-    <!-- ====== NAVBAR ====== -->
     <nav class="navbar-custom">
         <div class="container">
             <a class="brand-name" href="/">🌸 Halo</a>
@@ -401,7 +489,8 @@
                 <li class="user-dropdown dropdown" th:if="${session.loggedInUser != null}">
                     <a href="#" class="dropdown-toggle" data-bs-toggle="dropdown" id="userDropdown">
                         <div class="user-avatar"><i class="bi bi-person-fill"></i></div>
-                        <span th:text="${session.loggedInUser.fullName != null ? session.loggedInUser.fullName : session.loggedInUser.email}">Khách</span>
+                        <span
+                            th:text="${session.loggedInUser.fullName != null ? session.loggedInUser.fullName : session.loggedInUser.email}">Khách</span>
                         <i class="bi bi-chevron-down" style="font-size: 11px; opacity: 0.6;"></i>
                     </a>
                     <ul class="dropdown-menu dropdown-menu-custom dropdown-menu-end">
@@ -411,7 +500,9 @@
                                 <span th:text="${session.loggedInUser.email}">email</span>
                             </span>
                         </li>
-                        <li><hr style="border-color: rgba(255,255,255,0.07); margin: 6px 0;"></li>
+                        <li>
+                            <hr style="border-color: rgba(255,255,255,0.07); margin: 6px 0;">
+                        </li>
                         <li>
                             <a class="dropdown-item text-danger" href="/logout">
                                 <i class="bi bi-box-arrow-right"></i> Đăng xuất
@@ -421,13 +512,14 @@
                 </li>
 
                 <li th:if="${session.loggedInUser == null}">
-                    <a href="/login" class="nav-link-item" style="background: linear-gradient(135deg, var(--gold), var(--gold-dark)); color: #1a1a1a !important; font-weight: 600; border-radius: 10px;">Đăng nhập</a>
+                    <a href="/login" class="nav-link-item"
+                        style="background: linear-gradient(135deg, var(--gold), var(--gold-dark)); color: #1a1a1a !important; font-weight: 600; border-radius: 10px;">Đăng
+                        nhập</a>
                 </li>
             </ul>
         </div>
     </nav>
 
-    <!-- ====== PRODUCT DETAIL ====== -->
     <section class="detail-section">
         <div class="container">
             <a href="/" class="back-link">
@@ -435,24 +527,20 @@
             </a>
 
             <div class="product-container">
-                <!-- Hình ảnh -->
                 <div class="product-image-col">
                     <div class="product-brand-badge" th:text="${perfume.thuong_hieu}">Brand</div>
-                    <img src="https://images.unsplash.com/photo-1594035910387-fea47794261f?auto=format&fit=crop&w=800&q=80" 
-                         alt="Perfume Image" 
-                         class="product-image">
+                    <img th:src="${perfume.hinh_anh}" th:alt="${perfume.ten_sp}" class="product-image">
                 </div>
 
-                <!-- Thông tin -->
                 <div class="product-info-col">
                     <h1 class="product-title" th:text="${perfume.ten_sp}">Tên Sản Phẩm</h1>
                     <div class="product-price">
-                        <span th:text="${#numbers.formatDecimal(perfume.gia_ban, 0, 'COMMA', 0, 'POINT')}">0</span> đ
+                        <span th:text="${perfume.gia_ban.contains('đ') or perfume.gia_ban.toLowerCase().contains('hệ') ? perfume.gia_ban : perfume.gia_ban + ' đ'}">0</span>
                     </div>
-                    
-                    <!-- Mô tả chung (Fallback vì DB không có mô tả chi tiết) -->
+
                     <p class="product-desc">
-                        Tuyệt tác hương thơm mang lại sự sang trọng và tinh tế. Một lựa chọn hoàn hảo để khẳng định phong cách cá nhân của bạn, phù hợp cho mọi dịp đặc biệt.
+                        Tuyệt tác hương thơm mang lại sự sang trọng và tinh tế. Một lựa chọn hoàn hảo để khẳng định
+                        phong cách cá nhân của bạn, phù hợp cho mọi dịp đặc biệt.
                     </p>
 
                     <div class="attributes-grid">
@@ -462,12 +550,14 @@
                         </div>
                         <div class="attr-box">
                             <span class="attr-label">Nhóm hương</span>
-                            <span class="attr-value" th:if="${perfume.nhom_huong != null}" th:text="${perfume.nhom_huong}">Hương hoa cỏ</span>
+                            <span class="attr-value" th:if="${perfume.nhom_huong != null}"
+                                th:text="${perfume.nhom_huong}">Hương hoa cỏ</span>
                             <span class="attr-value" th:if="${perfume.nhom_huong == null}">Chưa cập nhật</span>
                         </div>
                         <div class="attr-box">
                             <span class="attr-label">Dung tích</span>
-                            <span class="attr-value" th:if="${perfume.dung_tich != null}" th:text="${perfume.dung_tich}">100ml</span>
+                            <span class="attr-value" th:if="${perfume.dung_tich != null}"
+                                th:text="${perfume.dung_tich}">100ml</span>
                             <span class="attr-value" th:if="${perfume.dung_tich == null}">Chưa cập nhật</span>
                         </div>
                     </div>
@@ -485,12 +575,12 @@
                     <div class="action-row">
                         <div class="qty-wrapper">
                             <button type="button" class="qty-btn" onclick="decreaseQty()">-</button>
-                            <input type="number" id="qtyInput" class="qty-input" value="1" min="1" th:max="${perfume.ton_kho > 0 ? perfume.ton_kho : 1}" readonly>
+                            <input type="number" id="qtyInput" class="qty-input" value="1" min="1"
+                                th:max="${perfume.ton_kho > 0 ? perfume.ton_kho : 1}" readonly>
                             <button type="button" class="qty-btn" onclick="increaseQty()">+</button>
                         </div>
-                        <button type="button" class="btn-add-cart" 
-                                th:disabled="${perfume.ton_kho <= 0}" 
-                                th:onclick="'addToCartDetail(' + ${perfume.id_nuoc_hoa} + ')'">
+                        <button type="button" class="btn-add-cart" th:disabled="${perfume.ton_kho <= 0}"
+                            th:onclick="'addToCartDetail(' + ${perfume.id_nuoc_hoa} + ')'">
                             <i class="bi bi-bag-plus"></i> Thêm vào giỏ hàng
                         </button>
                     </div>
@@ -499,7 +589,6 @@
         </div>
     </section>
 
-    <!-- Toast container -->
     <div class="toast-container-custom" id="toastContainer"></div>
 
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
@@ -510,7 +599,7 @@
 
         // Xử lý tăng giảm số lượng
         const qtyInput = document.getElementById('qtyInput');
-        
+
         function decreaseQty() {
             let val = parseInt(qtyInput.value) || 1;
             if (val > 1) qtyInput.value = val - 1;
@@ -529,7 +618,7 @@
             const icon = type === 'success' ? '✅' : '❌';
             toast.innerHTML = `<span class="toast-icon">${icon}</span><span class="toast-msg">${message}</span>`;
             container.appendChild(toast);
-            
+
             setTimeout(() => {
                 toast.style.opacity = '0';
                 toast.style.transition = 'opacity 0.4s';
@@ -558,15 +647,16 @@
                 headers: { 'Content-Type': 'application/json' },
                 body: JSON.stringify(requestBody)
             })
-            .then(response => {
-                if (response.ok) {
-                    showToast('Đã thêm thành công vào giỏ hàng!', 'success');
-                } else {
-                    response.text().then(msg => showToast(msg, 'error'));
-                }
-            })
-            .catch(() => showToast('Không thể kết nối, vui lòng thử lại.', 'error'));
+                .then(response => {
+                    if (response.ok) {
+                        showToast('Đã thêm thành công vào giỏ hàng!', 'success');
+                    } else {
+                        response.text().then(msg => showToast(msg, 'error'));
+                    }
+                })
+                .catch(() => showToast('Không thể kết nối, vui lòng thử lại.', 'error'));
         }
     </script>
 </body>
+
 </html>

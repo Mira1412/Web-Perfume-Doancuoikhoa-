@@ -57,12 +57,12 @@ public class AdminController {
     // 4. Lưu sản phẩm vào database sau khi điền form (có upload ảnh)
     @PostMapping("/products/save")
     public String saveProduct(@ModelAttribute("perfume") Perfume perfume,
-                              @RequestParam("imageFile") MultipartFile imageFile) throws IOException {
+                              @RequestParam(value = "imageFile", required = false) MultipartFile imageFile) throws IOException {
         
         // Nếu người dùng có chọn file ảnh thì lưu vào thư mục uploads/
-        if (!imageFile.isEmpty()) {
-            // Tạo thư mục uploads nếu chưa tồn tại
-            Path uploadPath = Paths.get(UPLOAD_DIR);
+        if (imageFile != null && !imageFile.isEmpty()) {
+            // Dùng absolute path để tránh lỗi trên Windows
+            Path uploadPath = Paths.get(System.getProperty("user.dir"), UPLOAD_DIR);
             if (!Files.exists(uploadPath)) {
                 Files.createDirectories(uploadPath);
             }
@@ -73,7 +73,7 @@ public class AdminController {
             
             // Lưu file vào thư mục uploads/
             Path filePath = uploadPath.resolve(uniqueFilename);
-            imageFile.transferTo(filePath.toFile());
+            imageFile.transferTo(filePath.toAbsolutePath().toFile());
             
             // Lưu đường dẫn vào database để hiển thị trên web
             perfume.setHinh_anh("/uploads/" + uniqueFilename);
@@ -103,28 +103,50 @@ public class AdminController {
 
     // 6. Xử lý cập nhật sản phẩm vào database (có upload ảnh mới)
     @PostMapping("/products/update")
-    public String updateProduct(@ModelAttribute("perfume") Perfume perfume,
-                                @RequestParam("imageFile") MultipartFile imageFile) throws IOException {
-        
-        // Nếu người dùng chọn ảnh mới thì upload và cập nhật
-        if (!imageFile.isEmpty()) {
-            Path uploadPath = Paths.get(UPLOAD_DIR);
-            if (!Files.exists(uploadPath)) {
-                Files.createDirectories(uploadPath);
+    public String updateProduct(@ModelAttribute("perfume") Perfume formPerfume,
+                                @RequestParam(value = "imageFile", required = false) MultipartFile imageFile,
+                                Model model) {
+        try {
+            // Lấy sản phẩm cũ từ DB để cập nhật (tránh lỗi detached entity)
+            Perfume perfume = perfumeRepository.findById(formPerfume.getId_nuoc_hoa())
+                    .orElseThrow(() -> new RuntimeException("Không tìm thấy sản phẩm ID: " + formPerfume.getId_nuoc_hoa()));
+            
+            // Cập nhật các trường từ form
+            perfume.setTen_sp(formPerfume.getTen_sp());
+            perfume.setThuong_hieu(formPerfume.getThuong_hieu());
+            perfume.setNhom_huong(formPerfume.getNhom_huong());
+            perfume.setDung_tich(formPerfume.getDung_tich());
+            perfume.setGia_ban(formPerfume.getGia_ban());
+            perfume.setTon_kho(formPerfume.getTon_kho());
+            
+            // Nếu người dùng chọn ảnh mới thì upload và cập nhật
+            if (imageFile != null && !imageFile.isEmpty()) {
+                // Dùng absolute path để tránh lỗi trên Windows
+                Path uploadPath = Paths.get(System.getProperty("user.dir"), UPLOAD_DIR);
+                if (!Files.exists(uploadPath)) {
+                    Files.createDirectories(uploadPath);
+                }
+                
+                String originalFilename = imageFile.getOriginalFilename();
+                String uniqueFilename = UUID.randomUUID().toString() + "_" + originalFilename;
+                
+                Path filePath = uploadPath.resolve(uniqueFilename);
+                imageFile.transferTo(filePath.toAbsolutePath().toFile());
+                
+                perfume.setHinh_anh("/uploads/" + uniqueFilename);
             }
+            // Nếu không chọn ảnh mới → giữ nguyên ảnh cũ (đã có sẵn từ DB)
             
-            String originalFilename = imageFile.getOriginalFilename();
-            String uniqueFilename = UUID.randomUUID().toString() + "_" + originalFilename;
+            perfumeRepository.save(perfume);
+            return "redirect:/admin/products";
             
-            Path filePath = uploadPath.resolve(uniqueFilename);
-            imageFile.transferTo(filePath.toFile());
-            
-            perfume.setHinh_anh("/uploads/" + uniqueFilename);
+        } catch (Exception e) {
+            e.printStackTrace(); // In lỗi ra console để debug
+            // Quay lại trang edit và hiển thị lỗi
+            model.addAttribute("perfume", formPerfume);
+            model.addAttribute("errorMessage", "Lỗi khi cập nhật: " + e.getMessage());
+            return "edit-product";
         }
-        // Nếu không chọn ảnh mới, giữ nguyên ảnh cũ (hinh_anh đã có sẵn từ hidden input)
-        
-        perfumeRepository.save(perfume);
-        return "redirect:/admin/products";
     }
 
     // ==========================================

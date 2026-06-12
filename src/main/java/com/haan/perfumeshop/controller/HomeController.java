@@ -51,7 +51,7 @@ public class HomeController {
 
         double totalPrice = 0;
         for (Cart item : cartItems) {
-            totalPrice += item.getPerfume().getGia_ban() * item.getSo_luong();
+            totalPrice += item.getPerfume().getGiaBanNumeric() * item.getSo_luong();
         }
 
         model.addAttribute("cartItems", cartItems);

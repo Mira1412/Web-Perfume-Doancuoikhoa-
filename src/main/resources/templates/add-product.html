@@ -518,10 +518,10 @@
                                 <div class="form-row">
                                     <div class="form-group">
                                         <label>Giá bán <span class="required-dot">*</span></label>
-                                        <input type="number" th:field="*{gia_ban}" class="form-input" placeholder="VD: 2500000" required>
-                                        <div class="form-hint">
-                                            <i class="bi bi-info-circle"></i> Nhập giá bằng VNĐ (không có dấu chấm)
-                                        </div>
+                                         <input type="text" th:field="*{gia_ban}" class="form-input" placeholder="VD: 2.500.000 hoặc 1.500.000 - 2.000.000" required>
+                                         <div class="form-hint">
+                                             <i class="bi bi-info-circle"></i> Nhập giá bán (cho phép nhập chữ, số và ký tự tự do)
+                                         </div>
                                     </div>
                                     <div class="form-group">
                                         <label>Tồn kho <span class="required-dot">*</span></label>

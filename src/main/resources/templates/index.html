@@ -5,10 +5,12 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Halo — Nước Hoa Cao Cấp</title>
-    <meta name="description" content="Khám phá bộ sưu tập nước hoa cao cấp tại Halo. Hàng chính hãng, giá tốt, giao hàng toàn quốc.">
+    <meta name="description"
+        content="Khám phá bộ sưu tập nước hoa cao cấp tại Halo. Hàng chính hãng, giá tốt, giao hàng toàn quốc.">
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=family=Inter:wght@300;400;500;600&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=family=Inter:wght@300;400;500;600&display=swap"
+        rel="stylesheet">
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
     <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.0/font/bootstrap-icons.css" rel="stylesheet">
     <style>
@@ -24,7 +26,11 @@
             --border: rgba(201, 169, 110, 0.2);
         }
 
-        * { margin: 0; padding: 0; box-sizing: border-box; }
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
 
         body {
             background-color: var(--dark);
@@ -65,7 +71,9 @@
             gap: 8px;
         }
 
-        .brand-name:hover { color: var(--gold-light) !important; }
+        .brand-name:hover {
+            color: var(--gold-light) !important;
+        }
 
         .nav-links {
             display: flex;
@@ -162,7 +170,7 @@
             border-radius: 12px;
             padding: 8px;
             min-width: 200px;
-            box-shadow: 0 16px 40px rgba(0,0,0,0.5);
+            box-shadow: 0 16px 40px rgba(0, 0, 0, 0.5);
         }
 
         .dropdown-menu-custom .dropdown-item {
@@ -177,12 +185,17 @@
         }
 
         .dropdown-menu-custom .dropdown-item:hover {
-            background: rgba(255,255,255,0.06);
+            background: rgba(255, 255, 255, 0.06);
             color: var(--gold);
         }
 
-        .dropdown-menu-custom .dropdown-item.text-danger { color: #ff6b6b !important; }
-        .dropdown-menu-custom .dropdown-item.text-danger:hover { background: rgba(220,53,69,0.12); }
+        .dropdown-menu-custom .dropdown-item.text-danger {
+            color: #ff6b6b !important;
+        }
+
+        .dropdown-menu-custom .dropdown-item.text-danger:hover {
+            background: rgba(220, 53, 69, 0.12);
+        }
 
         /* ==================== HERO SECTION ==================== */
         .hero-section {
@@ -260,7 +273,10 @@
             margin-top: 16px;
         }
 
-        .stat-item { text-align: left; }
+        .stat-item {
+            text-align: left;
+        }
+
         .stat-number {
             font-family: 'Inter', sans-serif;
             font-size: 2rem;
@@ -268,6 +284,7 @@
             color: var(--gold);
             line-height: 1;
         }
+
         .stat-label {
             font-size: 0.75rem;
             color: var(--text-muted);
@@ -298,7 +315,7 @@
         .section-count {
             font-size: 0.8rem;
             color: var(--text-muted);
-            background: rgba(255,255,255,0.05);
+            background: rgba(255, 255, 255, 0.05);
             border: 1px solid var(--border);
             padding: 5px 12px;
             border-radius: 20px;
@@ -322,7 +339,7 @@
 
         .product-card:hover {
             transform: translateY(-6px);
-            box-shadow: 0 20px 50px rgba(0,0,0,0.5), 0 0 0 1px rgba(201, 169, 110, 0.3);
+            box-shadow: 0 20px 50px rgba(0, 0, 0, 0.5), 0 0 0 1px rgba(201, 169, 110, 0.3);
             border-color: rgba(201, 169, 110, 0.4);
         }
 
@@ -414,8 +431,8 @@
         .product-meta-tag {
             font-size: 0.72rem;
             color: var(--text-muted);
-            background: rgba(255,255,255,0.04);
-            border: 1px solid rgba(255,255,255,0.08);
+            background: rgba(255, 255, 255, 0.04);
+            border: 1px solid rgba(255, 255, 255, 0.08);
             border-radius: 6px;
             padding: 3px 8px;
         }
@@ -451,7 +468,8 @@
         }
 
         .product-stock-info strong {
-            color: #6fcf97; /* xanh lá — mặc định còn hàng */
+            color: #6fcf97;
+            /* xanh lá — mặc định còn hàng */
             font-weight: 600;
         }
 
@@ -530,19 +548,38 @@
             gap: 12px;
             min-width: 280px;
             max-width: 360px;
-            box-shadow: 0 12px 36px rgba(0,0,0,0.5);
+            box-shadow: 0 12px 36px rgba(0, 0, 0, 0.5);
             animation: slideInRight 0.35s ease-out;
         }
 
-        .toast-custom.toast-success { border-color: rgba(40, 167, 69, 0.4); }
-        .toast-custom.toast-error { border-color: rgba(220, 53, 69, 0.4); }
+        .toast-custom.toast-success {
+            border-color: rgba(40, 167, 69, 0.4);
+        }
 
-        .toast-icon { font-size: 22px; flex-shrink: 0; }
-        .toast-msg { font-size: 0.875rem; color: var(--text-primary); }
+        .toast-custom.toast-error {
+            border-color: rgba(220, 53, 69, 0.4);
+        }
+
+        .toast-icon {
+            font-size: 22px;
+            flex-shrink: 0;
+        }
+
+        .toast-msg {
+            font-size: 0.875rem;
+            color: var(--text-primary);
+        }
 
         @keyframes slideInRight {
-            from { opacity: 0; transform: translateX(40px); }
-            to { opacity: 1; transform: translateX(0); }
+            from {
+                opacity: 0;
+                transform: translateX(40px);
+            }
+
+            to {
+                opacity: 1;
+                transform: translateX(0);
+            }
         }
 
         /* ==================== FOOTER ==================== */
@@ -569,7 +606,7 @@
         .footer-bottom {
             margin-top: 28px;
             padding-top: 20px;
-            border-top: 1px solid rgba(255,255,255,0.05);
+            border-top: 1px solid rgba(255, 255, 255, 0.05);
             text-align: center;
             font-size: 0.78rem;
             color: var(--text-muted);
@@ -577,16 +614,24 @@
 
         /* ==================== RESPONSIVE ==================== */
         @media (max-width: 768px) {
-            .hero-stats { gap: 24px; }
-            .products-grid { grid-template-columns: repeat(auto-fill, minmax(180px, 1fr)); gap: 16px; }
-            .hero-section { padding: 48px 0 40px; }
+            .hero-stats {
+                gap: 24px;
+            }
+
+            .products-grid {
+                grid-template-columns: repeat(auto-fill, minmax(180px, 1fr));
+                gap: 16px;
+            }
+
+            .hero-section {
+                padding: 48px 0 40px;
+            }
         }
     </style>
 </head>
 
 <body>
 
-    <!-- ==================== NAVBAR ==================== -->
     <nav class="navbar-custom">
         <div class="container">
             <a class="brand-name" href="/">🌸 Halo</a>
@@ -603,7 +648,6 @@
                     </a>
                 </li>
 
-                <!-- Chưa đăng nhập -->
                 <li th:if="${session.loggedInUser == null}">
                     <a href="/register" class="nav-link-item" style="color: rgba(240,236,228,0.6)">Đăng ký</a>
                 </li>
@@ -611,13 +655,14 @@
                     <a href="/login" class="nav-link-item btn-login-nav">Đăng nhập</a>
                 </li>
 
-                <!-- Đã đăng nhập -->
                 <li class="user-dropdown dropdown" th:if="${session.loggedInUser != null}">
-                    <a href="#" class="dropdown-toggle" data-bs-toggle="dropdown" aria-expanded="false" id="userDropdown">
+                    <a href="#" class="dropdown-toggle" data-bs-toggle="dropdown" aria-expanded="false"
+                        id="userDropdown">
                         <div class="user-avatar">
                             <i class="bi bi-person-fill"></i>
                         </div>
-                        <span th:text="${session.loggedInUser.fullName != null ? session.loggedInUser.fullName : session.loggedInUser.email}">Khách</span>
+                        <span
+                            th:text="${session.loggedInUser.fullName != null ? session.loggedInUser.fullName : session.loggedInUser.email}">Khách</span>
                         <i class="bi bi-chevron-down" style="font-size: 11px; opacity: 0.6;"></i>
                     </a>
                     <ul class="dropdown-menu dropdown-menu-custom dropdown-menu-end" aria-labelledby="userDropdown">
@@ -627,7 +672,9 @@
                                 <span th:text="${session.loggedInUser.email}">email</span>
                             </span>
                         </li>
-                        <li><hr style="border-color: rgba(255,255,255,0.07); margin: 6px 0;"></li>
+                        <li>
+                            <hr style="border-color: rgba(255,255,255,0.07); margin: 6px 0;">
+                        </li>
                         <li>
                             <a class="dropdown-item text-danger" href="/logout">
                                 <i class="bi bi-box-arrow-right"></i> Đăng xuất
@@ -639,7 +686,6 @@
         </div>
     </nav>
 
-    <!-- ==================== HERO SECTION ==================== -->
     <section class="hero-section">
         <div class="container">
             <div class="row align-items-center">
@@ -652,7 +698,8 @@
                         từng <span class="text-gold">hương thơm</span>
                     </h1>
                     <p class="hero-desc">
-                        Khám phá bộ sưu tập nước hoa cao cấp được tuyển chọn kỹ lưỡng từ các thương hiệu danh tiếng thế giới. Mỗi chai nước hoa là một câu chuyện, một ký ức riêng của bạn.
+                        Khám phá bộ sưu tập nước hoa cao cấp được tuyển chọn kỹ lưỡng từ các thương hiệu danh tiếng thế
+                        giới. Mỗi chai nước hoa là một câu chuyện, một ký ức riêng của bạn.
                     </p>
                     <div class="hero-stats">
                         <div class="stat-item">
@@ -673,7 +720,6 @@
         </div>
     </section>
 
-    <!-- ==================== DANH SÁCH SẢN PHẨM ==================== -->
     <section style="padding: 60px 0 40px;">
         <div class="container">
             <div class="section-header">
@@ -685,30 +731,25 @@
             </div>
 
             <div class="products-grid">
-                <!-- Trạng thái giỏ rỗng -->
                 <div class="empty-state" th:if="${perfumes == null or #lists.isEmpty(perfumes)}">
                     <div class="empty-icon">🌸</div>
                     <h4>Chưa có sản phẩm nào</h4>
-                    <p style="color: var(--text-muted); font-size: 0.875rem; margin-top: 8px;">Sản phẩm sẽ được cập nhật sớm nhất!</p>
+                    <p style="color: var(--text-muted); font-size: 0.875rem; margin-top: 8px;">Sản phẩm sẽ được cập nhật
+                        sớm nhất!</p>
                 </div>
 
-                <!-- Lặp qua từng sản phẩm -->
                 <div class="product-card" th:each="perfume : ${perfumes}">
-                    <!-- Ảnh sản phẩm -->
-                    <a th:href="@{'/product/' + ${perfume.id_nuoc_hoa}}" class="product-img-wrapper" style="display: block; text-decoration: none;">
-                        <img src="https://images.unsplash.com/photo-1594035910387-fea47794261f?auto=format&fit=crop&w=400&q=80"
-                            class="product-img"
-                            th:alt="${perfume.ten_sp}"
-                            alt="Nước hoa">
+                    <a th:href="@{'/product/' + ${perfume.id_nuoc_hoa}}" class="product-img-wrapper"
+                        style="display: block; text-decoration: none;">
+                        <img th:src="${perfume.hinh_anh}" class="product-img" th:alt="${perfume.ten_sp}" alt="Nước hoa">
 
-                        <!-- Badge thương hiệu -->
                         <div class="product-brand-badge" th:text="${perfume.thuong_hieu}">Brand</div>
 
-                        <!-- Badge tồn kho -->
                         <div th:if="${perfume.ton_kho > 10}" class="product-stock-badge badge-in-stock">
                             <i class="bi bi-check-circle-fill"></i> Còn hàng
                         </div>
-                        <div th:if="${perfume.ton_kho > 0 and perfume.ton_kho <= 10}" class="product-stock-badge badge-low-stock">
+                        <div th:if="${perfume.ton_kho > 0 and perfume.ton_kho <= 10}"
+                            class="product-stock-badge badge-low-stock">
                             <i class="bi bi-exclamation-circle-fill"></i> Sắp hết
                         </div>
                         <div th:if="${perfume.ton_kho <= 0}" class="product-stock-badge badge-out-stock">
@@ -716,21 +757,20 @@
                         </div>
                     </a>
 
-                    <!-- Thông tin sản phẩm -->
                     <div class="product-body">
                         <a th:href="@{'/product/' + ${perfume.id_nuoc_hoa}}" style="text-decoration: none;">
                             <h3 class="product-name" th:text="${perfume.ten_sp}">Tên Sản Phẩm</h3>
                         </a>
                         <div class="product-meta">
-                            <span class="product-meta-tag" th:if="${perfume.nhom_huong}" th:text="${perfume.nhom_huong}">Hương</span>
-                            <span class="product-meta-tag" th:if="${perfume.dung_tich}" th:text="${perfume.dung_tich}">Dung tích</span>
+                            <span class="product-meta-tag" th:if="${perfume.nhom_huong}"
+                                th:text="${perfume.nhom_huong}">Hương</span>
+                            <span class="product-meta-tag" th:if="${perfume.dung_tich}"
+                                th:text="${perfume.dung_tich}">Dung tích</span>
                         </div>
                         <div class="product-price">
-                            <span th:text="${#numbers.formatDecimal(perfume.gia_ban, 0, 'COMMA', 0, 'POINT')}">0</span>
-                            <span class="product-price-unit"> đ</span>
+                            <span th:text="${perfume.gia_ban.contains('đ') or perfume.gia_ban.toLowerCase().contains('hệ') ? perfume.gia_ban : perfume.gia_ban + ' đ'}">0</span>
                         </div>
 
-                        <!-- Tồn kho -->
                         <div class="product-stock-info">
                             <i class="bi bi-box-seam"></i>
                             <span>Còn </span>
@@ -739,10 +779,8 @@
                         </div>
                     </div>
 
-                    <!-- Nút thêm vào giỏ -->
                     <div class="product-footer">
-                        <button class="btn-add-cart"
-                            th:disabled="${perfume.ton_kho <= 0}"
+                        <button class="btn-add-cart" th:disabled="${perfume.ton_kho <= 0}"
                             th:onclick="${perfume.ton_kho > 0} ? 'addToCart(' + ${perfume.id_nuoc_hoa} + ')' : 'return false'">
                             <i class="bi bi-bag-plus"></i>
                             <span th:text="${perfume.ton_kho > 0} ? 'Thêm vào giỏ' : 'Hết hàng'">Thêm vào giỏ</span>
@@ -753,17 +791,18 @@
         </div>
     </section>
 
-    <!-- ==================== FOOTER ==================== -->
     <footer class="footer">
         <div class="container">
             <div class="row">
                 <div class="col-md-5">
                     <div class="footer-brand">🌸 Halo</div>
-                    <p class="footer-desc">Mang đến những trải nghiệm hương thơm đẳng cấp, tinh tế và sang trọng cho khách hàng Việt Nam.</p>
+                    <p class="footer-desc">Mang đến những trải nghiệm hương thơm đẳng cấp, tinh tế và sang trọng cho
+                        khách hàng Việt Nam.</p>
                 </div>
                 <div class="col-md-3 offset-md-4 text-end d-none d-md-block">
                     <p class="footer-desc" style="font-size: 0.78rem;">Liên hệ hỗ trợ</p>
-                    <p style="color: var(--gold); font-size: 0.875rem; margin-top: 4px;"><i class="bi bi-envelope"></i> support@khaan.vn</p>
+                    <p style="color: var(--gold); font-size: 0.875rem; margin-top: 4px;"><i class="bi bi-envelope"></i>
+                        support@khaan.vn</p>
                 </div>
             </div>
             <div class="footer-bottom">
@@ -772,7 +811,6 @@
         </div>
     </footer>
 
-    <!-- Toast container -->
     <div class="toast-container-custom" id="toastContainer"></div>
 
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
@@ -812,14 +850,14 @@
                 headers: { 'Content-Type': 'application/json' },
                 body: JSON.stringify(requestBody)
             })
-            .then(response => {
-                if (response.ok) {
-                    showToast('Đã thêm vào giỏ hàng của bạn!', 'success');
-                } else {
-                    showToast('Có lỗi xảy ra, vui lòng thử lại.', 'error');
-                }
-            })
-            .catch(() => showToast('Không thể kết nối, vui lòng thử lại.', 'error'));
+                .then(response => {
+                    if (response.ok) {
+                        showToast('Đã thêm vào giỏ hàng của bạn!', 'success');
+                    } else {
+                        showToast('Có lỗi xảy ra, vui lòng thử lại.', 'error');
+                    }
+                })
+                .catch(() => showToast('Không thể kết nối, vui lòng thử lại.', 'error'));
         }
     </script>
 </body>

@@ -558,14 +558,14 @@
                                     </td>
                                     <td data-label="Đơn giá">
                                         <span class="cart-price"
-                                            th:text="${#numbers.formatDecimal(item.perfume.gia_ban, 0, 'COMMA', 0, 'POINT')} + ' đ'">0 đ</span>
+                                            th:text="${item.perfume.gia_ban.contains('đ') or item.perfume.gia_ban.toLowerCase().contains('hệ') ? item.perfume.gia_ban : item.perfume.gia_ban + ' đ'}">0 đ</span>
                                     </td>
                                     <td data-label="Số lượng">
                                         <span class="cart-qty-badge" th:text="${item.so_luong}">1</span>
                                     </td>
                                     <td data-label="Thành tiền">
                                         <span class="cart-subtotal"
-                                            th:text="${#numbers.formatDecimal(item.perfume.gia_ban * item.so_luong, 0, 'COMMA', 0, 'POINT')} + ' đ'">0 đ</span>
+                                            th:text="${#numbers.formatDecimal(item.perfume.getGiaBanNumeric() * item.so_luong, 0, 'COMMA', 0, 'POINT')} + ' đ'">0 đ</span>
                                     </td>
                                     <td>
                                         <button class="btn-remove" th:onclick="'removeFromCart(' + ${item.id} + ')'">

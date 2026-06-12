@@ -55,10 +55,10 @@ public class OrderService {
             detail.setOrder(savedOrder);
             detail.setPerfume(perfume);
             detail.setSo_luong_mua(item.getSo_luong());
-            detail.setGia_luc_mua(perfume.getGia_ban()); // Chốt giữ nguyên giá bán tại thời điểm mua
+            detail.setGia_luc_mua(perfume.getGiaBanNumeric()); // Chốt giữ nguyên giá bán tại thời điểm mua
             orderDetailRepository.save(detail);
 
-            tongTien += (item.getSo_luong() * perfume.getGia_ban());
+            tongTien += (item.getSo_luong() * perfume.getGiaBanNumeric());
 
             // Cập nhật lại số lượng tồn kho mới sau khi trừ
             perfume.setTon_kho(perfume.getTon_kho() - item.getSo_luong());
