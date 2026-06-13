@@ -4,8 +4,8 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Thêm Sản Phẩm Mới — Halo Admin</title>
-    <meta name="description" content="Thêm sản phẩm nước hoa mới vào kho hàng Halo.">
+    <title>Chỉnh Sửa Sản Phẩm — Halo Admin</title>
+    <meta name="description" content="Chỉnh sửa thông tin sản phẩm nước hoa tại Halo.">
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
@@ -25,7 +25,11 @@
             --border: rgba(201, 169, 110, 0.2);
         }
 
-        * { margin: 0; padding: 0; box-sizing: border-box; }
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
 
         body {
             background-color: var(--dark);
@@ -34,7 +38,7 @@
             min-height: 100vh;
         }
 
-        /* ====== NAVBAR (dùng chung) ====== */
+        /* ====== NAVBAR ====== */
         .navbar-custom {
             background: rgba(13, 13, 26, 0.95);
             backdrop-filter: blur(20px);
@@ -78,7 +82,10 @@
             gap: 6px;
         }
 
-        .nav-link-item:hover { color: var(--gold); background: rgba(201, 169, 110, 0.1); }
+        .nav-link-item:hover {
+            color: var(--gold);
+            background: rgba(201, 169, 110, 0.1);
+        }
 
         .btn-home-nav {
             background: rgba(201, 169, 110, 0.12);
@@ -113,8 +120,10 @@
             text-decoration: none;
         }
 
-        /* ====== FORM SECTION ====== */
-        .form-section { padding: 40px 0 80px; }
+        /* ====== FORM ====== */
+        .form-section {
+            padding: 40px 0 80px;
+        }
 
         .form-card {
             background: var(--dark-2);
@@ -136,8 +145,8 @@
             width: 48px;
             height: 48px;
             border-radius: 14px;
-            background: rgba(201, 169, 110, 0.15);
-            color: var(--gold);
+            background: rgba(255, 193, 7, 0.15);
+            color: #ffca28;
             display: flex;
             align-items: center;
             justify-content: center;
@@ -161,7 +170,6 @@
             padding: 32px;
         }
 
-        /* ====== FORM FIELDS ====== */
         .form-group {
             margin-bottom: 24px;
         }
@@ -194,6 +202,10 @@
             outline: none;
         }
 
+        textarea.form-input {
+            resize: vertical;
+        }
+
         .form-input::placeholder {
             color: rgba(240, 236, 228, 0.25);
         }
@@ -217,16 +229,16 @@
             gap: 5px;
         }
 
-        .form-hint i { font-size: 0.7rem; }
+        .form-hint i {
+            font-size: 0.7rem;
+        }
 
-        /* ====== ROW LAYOUT ====== */
         .form-row {
             display: grid;
             grid-template-columns: 1fr 1fr;
             gap: 20px;
         }
 
-        /* ====== SECTION DIVIDER ====== */
         .form-divider {
             border: none;
             border-top: 1px solid rgba(255, 255, 255, 0.06);
@@ -250,62 +262,6 @@
             flex: 1;
             height: 1px;
             background: rgba(201, 169, 110, 0.15);
-        }
-
-        /* ====== BUTTONS ====== */
-        .form-actions {
-            display: flex;
-            align-items: center;
-            gap: 12px;
-            padding-top: 8px;
-        }
-
-        .btn-save {
-            display: inline-flex;
-            align-items: center;
-            gap: 8px;
-            padding: 13px 28px;
-            background: linear-gradient(135deg, var(--gold), var(--gold-dark));
-            border: none;
-            border-radius: 12px;
-            color: #1a1a1a;
-            font-family: 'Inter', sans-serif;
-            font-size: 0.9rem;
-            font-weight: 600;
-            cursor: pointer;
-            transition: all 0.25s ease;
-        }
-
-        .btn-save:hover {
-            transform: translateY(-2px);
-            box-shadow: 0 8px 25px rgba(201, 169, 110, 0.35);
-        }
-
-        .btn-save:active {
-            transform: translateY(0);
-        }
-
-        .btn-cancel {
-            display: inline-flex;
-            align-items: center;
-            gap: 8px;
-            padding: 13px 24px;
-            background: transparent;
-            border: 1px solid rgba(255, 255, 255, 0.1);
-            border-radius: 12px;
-            color: var(--text-muted);
-            font-family: 'Inter', sans-serif;
-            font-size: 0.9rem;
-            font-weight: 500;
-            cursor: pointer;
-            text-decoration: none;
-            transition: all 0.25s ease;
-        }
-
-        .btn-cancel:hover {
-            border-color: rgba(255, 255, 255, 0.25);
-            color: var(--text-primary);
-            background: rgba(255, 255, 255, 0.04);
         }
 
         /* ====== FILE UPLOAD ====== */
@@ -377,6 +333,38 @@
             margin-right: 5px;
         }
 
+        /* ====== CURRENT IMAGE ====== */
+        .current-image-box {
+            margin-top: 12px;
+            display: flex;
+            align-items: center;
+            gap: 16px;
+            padding: 14px;
+            background: var(--dark-3);
+            border: 1px solid rgba(255, 255, 255, 0.06);
+            border-radius: 12px;
+        }
+
+        .current-image-box img {
+            width: 80px;
+            height: 80px;
+            object-fit: cover;
+            border-radius: 10px;
+            border: 1px solid var(--border);
+        }
+
+        .current-image-info {
+            font-size: 0.8rem;
+            color: var(--text-muted);
+        }
+
+        .current-image-info strong {
+            display: block;
+            color: var(--text-primary);
+            font-size: 0.85rem;
+            margin-bottom: 2px;
+        }
+
         .image-preview-box {
             margin-top: 14px;
             width: 180px;
@@ -397,32 +385,116 @@
             display: block;
         }
 
+        /* ====== BUTTONS ====== */
+        .form-actions {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            padding-top: 8px;
+        }
+
+        .btn-save {
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+            padding: 13px 28px;
+            background: linear-gradient(135deg, #ffca28, #e6a800);
+            border: none;
+            border-radius: 12px;
+            color: #1a1a1a;
+            font-family: 'Inter', sans-serif;
+            font-size: 0.9rem;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.25s ease;
+        }
+
+        .btn-save:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 8px 25px rgba(255, 202, 40, 0.35);
+        }
+
+        .btn-save:active {
+            transform: translateY(0);
+        }
+
+        .btn-cancel {
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+            padding: 13px 24px;
+            background: transparent;
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            border-radius: 12px;
+            color: var(--text-muted);
+            font-family: 'Inter', sans-serif;
+            font-size: 0.9rem;
+            font-weight: 500;
+            cursor: pointer;
+            text-decoration: none;
+            transition: all 0.25s ease;
+        }
+
+        .btn-cancel:hover {
+            border-color: rgba(255, 255, 255, 0.25);
+            color: var(--text-primary);
+            background: rgba(255, 255, 255, 0.04);
+        }
+
         /* ====== ANIMATIONS ====== */
         @keyframes fadeInUp {
-            from { opacity: 0; transform: translateY(20px); }
-            to { opacity: 1; transform: translateY(0); }
+            from {
+                opacity: 0;
+                transform: translateY(20px);
+            }
+
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
         }
 
         .animate-in {
             animation: fadeInUp 0.5s ease forwards;
         }
 
-        /* ====== RESPONSIVE ====== */
         @media (max-width: 768px) {
-            .form-row { grid-template-columns: 1fr; }
-            .form-card-body { padding: 24px 20px; }
-            .page-header h1 { font-size: 1.6rem; }
-            .form-actions { flex-direction: column; }
-            .btn-save, .btn-cancel { width: 100%; justify-content: center; }
-            .nav-links { gap: 4px; }
-            .nav-link-item { padding: 6px 10px; font-size: 0.78rem; }
+            .form-row {
+                grid-template-columns: 1fr;
+            }
+
+            .form-card-body {
+                padding: 24px 20px;
+            }
+
+            .page-header h1 {
+                font-size: 1.6rem;
+            }
+
+            .form-actions {
+                flex-direction: column;
+            }
+
+            .btn-save,
+            .btn-cancel {
+                width: 100%;
+                justify-content: center;
+            }
+
+            .nav-links {
+                gap: 4px;
+            }
+
+            .nav-link-item {
+                padding: 6px 10px;
+                font-size: 0.78rem;
+            }
         }
     </style>
 </head>
 
 <body>
 
-    <!-- ====== NAVBAR ====== -->
     <nav class="navbar-custom">
         <div class="container">
             <a class="brand-name" href="/">🌸 Halo Admin</a>
@@ -451,66 +523,107 @@
         </div>
     </nav>
 
-    <!-- ====== PAGE HEADER ====== -->
     <div class="page-header">
         <div class="container">
-            <h1><i class="bi bi-plus-circle" style="color: var(--gold); font-size: 1.8rem; margin-right: 12px;"></i>Thêm Sản Phẩm Mới</h1>
+            <h1><i class="bi bi-pencil-square" style="color: #ffca28; font-size: 1.8rem; margin-right: 12px;"></i>Chỉnh
+                Sửa Sản Phẩm</h1>
             <div class="breadcrumb-custom" style="margin-top: 8px;">
                 <a href="/"><i class="bi bi-house"></i> Trang chủ</a>
                 <i class="bi bi-chevron-right" style="font-size: 10px;"></i>
                 <a href="/admin/products">Sản phẩm</a>
                 <i class="bi bi-chevron-right" style="font-size: 10px;"></i>
-                <span>Thêm mới</span>
+                <span>Chỉnh sửa</span>
             </div>
         </div>
     </div>
 
-    <!-- ====== FORM CONTENT ====== -->
     <section class="form-section">
         <div class="container">
             <div class="row justify-content-center">
                 <div class="col-lg-8">
                     <div class="form-card animate-in">
 
-                        <!-- Card Header -->
                         <div class="form-card-header">
                             <div class="form-card-header-icon">
-                                <i class="bi bi-droplet-half"></i>
+                                <i class="bi bi-pencil"></i>
                             </div>
                             <div>
-                                <h2>Thông tin nước hoa</h2>
-                                <p>Điền đầy đủ thông tin sản phẩm để thêm vào kho hàng</p>
+                                <h2>Cập nhật thông tin nước hoa</h2>
+                                <p>Chỉnh sửa các thông tin sản phẩm cần thay đổi</p>
                             </div>
                         </div>
 
-                        <!-- Card Body / Form -->
                         <div class="form-card-body">
-                            <form th:action="@{/admin/products/save}" th:object="${perfume}" method="POST" enctype="multipart/form-data">
 
-                                <!-- Section: Thông tin cơ bản -->
+                            <div th:if="${errorMessage}"
+                                style="background: rgba(220,53,69,0.15); border: 1px solid rgba(220,53,69,0.3); border-radius: 12px; padding: 16px 20px; margin-bottom: 24px; color: #ff6b7a; font-size: 0.88rem; display: flex; align-items: center; gap: 10px;">
+                                <i class="bi bi-exclamation-triangle-fill"></i>
+                                <span th:text="${errorMessage}">Có lỗi xảy ra</span>
+                            </div>
+
+                            <form th:action="@{/admin/products/update}" th:object="${perfume}" method="POST"
+                                enctype="multipart/form-data">
+
+                                <input type="hidden" th:field="*{id_nuoc_hoa}">
+
+                                <input type="hidden" th:field="*{hinh_anh}">
+
                                 <div class="form-section-label">
                                     <i class="bi bi-info-circle"></i> Thông tin cơ bản
                                 </div>
 
                                 <div class="form-group">
                                     <label>Tên sản phẩm <span class="required-dot">*</span></label>
-                                    <input type="text" th:field="*{ten_sp}" class="form-input" placeholder="VD: Chanel No.5 Eau de Parfum" required>
+                                    <input type="text" th:field="*{ten_sp}" class="form-input"
+                                        placeholder="VD: Chanel No.5 Eau de Parfum" required>
                                 </div>
 
                                 <div class="form-row">
                                     <div class="form-group">
                                         <label>Thương hiệu <span class="required-dot">*</span></label>
-                                        <input type="text" th:field="*{thuong_hieu}" class="form-input" placeholder="VD: Chanel, Dior, Gucci..." required>
+                                        <input type="text" th:field="*{thuong_hieu}" class="form-input"
+                                            placeholder="VD: Chanel, Dior, Gucci..." required>
                                     </div>
                                     <div class="form-group">
                                         <label>Nhóm hương</label>
-                                        <input type="text" th:field="*{nhom_huong}" class="form-input" placeholder="VD: Hương hoa, Hương gỗ...">
+                                        <input type="text" th:field="*{nhom_huong}" class="form-input"
+                                            placeholder="VD: Hương hoa, Hương gỗ...">
                                     </div>
                                 </div>
 
+                                <div class="form-row">
+                                    <div class="form-group">
+                                        <label>Phong cách</label>
+                                        <input type="text" th:field="*{phong_cach}" class="form-input"
+                                            placeholder="VD: Sang trọng, Quyến rũ, Thanh lịch...">
+                                    </div>
+                                    <div class="form-group">
+                                        <label>Xuất xứ</label>
+                                        <input type="text" th:field="*{xuat_xu}" class="form-input"
+                                            placeholder="VD: Pháp, Ý, Tây Ban Nha...">
+                                    </div>
+                                </div>
+
+                                <div class="form-row">
+                                    <div class="form-group">
+                                        <label>Thời gian lưu hương</label>
+                                        <input type="text" th:field="*{luu_huong}" class="form-input"
+                                            placeholder="VD: 7 - 12 giờ">
+                                    </div>
+                                    <div class="form-group">
+                                        <label>Độ tỏa hương</label>
+                                        <input type="text" th:field="*{toa_huong}" class="form-input"
+                                            placeholder="VD: Gần - Trong vòng 1 cánh tay">
+                                    </div>
+                                </div>
+
+                                <div class="form-group">
+                                    <label>Mô tả chi tiết</label>
+                                    <textarea th:field="*{mo_ta}" class="form-input" rows="4"
+                                        placeholder="Nhập mô tả hấp dẫn cho sản phẩm..."></textarea>
+                                </div>
                                 <hr class="form-divider">
 
-                                <!-- Section: Giá & Kho -->
                                 <div class="form-section-label">
                                     <i class="bi bi-tag"></i> Giá bán & Tồn kho
                                 </div>
@@ -518,50 +631,64 @@
                                 <div class="form-row">
                                     <div class="form-group">
                                         <label>Giá bán <span class="required-dot">*</span></label>
-                                         <input type="text" th:field="*{gia_ban}" class="form-input" placeholder="VD: 2.500.000 hoặc 1.500.000 - 2.000.000" required>
-                                         <div class="form-hint">
-                                             <i class="bi bi-info-circle"></i> Nhập giá bán (cho phép nhập chữ, số và ký tự tự do)
-                                         </div>
+                                        <input type="text" th:field="*{gia_ban}" class="form-input"
+                                            placeholder="VD: 2.500.000 hoặc 1.500.000 - 2.000.000" required>
+                                        <div class="form-hint">
+                                            <i class="bi bi-info-circle"></i> Nhập giá bán (cho phép nhập chữ, số và ký
+                                            tự tự do)
+                                        </div>
                                     </div>
                                     <div class="form-group">
                                         <label>Tồn kho <span class="required-dot">*</span></label>
-                                        <input type="number" th:field="*{ton_kho}" class="form-input" placeholder="VD: 50" required>
-                                        <div class="form-hint">
-                                            <i class="bi bi-info-circle"></i> Số lượng sản phẩm có sẵn trong kho
-                                        </div>
+                                        <input type="number" th:field="*{ton_kho}" class="form-input"
+                                            placeholder="VD: 50" required>
                                     </div>
                                 </div>
 
                                 <div class="form-group">
                                     <label>Dung tích</label>
-                                    <input type="text" th:field="*{dung_tich}" class="form-input" placeholder="VD: 100ml, 50ml...">
+                                    <input type="text" th:field="*{dung_tich}" class="form-input"
+                                        placeholder="VD: 100ml, 50ml...">
                                 </div>
 
                                 <hr class="form-divider">
 
-                                <!-- Section: Hình ảnh -->
                                 <div class="form-section-label">
                                     <i class="bi bi-image"></i> Hình ảnh sản phẩm
                                 </div>
 
+                                <div class="form-group"
+                                    th:if="${perfume.hinh_anh != null and !perfume.hinh_anh.isEmpty()}">
+                                    <label>Ảnh hiện tại</label>
+                                    <div class="current-image-box">
+                                        <img th:src="${perfume.hinh_anh}" alt="Ảnh sản phẩm">
+                                        <div class="current-image-info">
+                                            <strong>Đang sử dụng</strong>
+                                            <span>Chọn ảnh mới bên dưới để thay thế</span>
+                                        </div>
+                                    </div>
+                                </div>
+
                                 <div class="form-group">
-                                    <label>Chọn ảnh sản phẩm</label>
+                                    <label>Chọn ảnh mới (không bắt buộc)</label>
                                     <div class="file-upload-area" id="dropZone">
                                         <div class="upload-icon"><i class="bi bi-cloud-arrow-up"></i></div>
-                                        <div class="upload-text">Kéo thả ảnh vào đây hoặc <strong>nhấn để chọn file</strong></div>
+                                        <div class="upload-text">Kéo thả ảnh vào đây hoặc <strong>nhấn để chọn
+                                                file</strong></div>
                                         <div class="upload-hint">Hỗ trợ: JPG, PNG, WEBP (tối đa 5MB)</div>
-                                        <input type="file" name="imageFile" id="imageFileInput" accept="image/*" onchange="previewFile(this)">
-                                        <div class="file-name" id="fileName"><i class="bi bi-file-earmark-image"></i><span></span></div>
+                                        <input type="file" name="imageFile" id="imageFileInput" accept="image/*"
+                                            onchange="previewFile(this)">
+                                        <div class="file-name" id="fileName"><i
+                                                class="bi bi-file-earmark-image"></i><span></span></div>
                                     </div>
                                     <div class="image-preview-box" id="imagePreview">
                                         <img id="previewImg" src="" alt="Preview">
                                     </div>
                                 </div>
 
-                                <!-- Action Buttons -->
                                 <div class="form-actions">
                                     <button type="submit" class="btn-save">
-                                        <i class="bi bi-check-lg"></i> Lưu sản phẩm
+                                        <i class="bi bi-check-lg"></i> Cập nhật sản phẩm
                                     </button>
                                     <a href="/admin/products" class="btn-cancel">
                                         <i class="bi bi-x-lg"></i> Hủy bỏ
@@ -579,7 +706,6 @@
 
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
     <script>
-        // Xem trước ảnh khi chọn file từ máy tính
         function previewFile(input) {
             const box = document.getElementById('imagePreview');
             const img = document.getElementById('previewImg');
@@ -587,12 +713,9 @@
 
             if (input.files && input.files[0]) {
                 const file = input.files[0];
-
-                // Hiển thị tên file
                 fileNameEl.querySelector('span').textContent = file.name;
                 fileNameEl.style.display = 'block';
 
-                // Đọc file và hiển thị preview
                 const reader = new FileReader();
                 reader.onload = function (e) {
                     img.src = e.target.result;
@@ -606,7 +729,6 @@
             }
         }
 
-        // Drag & Drop
         const dropZone = document.getElementById('dropZone');
         const fileInput = document.getElementById('imageFileInput');
 

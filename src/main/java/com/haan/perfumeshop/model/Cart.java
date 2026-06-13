@@ -23,4 +23,22 @@ public class Cart {
 
     @Column(nullable = false)
     private Integer so_luong;
+
+    // ==============================================================
+    // Liên kết với bảng biến thể (50ml, 100ml)
+    // ==============================================================
+    @ManyToOne
+    @JoinColumn(name = "id_bien_the", nullable = true) 
+    private PerfumeVariant variant;
+
+    // ==============================================================
+    // TỰ VIẾT HÀM GET/SET ĐỂ KHẮC PHỤC LỖI "UNDEFINED" CỦA VS CODE
+    // ==============================================================
+    public PerfumeVariant getVariant() {
+        return this.variant;
+    }
+
+    public void setVariant(PerfumeVariant variant) {
+        this.variant = variant;
+    }
 }

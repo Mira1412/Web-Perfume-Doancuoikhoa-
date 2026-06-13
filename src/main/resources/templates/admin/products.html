@@ -623,9 +623,7 @@
                             <td data-label="Tên sản phẩm">
                                 <span class="product-name" th:text="${p.ten_sp}">Chanel...</span>
                             </td>
-                            <td data-label="Giá bán">
-                                 <span class="product-price" th:text="${p.gia_ban.contains('đ') or p.gia_ban.toLowerCase().contains('hệ') ? p.gia_ban : p.gia_ban + ' đ'}">2.000.000 đ</span>
-                            </td>
+                            <td data-label="Giá bán" th:text="${p.gia_ban}">2.000.000 đ</td>
                             <td data-label="Tồn kho">
                                 <span class="stock-badge stock-ok" th:if="${p.ton_kho > 10}">
                                     <i class="bi bi-check-circle-fill"></i>

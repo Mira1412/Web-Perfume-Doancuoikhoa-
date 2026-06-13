@@ -614,19 +614,133 @@
 
         /* ==================== RESPONSIVE ==================== */
         @media (max-width: 768px) {
-            .hero-stats {
-                gap: 24px;
-            }
-
-            .products-grid {
-                grid-template-columns: repeat(auto-fill, minmax(180px, 1fr));
-                gap: 16px;
-            }
-
-            .hero-section {
-                padding: 48px 0 40px;
-            }
+            .hero-stats { gap: 24px; }
+            .products-grid { grid-template-columns: repeat(auto-fill, minmax(180px, 1fr)); gap: 16px; }
+            .hero-section { padding: 48px 0 40px; }
+            .filter-bar { flex-direction: column; gap: 10px; }
+            .filter-bar select, .filter-bar .btn-clear-filter { width: 100%; }
         }
+
+        /* ==================== FILTER BAR ==================== */
+        .filter-bar {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            flex-wrap: wrap;
+            padding: 16px 20px;
+            background: var(--dark-2);
+            border: 1px solid var(--border);
+            border-radius: 14px;
+            margin-bottom: 28px;
+        }
+
+        .filter-label {
+            font-size: 0.8rem;
+            font-weight: 500;
+            color: var(--text-muted);
+            text-transform: uppercase;
+            letter-spacing: 0.6px;
+            white-space: nowrap;
+        }
+
+        .filter-select {
+            background: var(--dark-3);
+            border: 1px solid rgba(255,255,255,0.08);
+            border-radius: 9px;
+            color: var(--text-primary);
+            font-size: 0.85rem;
+            padding: 8px 14px;
+            cursor: pointer;
+            transition: border-color 0.2s;
+            min-width: 160px;
+        }
+
+        .filter-select:focus { outline: none; border-color: var(--gold); }
+        .filter-select option { background: var(--dark-3); }
+
+        .filter-select.active-filter {
+            border-color: var(--gold);
+            background: rgba(201,169,110,0.08);
+            color: var(--gold);
+        }
+
+        .btn-filter-submit {
+            background: linear-gradient(135deg, var(--gold), var(--gold-dark));
+            border: none;
+            border-radius: 9px;
+            color: #1a1a1a;
+            font-size: 0.85rem;
+            font-weight: 600;
+            padding: 8px 20px;
+            cursor: pointer;
+            transition: all 0.25s;
+            display: flex; align-items: center; gap: 6px;
+        }
+
+        .btn-filter-submit:hover { transform: translateY(-1px); box-shadow: 0 4px 16px rgba(201,169,110,0.35); }
+
+        .btn-clear-filter {
+            background: transparent;
+            border: 1px solid rgba(255,255,255,0.12);
+            border-radius: 9px;
+            color: var(--text-muted);
+            font-size: 0.82rem;
+            padding: 8px 14px;
+            cursor: pointer;
+            transition: all 0.2s;
+            text-decoration: none;
+            display: flex; align-items: center; gap: 5px;
+        }
+
+        .btn-clear-filter:hover { border-color: rgba(255,255,255,0.3); color: #fff; }
+
+        .filter-result-info {
+            font-size: 0.8rem;
+            color: var(--text-muted);
+            margin-left: auto;
+        }
+
+        .filter-result-info strong { color: var(--gold-light); }
+
+        /* ==================== PAGINATION ==================== */
+        .pagination-bar {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 6px;
+            margin-top: 40px;
+            flex-wrap: wrap;
+        }
+
+        .page-btn {
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            width: 40px;
+            height: 40px;
+            border-radius: 10px;
+            border: 1px solid rgba(255,255,255,0.1);
+            background: var(--dark-2);
+            color: var(--text-muted);
+            font-size: 0.875rem;
+            font-weight: 500;
+            text-decoration: none;
+            transition: all 0.2s;
+        }
+
+        .page-btn:hover { border-color: var(--gold); color: var(--gold); background: rgba(201,169,110,0.08); }
+
+        .page-btn.active {
+            background: linear-gradient(135deg, var(--gold), var(--gold-dark));
+            border-color: transparent;
+            color: #1a1a1a;
+            font-weight: 700;
+            pointer-events: none;
+        }
+
+        .page-btn.disabled { opacity: 0.3; pointer-events: none; }
+
+        .page-btn-wide { width: auto; padding: 0 14px; gap: 5px; }
     </style>
 </head>
 
@@ -720,36 +834,92 @@
         </div>
     </section>
 
-    <section style="padding: 60px 0 40px;">
+    <section style="padding: 60px 0 60px;">
         <div class="container">
+
+            <!-- ====== TIÊU ĐỀ ====== -->
             <div class="section-header">
                 <h2 class="section-title">Bộ Sưu Tập <span>Nước Hoa</span></h2>
-                <span class="section-count" th:if="${perfumes != null}">
+                <span class="section-count">
                     <i class="bi bi-grid-3x3-gap"></i>
-                    <span th:text="${#lists.size(perfumes)}">0</span> sản phẩm
+                    <span th:text="${totalItems}">0</span> sản phẩm
                 </span>
             </div>
 
+            <!-- ====== BỘ LỌC ====== -->
+            <form method="GET" action="/" id="filter-form">
+                <div class="filter-bar">
+                    <span class="filter-label"><i class="bi bi-funnel"></i> Lọc:</span>
+
+                    <!-- Dropdown Thương hiệu -->
+                    <select name="thuong_hieu" class="filter-select"
+                            th:classappend="${selectedThuongHieu != null and selectedThuongHieu != ''} ? 'active-filter' : ''"
+                            onchange="this.form.submit()">
+                        <option value="">Tất cả thương hiệu</option>
+                        <option th:each="th : ${thuongHieus}"
+                                th:value="${th}"
+                                th:text="${th}"
+                                th:selected="${th == selectedThuongHieu}">
+                        </option>
+                    </select>
+
+                    <!-- Dropdown Nhóm hương -->
+                    <select name="nhom_huong" class="filter-select"
+                            th:classappend="${selectedNhomHuong != null and selectedNhomHuong != ''} ? 'active-filter' : ''"
+                            onchange="this.form.submit()">
+                        <option value="">Tất cả nhóm hương</option>
+                        <option th:each="nh : ${nhomHuongs}"
+                                th:value="${nh}"
+                                th:text="${nh}"
+                                th:selected="${nh == selectedNhomHuong}">
+                        </option>
+                    </select>
+
+                    <!-- Dropdown Khoảng giá -->
+                    <select name="gia_range" class="filter-select"
+                            th:classappend="${selectedGiaRange != null and selectedGiaRange != ''} ? 'active-filter' : ''"
+                            onchange="this.form.submit()">
+                        <option value="">Tất cả mức giá</option>
+                        <option value="duoi1tr"  th:selected="${selectedGiaRange == 'duoi1tr'}">Dưới 1 triệu</option>
+                        <option value="1tr_3tr"  th:selected="${selectedGiaRange == '1tr_3tr'}">1 – 3 triệu</option>
+                        <option value="3tr_5tr"  th:selected="${selectedGiaRange == '3tr_5tr'}">3 – 5 triệu</option>
+                        <option value="tren5tr"  th:selected="${selectedGiaRange == 'tren5tr'}">Trên 5 triệu</option>
+                    </select>
+
+                    <!-- Nút Xóa bộ lọc (chỉ hiện khi đang lọc) -->
+                    <a href="/" class="btn-clear-filter"
+                       th:if="${(selectedThuongHieu != null and selectedThuongHieu != '') or (selectedNhomHuong != null and selectedNhomHuong != '') or (selectedGiaRange != null and selectedGiaRange != '')}">
+                        <i class="bi bi-x-circle"></i> Xóa bộ lọc
+                    </a>
+
+                    <!-- Thông tin kết quả -->
+                    <span class="filter-result-info" th:if="${totalItems != null}">
+                        Tìm thấy <strong th:text="${totalItems}">0</strong> sản phẩm
+                    </span>
+                </div>
+            </form>
+
+            <!-- ====== LƯỚI SẢN PHẨM ====== -->
             <div class="products-grid">
+                <!-- Empty state -->
                 <div class="empty-state" th:if="${perfumes == null or #lists.isEmpty(perfumes)}">
-                    <div class="empty-icon">🌸</div>
-                    <h4>Chưa có sản phẩm nào</h4>
-                    <p style="color: var(--text-muted); font-size: 0.875rem; margin-top: 8px;">Sản phẩm sẽ được cập nhật
-                        sớm nhất!</p>
+                    <div class="empty-icon">🔍</div>
+                    <h4>Không tìm thấy sản phẩm</h4>
+                    <p style="color: var(--text-muted); font-size: 0.875rem; margin-top: 8px;">
+                        Thử thay đổi bộ lọc hoặc <a href="/" style="color: var(--gold);">xem tất cả sản phẩm</a>.
+                    </p>
                 </div>
 
+                <!-- Product cards -->
                 <div class="product-card" th:each="perfume : ${perfumes}">
                     <a th:href="@{'/product/' + ${perfume.id_nuoc_hoa}}" class="product-img-wrapper"
                         style="display: block; text-decoration: none;">
                         <img th:src="${perfume.hinh_anh}" class="product-img" th:alt="${perfume.ten_sp}" alt="Nước hoa">
-
                         <div class="product-brand-badge" th:text="${perfume.thuong_hieu}">Brand</div>
-
                         <div th:if="${perfume.ton_kho > 10}" class="product-stock-badge badge-in-stock">
                             <i class="bi bi-check-circle-fill"></i> Còn hàng
                         </div>
-                        <div th:if="${perfume.ton_kho > 0 and perfume.ton_kho <= 10}"
-                            class="product-stock-badge badge-low-stock">
+                        <div th:if="${perfume.ton_kho > 0 and perfume.ton_kho <= 10}" class="product-stock-badge badge-low-stock">
                             <i class="bi bi-exclamation-circle-fill"></i> Sắp hết
                         </div>
                         <div th:if="${perfume.ton_kho <= 0}" class="product-stock-badge badge-out-stock">
@@ -762,15 +932,12 @@
                             <h3 class="product-name" th:text="${perfume.ten_sp}">Tên Sản Phẩm</h3>
                         </a>
                         <div class="product-meta">
-                            <span class="product-meta-tag" th:if="${perfume.nhom_huong}"
-                                th:text="${perfume.nhom_huong}">Hương</span>
-                            <span class="product-meta-tag" th:if="${perfume.dung_tich}"
-                                th:text="${perfume.dung_tich}">Dung tích</span>
+                            <span class="product-meta-tag" th:if="${perfume.nhom_huong}" th:text="${perfume.nhom_huong}">Hương</span>
+                            <span class="product-meta-tag" th:if="${perfume.dung_tich}" th:text="${perfume.dung_tich}">Dung tích</span>
                         </div>
                         <div class="product-price">
-                            <span th:text="${perfume.gia_ban.contains('đ') or perfume.gia_ban.toLowerCase().contains('hệ') ? perfume.gia_ban : perfume.gia_ban + ' đ'}">0</span>
+                            <span th:text="${perfume.gia_ban}">0 đ</span>
                         </div>
-
                         <div class="product-stock-info">
                             <i class="bi bi-box-seam"></i>
                             <span>Còn </span>
@@ -788,6 +955,45 @@
                     </div>
                 </div>
             </div>
+
+            <!-- ====== PHÂN TRANG ====== -->
+            <div class="pagination-bar" th:if="${totalPages != null and totalPages > 1}">
+
+                <!-- Nút Trước -->
+                <a class="page-btn page-btn-wide"
+                   th:classappend="${currentPage == 0} ? 'disabled' : ''"
+                   th:href="@{/(page=${currentPage - 1}, thuong_hieu=${selectedThuongHieu}, nhom_huong=${selectedNhomHuong}, gia_range=${selectedGiaRange})}">
+                    <i class="bi bi-chevron-left"></i> Trước
+                </a>
+
+                <!-- Số trang -->
+                <th:block th:each="i : ${#numbers.sequence(0, totalPages - 1)}">
+                    <!-- Hiện tối đa 5 trang xung quanh trang hiện tại -->
+                    <a class="page-btn"
+                       th:if="${i == 0 or i == totalPages - 1 or (i >= currentPage - 2 and i <= currentPage + 2)}"
+                       th:classappend="${i == currentPage} ? 'active' : ''"
+                       th:text="${i + 1}"
+                       th:href="@{/(page=${i}, thuong_hieu=${selectedThuongHieu}, nhom_huong=${selectedNhomHuong}, gia_range=${selectedGiaRange})}">
+                    </a>
+                    <!-- Dấu ... -->
+                    <span th:if="${(i == 1 and currentPage > 3) or (i == totalPages - 2 and currentPage < totalPages - 4)}"
+                          style="color: var(--text-muted); align-self: center;">…</span>
+                </th:block>
+
+                <!-- Nút Sau -->
+                <a class="page-btn page-btn-wide"
+                   th:classappend="${currentPage >= totalPages - 1} ? 'disabled' : ''"
+                   th:href="@{/(page=${currentPage + 1}, thuong_hieu=${selectedThuongHieu}, nhom_huong=${selectedNhomHuong}, gia_range=${selectedGiaRange})}">
+                    Sau <i class="bi bi-chevron-right"></i>
+                </a>
+
+            </div>
+            <!-- Thông tin trang -->
+            <p class="text-center" style="color: var(--text-muted); font-size: 0.8rem; margin-top: 12px;"
+               th:if="${totalPages != null and totalPages > 1}">
+                Trang <span th:text="${currentPage + 1}">1</span> / <span th:text="${totalPages}">1</span>
+            </p>
+
         </div>
     </section>
 

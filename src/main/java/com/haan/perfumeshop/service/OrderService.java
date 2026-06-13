@@ -23,7 +23,7 @@ public class OrderService {
     private CartService cartService;
 
     // Logic Chốt Đơn Hàng từ Giỏ Hàng (Cài đặt Quy tắc 2 - Kiểm tra và trừ tồn kho)
-    @Transactional(rollbackFor = Exception.class) // Đảm bảo nếu lỗi ở bất kỳ bước nào, toàn bộ giao dịch sẽ hủy bỏ (Rollback)
+    @Transactional(rollbackFor = Exception.class)
     public Order checkoutOrder(User user) throws Exception {
         // 1. Lấy toàn bộ món đồ trong giỏ của khách ra
         List<Cart> cartItems = cartService.getCartByUserId(user.getId_user());
@@ -35,7 +35,8 @@ public class OrderService {
         for (Cart item : cartItems) {
             Perfume perfume = item.getPerfume();
             if (perfume.getTon_kho() < item.getSo_luong()) {
-                throw new Exception("Sản phẩm '" + perfume.getTen_sp() + "' không đủ số lượng trong kho! (Hiện còn: " + perfume.getTon_kho() + ")");
+                throw new Exception("Sản phẩm '" + perfume.getTen_sp() + "' không đủ số lượng trong kho! (Hiện còn: "
+                        + perfume.getTon_kho() + ")");
             }
         }
 
@@ -49,16 +50,34 @@ public class OrderService {
         // 4. Lưu chi tiết đơn hàng và thực hiện trừ số lượng tồn kho vật lý
         for (Cart item : cartItems) {
             Perfume perfume = item.getPerfume();
-            
+
+            // =========================================================
+            // SỬA LỖI Ở ĐÂY: Xử lý chuỗi giá bán thành số để tính toán
+            // =========================================================
+            String giaBanChuoi = perfume.getGia_ban();
+            double giaBanSo = 0;
+
+            if (giaBanChuoi != null && !giaBanChuoi.isEmpty()) {
+                try {
+                    // Cắt lấy phần số đầu tiên trước dấu "-"
+                    String giaDauTien = giaBanChuoi.split("-")[0].trim();
+                    giaDauTien = giaDauTien.replace(".", "").replace(",", "");
+                    giaBanSo = Double.parseDouble(giaDauTien);
+                } catch (Exception e) {
+                    giaBanSo = 0; // Tránh sập web nếu chuỗi không hợp lệ
+                }
+            }
+            // =========================================================
+
             // Tạo chi tiết đơn
             OrderDetail detail = new OrderDetail();
             detail.setOrder(savedOrder);
             detail.setPerfume(perfume);
             detail.setSo_luong_mua(item.getSo_luong());
-            detail.setGia_luc_mua(perfume.getGiaBanNumeric()); // Chốt giữ nguyên giá bán tại thời điểm mua
+            detail.setGia_luc_mua(giaBanSo); // Đã sử dụng biến giá tiền bằng số
             orderDetailRepository.save(detail);
 
-            tongTien += (item.getSo_luong() * perfume.getGiaBanNumeric());
+            tongTien += (item.getSo_luong() * giaBanSo); // Đã sử dụng biến giá tiền bằng số
 
             // Cập nhật lại số lượng tồn kho mới sau khi trừ
             perfume.setTon_kho(perfume.getTon_kho() - item.getSo_luong());
