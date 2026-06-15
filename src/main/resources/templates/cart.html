@@ -553,20 +553,35 @@
                             <tbody>
                                 <tr th:each="item : ${cartItems}">
                                     <td data-label="Sản phẩm">
-                                        <div class="cart-product-name" th:text="${item.perfume.ten_sp}">Tên nước hoa</div>
+                                        <div class="cart-product-name">
+                                            <span th:text="${item.perfume.ten_sp}">Tên nước hoa</span>
+                                            <span th:if="${item.variant != null}" style="color: var(--gold); font-size: 0.9rem;">
+                                                - [ <span th:text="${item.variant.dung_tich}">50ml</span> ]
+                                            </span>
+                                        </div>
                                         <div class="cart-product-brand" th:text="${item.perfume.thuong_hieu}">Thương hiệu</div>
                                     </td>
+                                    
                                     <td data-label="Đơn giá">
-                                        <span class="cart-price"
-                                            th:text="${item.perfume.gia_ban.contains('đ') or item.perfume.gia_ban.toLowerCase().contains('hệ') ? item.perfume.gia_ban : item.perfume.gia_ban + ' đ'}">0 đ</span>
+                                        <span class="cart-price" th:if="${item.variant != null}"
+                                              th:text="${#numbers.formatDecimal(item.variant.gia_ban, 0, 'COMMA', 0, 'POINT')} + ' đ'">0 đ</span>
+                                        
+                                        <span class="cart-price" th:unless="${item.variant != null}"
+                                              th:text="${item.perfume.gia_ban.contains('đ') or item.perfume.gia_ban.toLowerCase().contains('hệ') ? item.perfume.gia_ban : item.perfume.gia_ban + ' đ'}">0 đ</span>
                                     </td>
+                                    
                                     <td data-label="Số lượng">
                                         <span class="cart-qty-badge" th:text="${item.so_luong}">1</span>
                                     </td>
+                                    
                                     <td data-label="Thành tiền">
-                                        <span class="cart-subtotal"
-                                            th:text="${#numbers.formatDecimal(item.perfume.getGiaBanNumeric() * item.so_luong, 0, 'COMMA', 0, 'POINT')} + ' đ'">0 đ</span>
+                                        <span class="cart-subtotal" th:if="${item.variant != null}"
+                                              th:text="${#numbers.formatDecimal(item.variant.gia_ban * item.so_luong, 0, 'COMMA', 0, 'POINT')} + ' đ'">0 đ</span>
+                                              
+                                        <span class="cart-subtotal" th:unless="${item.variant != null}"
+                                              th:text="${#numbers.formatDecimal(item.perfume.getGiaBanNumeric() * item.so_luong, 0, 'COMMA', 0, 'POINT')} + ' đ'">0 đ</span>
                                     </td>
+                                    
                                     <td>
                                         <button class="btn-remove" th:onclick="'removeFromCart(' + ${item.id} + ')'">
                                             <i class="bi bi-trash3"></i> Xóa

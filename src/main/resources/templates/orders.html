@@ -24,7 +24,11 @@
             --border: rgba(201, 169, 110, 0.2);
         }
 
-        * { margin: 0; padding: 0; box-sizing: border-box; }
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
 
         body {
             background-color: var(--dark);
@@ -78,7 +82,10 @@
             gap: 6px;
         }
 
-        .nav-link-item:hover { color: var(--gold); background: rgba(201, 169, 110, 0.1); }
+        .nav-link-item:hover {
+            color: var(--gold);
+            background: rgba(201, 169, 110, 0.1);
+        }
 
         .btn-home-nav {
             background: rgba(201, 169, 110, 0.12);
@@ -101,14 +108,21 @@
             transition: all 0.2s;
         }
 
-        .user-dropdown .dropdown-toggle:hover { border-color: var(--gold); color: var(--gold); }
+        .user-dropdown .dropdown-toggle:hover {
+            border-color: var(--gold);
+            color: var(--gold);
+        }
 
         .user-avatar {
-            width: 28px; height: 28px;
+            width: 28px;
+            height: 28px;
             background: linear-gradient(135deg, var(--gold), var(--gold-dark));
             border-radius: 50%;
-            display: flex; align-items: center; justify-content: center;
-            color: #1a1a1a; font-size: 12px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: #1a1a1a;
+            font-size: 12px;
         }
 
         .dropdown-menu-custom {
@@ -117,7 +131,7 @@
             border-radius: 12px;
             padding: 8px;
             min-width: 200px;
-            box-shadow: 0 16px 40px rgba(0,0,0,0.5);
+            box-shadow: 0 16px 40px rgba(0, 0, 0, 0.5);
         }
 
         .dropdown-menu-custom .dropdown-item {
@@ -125,13 +139,24 @@
             border-radius: 8px;
             padding: 10px 14px;
             font-size: 0.875rem;
-            display: flex; align-items: center; gap: 8px;
+            display: flex;
+            align-items: center;
+            gap: 8px;
             transition: all 0.2s;
         }
 
-        .dropdown-menu-custom .dropdown-item:hover { background: rgba(255,255,255,0.06); color: var(--gold); }
-        .dropdown-menu-custom .dropdown-item.text-danger { color: #ff6b6b !important; }
-        .dropdown-menu-custom .dropdown-item.text-danger:hover { background: rgba(220,53,69,0.12); }
+        .dropdown-menu-custom .dropdown-item:hover {
+            background: rgba(255, 255, 255, 0.06);
+            color: var(--gold);
+        }
+
+        .dropdown-menu-custom .dropdown-item.text-danger {
+            color: #ff6b6b !important;
+        }
+
+        .dropdown-menu-custom .dropdown-item.text-danger:hover {
+            background: rgba(220, 53, 69, 0.12);
+        }
 
         /* ====== PAGE HEADER ====== */
         .page-header {
@@ -162,7 +187,9 @@
         }
 
         /* ====== ORDERS LAYOUT ====== */
-        .orders-section { padding: 40px 0 80px; }
+        .orders-section {
+            padding: 40px 0 80px;
+        }
 
         .orders-table-wrapper {
             background: var(--dark-2);
@@ -183,17 +210,22 @@
             text-transform: uppercase;
             letter-spacing: 0.8px;
             color: var(--text-muted);
-            border-bottom: 1px solid rgba(255,255,255,0.06);
-            background: rgba(255,255,255,0.02);
+            border-bottom: 1px solid rgba(255, 255, 255, 0.06);
+            background: rgba(255, 255, 255, 0.02);
         }
 
         .orders-table tbody tr {
-            border-bottom: 1px solid rgba(255,255,255,0.04);
+            border-bottom: 1px solid rgba(255, 255, 255, 0.04);
             transition: background 0.2s;
         }
 
-        .orders-table tbody tr:last-child { border-bottom: none; }
-        .orders-table tbody tr:hover { background: rgba(255,255,255,0.025); }
+        .orders-table tbody tr:last-child {
+            border-bottom: none;
+        }
+
+        .orders-table tbody tr:hover {
+            background: rgba(255, 255, 255, 0.025);
+        }
 
         .orders-table td {
             padding: 18px 20px;
@@ -258,7 +290,7 @@
         .orders-empty h3 {
             font-family: 'Inter', sans-serif;
             font-size: 1.6rem;
-            color: rgba(255,255,255,0.5);
+            color: rgba(255, 255, 255, 0.5);
             margin-bottom: 8px;
             font-weight: 500;
         }
@@ -272,7 +304,7 @@
             width: fit-content;
             padding: 12px 24px;
             background: transparent;
-            border: 1px solid rgba(255,255,255,0.12);
+            border: 1px solid rgba(255, 255, 255, 0.12);
             border-radius: 12px;
             color: var(--text-muted);
             font-size: 0.875rem;
@@ -290,13 +322,20 @@
         .btn-continue:hover {
             border-color: var(--border);
             color: var(--text-primary);
-            background: rgba(255,255,255,0.04);
+            background: rgba(255, 255, 255, 0.04);
         }
 
         /* Responsive */
         @media (max-width: 768px) {
-            .orders-table thead { display: none; }
-            .orders-table td { display: block; padding: 12px 16px; }
+            .orders-table thead {
+                display: none;
+            }
+
+            .orders-table td {
+                display: block;
+                padding: 12px 16px;
+            }
+
             .orders-table td::before {
                 content: attr(data-label);
                 display: block;
@@ -306,14 +345,17 @@
                 text-transform: uppercase;
                 letter-spacing: 0.5px;
             }
-            .orders-table tbody tr { padding: 16px 0; display: block; }
+
+            .orders-table tbody tr {
+                padding: 16px 0;
+                display: block;
+            }
         }
     </style>
 </head>
 
 <body>
 
-    <!-- ====== NAVBAR ====== -->
     <nav class="navbar-custom">
         <div class="container">
             <a class="brand-name" href="/">🌸 Halo</a>
@@ -332,7 +374,8 @@
                 <li class="user-dropdown dropdown" th:if="${session.loggedInUser != null}">
                     <a href="#" class="dropdown-toggle" data-bs-toggle="dropdown" id="userDropdown">
                         <div class="user-avatar"><i class="bi bi-person-fill"></i></div>
-                        <span th:text="${session.loggedInUser.fullName != null ? session.loggedInUser.fullName : session.loggedInUser.email}">Khách</span>
+                        <span
+                            th:text="${session.loggedInUser.fullName != null ? session.loggedInUser.fullName : session.loggedInUser.email}">Khách</span>
                         <i class="bi bi-chevron-down" style="font-size: 11px; opacity: 0.6;"></i>
                     </a>
                     <ul class="dropdown-menu dropdown-menu-custom dropdown-menu-end">
@@ -342,7 +385,9 @@
                                 <span th:text="${session.loggedInUser.email}">email</span>
                             </span>
                         </li>
-                        <li><hr style="border-color: rgba(255,255,255,0.07); margin: 6px 0;"></li>
+                        <li>
+                            <hr style="border-color: rgba(255,255,255,0.07); margin: 6px 0;">
+                        </li>
                         <li>
                             <a class="dropdown-item text-danger" href="/logout">
                                 <i class="bi bi-box-arrow-right"></i> Đăng xuất
@@ -352,16 +397,18 @@
                 </li>
 
                 <li th:if="${session.loggedInUser == null}">
-                    <a href="/login" class="nav-link-item" style="background: linear-gradient(135deg, var(--gold), var(--gold-dark)); color: #1a1a1a !important; font-weight: 600; border-radius: 10px;">Đăng nhập</a>
+                    <a href="/login" class="nav-link-item"
+                        style="background: linear-gradient(135deg, var(--gold), var(--gold-dark)); color: #1a1a1a !important; font-weight: 600; border-radius: 10px;">Đăng
+                        nhập</a>
                 </li>
             </ul>
         </div>
     </nav>
 
-    <!-- ====== PAGE HEADER ====== -->
     <div class="page-header">
         <div class="container">
-            <h1><i class="bi bi-receipt" style="color: var(--gold); font-size: 1.8rem; margin-right: 12px;"></i>Đơn Hàng Của Tôi</h1>
+            <h1><i class="bi bi-receipt" style="color: var(--gold); font-size: 1.8rem; margin-right: 12px;"></i>Đơn Hàng
+                Của Tôi</h1>
             <div class="breadcrumb-custom" style="margin-top: 8px;">
                 <a href="/"><i class="bi bi-house"></i> Trang chủ</a>
                 <i class="bi bi-chevron-right" style="font-size: 10px;"></i>
@@ -370,23 +417,21 @@
         </div>
     </div>
 
-    <!-- ====== ORDERS CONTENT ====== -->
     <section class="orders-section">
         <div class="container">
 
-            <!-- Chưa có đơn hàng -->
             <div class="orders-table-wrapper" th:if="${#lists.isEmpty(orders)}">
                 <div class="orders-empty">
                     <div class="orders-empty-icon">📦</div>
                     <h3>Bạn chưa có đơn hàng nào</h3>
                     <p>Hãy trải nghiệm và chọn cho mình một mùi hương ưng ý nhé!</p>
-                    <a href="/" style="display: inline-flex; align-items: center; gap: 8px; margin-top: 24px; background: linear-gradient(135deg, var(--gold), var(--gold-dark)); color: #1a1a1a; text-decoration: none; padding: 12px 24px; border-radius: 12px; font-weight: 600; transition: all 0.3s;">
+                    <a href="/"
+                        style="display: inline-flex; align-items: center; gap: 8px; margin-top: 24px; background: linear-gradient(135deg, var(--gold), var(--gold-dark)); color: #1a1a1a; text-decoration: none; padding: 12px 24px; border-radius: 12px; font-weight: 600; transition: all 0.3s;">
                         <i class="bi bi-shop"></i> Mua sắm ngay
                     </a>
                 </div>
             </div>
 
-            <!-- Có đơn hàng -->
             <div class="row" th:unless="${#lists.isEmpty(orders)}">
                 <div class="col-12">
                     <div class="orders-table-wrapper">
@@ -405,21 +450,28 @@
                                         <div class="order-id" th:text="'#' + ${order.id}">#001</div>
                                     </td>
                                     <td data-label="Ngày đặt">
-                                        <!-- Fallback hiển thị thời gian để không bị lỗi nếu order.ngay_dat bị null -->
-                                        <span class="order-date" th:if="${order.ngay_dat != null}" th:text="${#temporals.format(order.ngay_dat, 'dd/MM/yyyy HH:mm')}">01/01/2026</span>
+                                        <span class="order-date" th:if="${order.ngay_dat != null}"
+                                            th:text="${#temporals.format(order.ngay_dat, 'dd/MM/yyyy HH:mm')}">01/01/2026</span>
                                         <span class="order-date" th:if="${order.ngay_dat == null}">Chưa rõ</span>
                                     </td>
                                     <td data-label="Tổng tiền">
-                                        <!-- Fallback để tránh NullPointerException nếu tổng tiền null -->
-                                        <span class="order-total" th:if="${order.tong_tien != null}" th:text="${#numbers.formatDecimal(order.tong_tien, 0, 'COMMA', 0, 'POINT')} + ' đ'">0 đ</span>
+                                        <span class="order-total" th:if="${order.tong_tien != null}"
+                                            th:text="${#numbers.formatDecimal(order.tong_tien, 0, 'COMMA', 0, 'POINT')} + ' đ'">0
+                                            đ</span>
                                         <span class="order-total" th:if="${order.tong_tien == null}">0 đ</span>
                                     </td>
                                     <td data-label="Trạng thái">
                                         <span class="badge-status badge-pending" th:if="${order.trang_thai == 'Pending'}">
-                                            <i class="bi bi-clock-history" style="margin-right: 5px;"></i> Đang xử lý
+                                            <i class="bi bi-clock-history" style="margin-right: 5px;"></i> Chờ xử lý
                                         </span>
-                                        <span class="badge-status badge-completed" th:if="${order.trang_thai != 'Pending'}" th:text="${order.trang_thai}">
-                                            Hoàn tất
+                                        
+                                        <span class="badge-status" style="background: rgba(220, 53, 69, 0.15); border: 1px solid rgba(220, 53, 69, 0.3); color: #ff6b6b;" 
+                                              th:if="${order.trang_thai == 'Cancelled'}">
+                                            <i class="bi bi-x-circle" style="margin-right: 5px;"></i> Đã hủy
+                                        </span>
+
+                                        <span class="badge-status badge-completed" th:if="${order.trang_thai != 'Pending' and order.trang_thai != 'Cancelled'}">
+                                            <i class="bi bi-check-circle" style="margin-right: 5px;"></i> <span th:text="${order.trang_thai}">Hoàn tất</span>
                                         </span>
                                     </td>
                                 </tr>

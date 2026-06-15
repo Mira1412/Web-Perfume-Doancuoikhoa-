@@ -384,8 +384,14 @@
                                         <span class="badge-status badge-pending" th:if="${order.trang_thai == 'Pending'}">
                                             <i class="bi bi-clock-history" style="margin-right: 5px;"></i> Chờ xử lý
                                         </span>
-                                        <span class="badge-status badge-completed" th:if="${order.trang_thai != 'Pending'}" th:text="${order.trang_thai}">
-                                            Hoàn tất
+                                        
+                                        <span class="badge-status" style="background: rgba(220, 53, 69, 0.15); border: 1px solid rgba(220, 53, 69, 0.3); color: #ff6b6b;" 
+                                              th:if="${order.trang_thai == 'Cancelled'}">
+                                            <i class="bi bi-x-circle" style="margin-right: 5px;"></i> Đã hủy
+                                        </span>
+
+                                        <span class="badge-status badge-completed" th:if="${order.trang_thai != 'Pending' and order.trang_thai != 'Cancelled'}">
+                                            <i class="bi bi-check-circle" style="margin-right: 5px;"></i> <span th:text="${order.trang_thai}">Hoàn tất</span>
                                         </span>
                                     </td>
                                     <td data-label="Thao tác">

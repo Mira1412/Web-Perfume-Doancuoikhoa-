@@ -3,7 +3,6 @@ package com.haan.perfumeshop.repository;
 import com.haan.perfumeshop.model.Order;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
-import org.springframework.data.repository.query.Param;
 import org.springframework.stereotype.Repository;
 
 import java.util.List;
@@ -11,12 +10,19 @@ import java.util.List;
 @Repository
 public interface OrderRepository extends JpaRepository<Order, Long> {
 
-    // 1. Dành cho Khách hàng: Lấy danh sách đơn hàng của riêng họ
-    // Sử dụng @Query để chỉ định rõ cột cần tìm, tránh lỗi tự động dịch sai
-    @Query("SELECT o FROM Order o WHERE o.user.id_user = :idUser")
-    List<Order> findByUser_Id_user(@Param("idUser") Long idUser);
+    // Tìm đơn hàng theo ID khách hàng
+    List<Order> findByUser_Id_user(Long idUser);
 
-    // 2. Dành cho Admin: Lấy tất cả đơn hàng nhưng sắp xếp Đơn Mới Nhất lên đầu
-    @Query("SELECT o FROM Order o ORDER BY o.id DESC")
-    List<Order> findAllOrdersDesc();
+    // ======================================================
+    // THÊM 2 HÀM NÀY ĐỂ PHỤC VỤ CHO DASHBOARD
+    // ======================================================
+
+    // 1. Đếm số lượng đơn hàng đã giao thành công
+    @Query("SELECT COUNT(o) FROM Order o WHERE o.trang_thai = 'Delivered'")
+    long countDeliveredOrders();
+
+    // 2. Tính tổng doanh thu (Bỏ qua các đơn đã bị Hủy - Cancelled)
+    // Dùng COALESCE để nếu chưa có đơn nào thì trả về 0 thay vì bị lỗi null
+    @Query("SELECT COALESCE(SUM(o.tong_tien), 0) FROM Order o WHERE o.trang_thai != 'Cancelled'")
+    Double calculateTotalRevenue();
 }

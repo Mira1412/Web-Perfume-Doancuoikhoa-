@@ -1,10 +1,13 @@
 package com.haan.perfumeshop.controller;
 
+import com.haan.perfumeshop.model.Order;
 import com.haan.perfumeshop.model.Perfume;
 import com.haan.perfumeshop.model.PerfumeVariant;
+import com.haan.perfumeshop.repository.OrderRepository;
 import com.haan.perfumeshop.repository.PerfumeRepository;
 import com.haan.perfumeshop.repository.PerfumeVariantRepository;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
@@ -22,6 +25,9 @@ public class AdminController {
     @Autowired
     private PerfumeVariantRepository variantRepository;
 
+    @Autowired
+    private OrderRepository orderRepository; // Đã thêm OrderRepository
+
     // ==========================================
     // 1. DASHBOARD & ĐIỀU HƯỚNG GỐC
     // ==========================================
@@ -32,14 +38,19 @@ public class AdminController {
 
     @GetMapping("/dashboard")
     public String dashboard(Model model) {
-        // Đếm tổng số lượng sản phẩm thực tế từ Database
+        // 1. Đếm tổng số lượng sản phẩm thực tế từ Database
         long totalProducts = perfumeRepository.count();
-        model.addAttribute("totalProducts", totalProducts);
+        
+        // 2. Lấy các con số thống kê Đơn hàng từ OrderRepository
+        long totalOrders = orderRepository.count(); // Tổng số mọi đơn hàng
+        long deliveredOrders = orderRepository.countDeliveredOrders(); // Chỉ đếm đơn "Delivered"
+        Double totalRevenue = orderRepository.calculateTotalRevenue(); // Tổng tiền thu được
 
-        // Các biến số thống kê đơn hàng (tạm thời để 0, sẽ cập nhật ở phần sau)
-        model.addAttribute("totalRevenue", 0.0);
-        model.addAttribute("totalOrders", 0);
-        model.addAttribute("deliveredOrders", 0);
+        // 3. Truyền dữ liệu ra màn hình HTML
+        model.addAttribute("totalProducts", totalProducts);
+        model.addAttribute("totalOrders", totalOrders);
+        model.addAttribute("deliveredOrders", deliveredOrders);
+        model.addAttribute("totalRevenue", totalRevenue);
 
         return "admin/admin-dashboard";
     }
@@ -98,7 +109,6 @@ public class AdminController {
         Perfume perfume = perfumeRepository.findById(id)
                 .orElseThrow(() -> new IllegalArgumentException("Không tìm thấy sản phẩm"));
 
-        // Sửa lại thành findByPerfumeId
         List<PerfumeVariant> variants = variantRepository.findByPerfumeId(id);
 
         model.addAttribute("perfume", perfume);
@@ -135,6 +145,23 @@ public class AdminController {
     // ==========================================
     @GetMapping("/orders")
     public String listOrders(Model model) {
+        // Lấy tất cả đơn hàng từ Database, sắp xếp theo ID giảm dần (đơn mới nhất lên
+        // đầu)
+        List<Order> orders = orderRepository.findAll(Sort.by(Sort.Direction.DESC, "id"));
+        model.addAttribute("orders", orders);
         return "admin/admin-orders";
+    }
+
+    @PostMapping("/orders/update-status")
+    public String updateOrderStatus(@RequestParam("id") Long id, @RequestParam("status") String status) {
+        // Tìm đơn hàng theo ID
+        Order order = orderRepository.findById(id).orElse(null);
+
+        if (order != null) {
+            order.setTrang_thai(status); // Cập nhật trạng thái mới
+            orderRepository.save(order); // Lưu vào Database
+        }
+
+        return "redirect:/admin/orders"; // Quay lại trang quản lý đơn hàng để thấy kết quả
     }
 }

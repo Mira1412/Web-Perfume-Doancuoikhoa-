@@ -21,9 +21,25 @@ public class OrderDetail {
     @JoinColumn(name = "id_nuoc_hoa", nullable = false)
     private Perfume perfume;
 
+    // =========================================================
+    // BỔ SUNG: Lưu lại Biến thể (Dung tích) khách mua
+    // =========================================================
+    @ManyToOne
+    @JoinColumn(name = "id_bien_the", nullable = true)
+    private PerfumeVariant variant;
+
     @Column(nullable = false)
     private Integer so_luong_mua;
 
     @Column(nullable = false)
     private Double gia_luc_mua;
+
+    // Tự viết Get/Set cho variant để tránh lỗi Undefined của Lombok (nếu có)
+    public PerfumeVariant getVariant() {
+        return this.variant;
+    }
+
+    public void setVariant(PerfumeVariant variant) {
+        this.variant = variant;
+    }
 }
