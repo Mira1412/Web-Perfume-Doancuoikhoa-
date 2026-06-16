@@ -1,599 +1,76 @@
-﻿<!DOCTYPE html>
+<!DOCTYPE html>
 <html xmlns:th="http://www.thymeleaf.org" lang="vi">
-
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Đăng Ký Thành Viên - Halo</title>
-    <meta name="description" content="Đăng ký tài khoản thành viên tại Halo để mua sắm nước hoa cao cấp với nhiều ưu đãi hấp dẫn.">
-    <link rel="preconnect" href="https://fonts.googleapis.com">
-    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=family=Inter:wght@300;400;500;600&display=swap" rel="stylesheet">
+    <title>Đăng ký — Halo</title>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
     <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.0/font/bootstrap-icons.css" rel="stylesheet">
     <style>
         :root {
-            --gold: #c9a96e;
-            --gold-light: #e8d5b0;
-            --gold-dark: #a07840;
-            --dark: #1a1a2e;
-            --dark-mid: #16213e;
-            --card-bg: rgba(255, 255, 255, 0.05);
-            --input-bg: rgba(255, 255, 255, 0.08);
-            --border: rgba(201, 169, 110, 0.3);
+            --gold: #c9a96e; --dark: #0d0d1a; --dark-2: #141428; --border: rgba(201, 169, 110, 0.2);
         }
-
-        * {
-            margin: 0;
-            padding: 0;
-            box-sizing: border-box;
-        }
-
-        body {
-            min-height: 100vh;
-            background: linear-gradient(135deg, #0f0c29 0%, #302b63 50%, #24243e 100%);
-            font-family: 'Inter', sans-serif;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            padding: 30px 16px;
-            position: relative;
-            overflow-x: hidden;
-        }
-
-        /* Hiệu ứng bong bóng nền */
-        body::before {
-            content: '';
-            position: fixed;
-            width: 400px;
-            height: 400px;
-            background: radial-gradient(circle, rgba(201, 169, 110, 0.12) 0%, transparent 70%);
-            top: -100px;
-            right: -100px;
-            border-radius: 50%;
-            pointer-events: none;
-        }
-
-        body::after {
-            content: '';
-            position: fixed;
-            width: 300px;
-            height: 300px;
-            background: radial-gradient(circle, rgba(120, 80, 200, 0.15) 0%, transparent 70%);
-            bottom: -80px;
-            left: -80px;
-            border-radius: 50%;
-            pointer-events: none;
-        }
-
-        /* === CARD ĐĂNG KÝ === */
-        .register-wrapper {
-            width: 100%;
-            max-width: 500px;
-            position: relative;
-            z-index: 1;
-        }
-
-        .register-card {
-            background: rgba(255, 255, 255, 0.06);
-            backdrop-filter: blur(20px);
-            -webkit-backdrop-filter: blur(20px);
-            border: 1px solid rgba(201, 169, 110, 0.2);
-            border-radius: 24px;
-            padding: 48px 40px;
-            box-shadow:
-                0 25px 60px rgba(0, 0, 0, 0.5),
-                inset 0 1px 0 rgba(255, 255, 255, 0.1);
-            animation: slideUp 0.6s ease-out;
-        }
-
-        @keyframes slideUp {
-            from {
-                opacity: 0;
-                transform: translateY(30px);
-            }
-            to {
-                opacity: 1;
-                transform: translateY(0);
-            }
-        }
-
-        /* === LOGO & TIÊU ĐỀ === */
-        .brand-logo {
-            text-align: center;
-            margin-bottom: 8px;
-        }
-
-        .brand-logo .logo-icon {
-            width: 56px;
-            height: 56px;
-            background: linear-gradient(135deg, var(--gold), var(--gold-dark));
-            border-radius: 16px;
-            display: inline-flex;
-            align-items: center;
-            justify-content: center;
-            font-size: 26px;
-            margin-bottom: 16px;
-            box-shadow: 0 8px 24px rgba(201, 169, 110, 0.4);
-        }
-
-        .card-title-main {
-            font-family: 'Inter', sans-serif;
-            font-size: 2rem;
-            font-weight: 600;
-            color: #ffffff;
-            text-align: center;
-            margin-bottom: 4px;
-            letter-spacing: 0.5px;
-        }
-
-        .card-subtitle {
-            text-align: center;
-            color: rgba(255, 255, 255, 0.45);
-            font-size: 0.85rem;
-            margin-bottom: 32px;
-            font-weight: 300;
-        }
-
-        /* === THÔNG BÁO LỖI / THÀNH CÔNG === */
-        .alert-custom {
-            border-radius: 12px;
-            padding: 14px 18px;
-            font-size: 0.875rem;
-            margin-bottom: 24px;
-            display: flex;
-            align-items: flex-start;
-            gap: 10px;
-            animation: fadeIn 0.3s ease;
-        }
-
-        @keyframes fadeIn {
-            from { opacity: 0; transform: translateY(-8px); }
-            to { opacity: 1; transform: translateY(0); }
-        }
-
-        .alert-error {
-            background: rgba(220, 53, 69, 0.15);
-            border: 1px solid rgba(220, 53, 69, 0.4);
-            color: #ff8a8a;
-        }
-
-        /* === FORM GROUP === */
-        .form-group-custom {
-            margin-bottom: 20px;
-        }
-
-        .form-label-custom {
-            display: block;
-            font-size: 0.82rem;
-            font-weight: 500;
-            color: rgba(255, 255, 255, 0.65);
-            margin-bottom: 8px;
-            letter-spacing: 0.3px;
-        }
-
-        .input-wrapper {
-            position: relative;
-        }
-
-        .input-icon {
-            position: absolute;
-            left: 16px;
-            top: 50%;
-            transform: translateY(-50%);
-            color: var(--gold);
-            font-size: 16px;
-            pointer-events: none;
-            z-index: 2;
-        }
-
-        .form-input {
-            width: 100%;
-            background: rgba(255, 255, 255, 0.07);
-            border: 1px solid rgba(201, 169, 110, 0.25);
-            border-radius: 12px;
-            color: #ffffff;
-            font-size: 0.9rem;
-            padding: 14px 16px 14px 46px;
-            transition: all 0.3s ease;
-            outline: none;
-            font-family: 'Inter', sans-serif;
-        }
-
-        .form-input::placeholder {
-            color: rgba(255, 255, 255, 0.25);
-        }
-
-        .form-input:focus {
-            background: rgba(255, 255, 255, 0.1);
-            border-color: var(--gold);
-            box-shadow: 0 0 0 3px rgba(201, 169, 110, 0.15);
-        }
-
-        .form-input.is-invalid {
-            border-color: rgba(220, 53, 69, 0.6);
-            box-shadow: 0 0 0 3px rgba(220, 53, 69, 0.1);
-        }
-
-        /* Input toggle mật khẩu */
-        .toggle-password {
-            position: absolute;
-            right: 16px;
-            top: 50%;
-            transform: translateY(-50%);
-            background: none;
-            border: none;
-            color: rgba(255, 255, 255, 0.35);
-            cursor: pointer;
-            font-size: 16px;
-            padding: 0;
-            transition: color 0.2s;
-            z-index: 2;
-        }
-
-        .toggle-password:hover {
-            color: var(--gold);
-        }
-
-        /* === DIVIDER === */
-        .form-divider {
-            display: flex;
-            align-items: center;
-            gap: 12px;
-            margin: 24px 0 20px;
-        }
-
-        .form-divider::before,
-        .form-divider::after {
-            content: '';
-            flex: 1;
-            height: 1px;
-            background: rgba(255, 255, 255, 0.1);
-        }
-
-        .form-divider span {
-            font-size: 0.75rem;
-            color: rgba(255, 255, 255, 0.3);
-            white-space: nowrap;
-        }
-
-        /* === NÚT ĐĂNG KÝ === */
-        .btn-register {
-            width: 100%;
-            padding: 15px;
-            background: linear-gradient(135deg, var(--gold) 0%, var(--gold-dark) 100%);
-            border: none;
-            border-radius: 12px;
-            color: #1a1a1a;
-            font-size: 0.95rem;
-            font-weight: 600;
-            font-family: 'Inter', sans-serif;
-            cursor: pointer;
-            transition: all 0.3s ease;
-            letter-spacing: 0.5px;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            gap: 8px;
-            margin-top: 8px;
-        }
-
-        .btn-register:hover {
-            background: linear-gradient(135deg, #d4b880 0%, #b8863a 100%);
-            transform: translateY(-2px);
-            box-shadow: 0 8px 25px rgba(201, 169, 110, 0.4);
-        }
-
-        .btn-register:active {
-            transform: translateY(0);
-        }
-
-        /* === LINKS === */
-        .footer-links {
-            margin-top: 28px;
-            text-align: center;
-        }
-
-        .footer-links p {
-            color: rgba(255, 255, 255, 0.45);
-            font-size: 0.875rem;
-            margin-bottom: 10px;
-        }
-
-        .footer-links a.link-gold {
-            color: var(--gold);
-            text-decoration: none;
-            font-weight: 500;
-            transition: color 0.2s;
-        }
-
-        .footer-links a.link-gold:hover {
-            color: var(--gold-light);
-            text-decoration: underline;
-        }
-
-        .footer-links a.link-muted {
-            color: rgba(255, 255, 255, 0.3);
-            font-size: 0.8rem;
-            text-decoration: none;
-            transition: color 0.2s;
-        }
-
-        .footer-links a.link-muted:hover {
-            color: rgba(255, 255, 255, 0.6);
-        }
-
-        /* === PASSWORD STRENGTH === */
-        .password-strength {
-            margin-top: 8px;
-            display: none;
-        }
-
-        .strength-bar-container {
-            display: flex;
-            gap: 4px;
-            margin-bottom: 5px;
-        }
-
-        .strength-bar {
-            flex: 1;
-            height: 3px;
-            border-radius: 3px;
-            background: rgba(255, 255, 255, 0.1);
-            transition: background 0.3s ease;
-        }
-
-        .strength-text {
-            font-size: 0.75rem;
-            color: rgba(255, 255, 255, 0.4);
-        }
-
-        /* Responsive */
-        @media (max-width: 480px) {
-            .register-card {
-                padding: 36px 24px;
-            }
-            .card-title-main {
-                font-size: 1.7rem;
-            }
-        }
+        body { background-color: var(--dark); font-family: 'Inter', sans-serif; color: #f0ece4; display: flex; align-items: center; justify-content: center; min-height: 100vh; margin: 0; padding: 20px 0; }
+        .login-card { background: var(--dark-2); border: 1px solid var(--border); border-radius: 20px; padding: 40px; width: 100%; max-width: 500px; box-shadow: 0 20px 40px rgba(0,0,0,0.5); }
+        .brand-name { font-size: 2rem; font-weight: 700; color: var(--gold); text-align: center; margin-bottom: 20px; display: block; text-decoration: none;}
+        .form-control { background: rgba(0,0,0,0.2); border: 1px solid rgba(255,255,255,0.1); color: #fff; padding: 12px 16px; border-radius: 10px; }
+        .form-control:focus { background: rgba(0,0,0,0.4); border-color: var(--gold); color: #fff; box-shadow: none; }
+        .btn-gold { background: linear-gradient(135deg, var(--gold), #a07840); color: #1a1a1a; font-weight: 600; border: none; padding: 12px; border-radius: 10px; transition: all 0.3s; width: 100%; margin-top: 10px; }
+        .btn-gold:hover { transform: translateY(-2px); box-shadow: 0 5px 15px rgba(201,169,110,0.3); }
+        .text-muted a { color: var(--gold); text-decoration: none; font-weight: 500; }
+        .text-muted a:hover { text-decoration: underline; }
     </style>
 </head>
-
 <body>
 
-    <div class="register-wrapper">
-        <div class="register-card">
+    <div class="login-card">
+        <a href="/" class="brand-name">🌸 Halo</a>
+        <h4 class="text-center mb-4" style="font-weight: 600;">Đăng ký tài khoản</h4>
 
-            <!-- Logo & Tiêu đề -->
-            <div class="brand-logo">
-                <div class="logo-icon">🌸</div>
-            </div>
-            <h1 class="card-title-main">Tạo Tài Khoản</h1>
-            <p class="card-subtitle">Trở thành thành viên của Halo</p>
+        <div th:if="${errorMsg}" class="alert alert-danger" style="background: rgba(220,53,69,0.1); border-color: #ff6b6b; color: #ff6b6b; border-radius: 10px; font-size: 0.9rem;" th:text="${errorMsg}"></div>
 
-            <!-- Thông báo lỗi từ server -->
-            <div th:if="${error}" class="alert-custom alert-error" id="server-error-alert">
-                <i class="bi bi-exclamation-circle-fill" style="font-size: 18px; flex-shrink: 0; margin-top: 1px;"></i>
-                <span th:text="${error}"></span>
-            </div>
-
-            <!-- Form Đăng ký -->
-            <form id="registerForm" action="/register" method="post" novalidate>
-
-                <!-- Họ và Tên -->
-                <div class="form-group-custom">
-                    <label class="form-label-custom" for="fullName">Họ và Tên <span style="color: var(--gold)">*</span></label>
-                    <div class="input-wrapper">
-                        <i class="bi bi-person input-icon"></i>
-                        <input
-                            type="text"
-                            class="form-input"
-                            id="fullName"
-                            name="fullName"
-                            th:value="${fullNameValue}"
-                            placeholder="Nguyễn Văn A"
-                            autocomplete="name"
-                            required>
-                    </div>
+        <form action="/register" method="POST">
+            <div class="mb-3">
+                <label class="form-label" style="font-size: 0.9rem; color: rgba(255,255,255,0.7);">Họ và tên</label>
+                <div class="input-group">
+                    <span class="input-group-text" style="background: rgba(0,0,0,0.2); border-color: rgba(255,255,255,0.1); color: var(--gold); border-right: none;"><i class="bi bi-person"></i></span>
+                    <input type="text" name="fullName" class="form-control" style="border-left: none;" placeholder="Nhập họ và tên" required>
                 </div>
-
-                <!-- Email -->
-                <div class="form-group-custom">
-                    <label class="form-label-custom" for="email">Email <span style="color: var(--gold)">*</span></label>
-                    <div class="input-wrapper">
-                        <i class="bi bi-envelope input-icon"></i>
-                        <input
-                            type="email"
-                            class="form-input"
-                            id="email"
-                            name="email"
-                            th:value="${emailValue}"
-                            placeholder="example@gmail.com"
-                            autocomplete="email"
-                            required>
-                    </div>
-                </div>
-
-                <!-- Số điện thoại -->
-                <div class="form-group-custom">
-                    <label class="form-label-custom" for="phone">Số Điện Thoại <span style="color: rgba(255,255,255,0.3); font-size: 0.75rem">(tùy chọn)</span></label>
-                    <div class="input-wrapper">
-                        <i class="bi bi-telephone input-icon"></i>
-                        <input
-                            type="tel"
-                            class="form-input"
-                            id="phone"
-                            name="phone"
-                            th:value="${phoneValue}"
-                            placeholder="0901 234 567"
-                            autocomplete="tel">
-                    </div>
-                </div>
-
-                <div class="form-divider">
-                    <span>Bảo mật tài khoản</span>
-                </div>
-
-                <!-- Mật khẩu -->
-                <div class="form-group-custom">
-                    <label class="form-label-custom" for="password">Mật Khẩu <span style="color: var(--gold)">*</span></label>
-                    <div class="input-wrapper">
-                        <i class="bi bi-lock input-icon"></i>
-                        <input
-                            type="password"
-                            class="form-input"
-                            id="password"
-                            name="password"
-                            placeholder="Ít nhất 6 ký tự"
-                            autocomplete="new-password"
-                            required
-                            oninput="checkPasswordStrength(this.value)">
-                        <button type="button" class="toggle-password" onclick="togglePassword('password', this)" title="Hiện/Ẩn mật khẩu">
-                            <i class="bi bi-eye"></i>
-                        </button>
-                    </div>
-                    <!-- Thanh độ mạnh mật khẩu -->
-                    <div class="password-strength" id="strengthIndicator">
-                        <div class="strength-bar-container">
-                            <div class="strength-bar" id="bar1"></div>
-                            <div class="strength-bar" id="bar2"></div>
-                            <div class="strength-bar" id="bar3"></div>
-                            <div class="strength-bar" id="bar4"></div>
-                        </div>
-                        <span class="strength-text" id="strengthText"></span>
-                    </div>
-                </div>
-
-                <!-- Xác nhận mật khẩu -->
-                <div class="form-group-custom">
-                    <label class="form-label-custom" for="confirmPassword">Xác Nhận Mật Khẩu <span style="color: var(--gold)">*</span></label>
-                    <div class="input-wrapper">
-                        <i class="bi bi-shield-lock input-icon"></i>
-                        <input
-                            type="password"
-                            class="form-input"
-                            id="confirmPassword"
-                            name="confirmPassword"
-                            placeholder="Nhập lại mật khẩu"
-                            autocomplete="new-password"
-                            required>
-                        <button type="button" class="toggle-password" onclick="togglePassword('confirmPassword', this)" title="Hiện/Ẩn mật khẩu">
-                            <i class="bi bi-eye"></i>
-                        </button>
-                    </div>
-                </div>
-
-                <!-- Thông báo lỗi phía client (JS) -->
-                <div id="client-error" class="alert-custom alert-error" style="display: none;">
-                    <i class="bi bi-exclamation-circle-fill" style="font-size: 18px; flex-shrink: 0; margin-top: 1px;"></i>
-                    <span id="client-error-text"></span>
-                </div>
-
-                <!-- Nút Đăng ký -->
-                <button type="submit" class="btn-register" id="submitBtn">
-                    <i class="bi bi-person-plus-fill"></i>
-                    Tạo Tài Khoản
-                </button>
-            </form>
-
-            <!-- Links điều hướng -->
-            <div class="footer-links">
-                <p>Đã có tài khoản? <a href="/login" class="link-gold">Đăng nhập ngay</a></p>
-                <a href="/" class="link-muted"><i class="bi bi-arrow-left"></i> Quay lại trang chủ</a>
             </div>
 
+            <div class="mb-3">
+                <label class="form-label" style="font-size: 0.9rem; color: rgba(255,255,255,0.7);">Email</label>
+                <div class="input-group">
+                    <span class="input-group-text" style="background: rgba(0,0,0,0.2); border-color: rgba(255,255,255,0.1); color: var(--gold); border-right: none;"><i class="bi bi-envelope"></i></span>
+                    <input type="email" name="email" class="form-control" style="border-left: none;" placeholder="vidu@gmail.com" required>
+                </div>
+            </div>
+            
+            <div class="mb-3">
+                <label class="form-label" style="font-size: 0.9rem; color: rgba(255,255,255,0.7);">Mật khẩu</label>
+                <div class="input-group">
+                    <span class="input-group-text" style="background: rgba(0,0,0,0.2); border-color: rgba(255,255,255,0.1); color: var(--gold); border-right: none;"><i class="bi bi-lock"></i></span>
+                    <input type="password" name="password" class="form-control" style="border-left: none;" placeholder="Tạo mật khẩu (ít nhất 6 ký tự)" required minlength="6">
+                </div>
+            </div>
+
+            <div class="mb-4">
+                <label class="form-label" style="font-size: 0.9rem; color: rgba(255,255,255,0.7);">Xác nhận mật khẩu</label>
+                <div class="input-group">
+                    <span class="input-group-text" style="background: rgba(0,0,0,0.2); border-color: rgba(255,255,255,0.1); color: var(--gold); border-right: none;"><i class="bi bi-shield-lock"></i></span>
+                    <input type="password" name="confirmPassword" class="form-control" style="border-left: none;" placeholder="Nhập lại mật khẩu" required minlength="6">
+                </div>
+            </div>
+
+            <button type="submit" class="btn btn-gold">Đăng Ký</button>
+        </form>
+
+        <div class="text-center mt-4 text-muted" style="font-size: 0.9rem;">
+            Đã có tài khoản? <a href="/login">Đăng nhập</a><br><br>
+            <a href="/" style="color: rgba(255,255,255,0.5);"><i class="bi bi-arrow-left"></i> Quay lại cửa hàng</a>
         </div>
     </div>
 
-    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
-    <script>
-        // ========================
-        // Toggle hiện/ẩn mật khẩu
-        // ========================
-        function togglePassword(inputId, btn) {
-            const input = document.getElementById(inputId);
-            const icon = btn.querySelector('i');
-            if (input.type === 'password') {
-                input.type = 'text';
-                icon.className = 'bi bi-eye-slash';
-            } else {
-                input.type = 'password';
-                icon.className = 'bi bi-eye';
-            }
-        }
-
-        // ========================
-        // Kiểm tra độ mạnh mật khẩu
-        // ========================
-        function checkPasswordStrength(password) {
-            const indicator = document.getElementById('strengthIndicator');
-            const bars = [document.getElementById('bar1'), document.getElementById('bar2'),
-                          document.getElementById('bar3'), document.getElementById('bar4')];
-            const text = document.getElementById('strengthText');
-
-            if (password.length === 0) {
-                indicator.style.display = 'none';
-                return;
-            }
-            indicator.style.display = 'block';
-
-            let score = 0;
-            if (password.length >= 6) score++;
-            if (password.length >= 10) score++;
-            if (/[A-Z]/.test(password) && /[a-z]/.test(password)) score++;
-            if (/[0-9]/.test(password) || /[^A-Za-z0-9]/.test(password)) score++;
-
-            const levels = [
-                { color: '#ff4d4d', label: 'Rất yếu' },
-                { color: '#ff9800', label: 'Yếu' },
-                { color: '#f5c518', label: 'Trung bình' },
-                { color: '#4caf50', label: 'Mạnh' }
-            ];
-
-            bars.forEach((bar, i) => {
-                bar.style.background = i < score ? levels[score - 1].color : 'rgba(255,255,255,0.1)';
-            });
-
-            text.textContent = 'Độ mạnh: ' + (levels[score - 1]?.label || 'Rất yếu');
-            text.style.color = levels[score - 1]?.color || '#ff4d4d';
-        }
-
-        // ========================
-        // Validation phía client trước khi submit
-        // ========================
-        document.getElementById('registerForm').addEventListener('submit', function (e) {
-            const fullName = document.getElementById('fullName').value.trim();
-            const email = document.getElementById('email').value.trim();
-            const password = document.getElementById('password').value;
-            const confirmPassword = document.getElementById('confirmPassword').value;
-
-            const clientError = document.getElementById('client-error');
-            const clientErrorText = document.getElementById('client-error-text');
-
-            function showError(msg) {
-                clientError.style.display = 'flex';
-                clientErrorText.textContent = msg;
-                clientError.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
-                e.preventDefault();
-            }
-
-            clientError.style.display = 'none';
-
-            if (!fullName) return showError('Vui lòng nhập họ và tên của bạn!');
-            if (!email) return showError('Vui lòng nhập địa chỉ email!');
-            if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email)) return showError('Địa chỉ email không hợp lệ!');
-            if (!password) return showError('Vui lòng nhập mật khẩu!');
-            if (password.length < 6) return showError('Mật khẩu phải có ít nhất 6 ký tự!');
-            if (!confirmPassword) return showError('Vui lòng xác nhận mật khẩu!');
-            if (password !== confirmPassword) return showError('Mật khẩu xác nhận không khớp!');
-
-            // Tất cả hợp lệ → hiển thị loading trên nút
-            const btn = document.getElementById('submitBtn');
-            btn.innerHTML = '<span class="spinner-border spinner-border-sm" role="status"></span> Đang xử lý...';
-            btn.disabled = true;
-        });
-    </script>
 </body>
-
 </html>

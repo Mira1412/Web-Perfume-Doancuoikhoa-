@@ -1,4 +1,4 @@
-﻿<!DOCTYPE html>
+<!DOCTYPE html>
 <html xmlns:th="http://www.thymeleaf.org" lang="vi">
 
 <head>
@@ -8,7 +8,8 @@
     <meta name="description" content="Đăng nhập tài khoản thành viên tại Halo.">
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=family=Inter:wght@300;400;500;600&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=family=Inter:wght@300;400;500;600&display=swap"
+        rel="stylesheet">
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
     <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.0/font/bootstrap-icons.css" rel="stylesheet">
     <style>
@@ -80,8 +81,15 @@
         }
 
         @keyframes slideUp {
-            from { opacity: 0; transform: translateY(30px); }
-            to { opacity: 1; transform: translateY(0); }
+            from {
+                opacity: 0;
+                transform: translateY(30px);
+            }
+
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
         }
 
         .brand-logo {
@@ -132,8 +140,15 @@
         }
 
         @keyframes fadeIn {
-            from { opacity: 0; transform: translateY(-8px); }
-            to { opacity: 1; transform: translateY(0); }
+            from {
+                opacity: 0;
+                transform: translateY(-8px);
+            }
+
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
         }
 
         .alert-error {
@@ -281,8 +296,13 @@
         }
 
         @media (max-width: 480px) {
-            .login-card { padding: 36px 24px; }
-            .card-title-main { font-size: 1.7rem; }
+            .login-card {
+                padding: 36px 24px;
+            }
+
+            .card-title-main {
+                font-size: 1.7rem;
+            }
         }
     </style>
 </head>
@@ -306,10 +326,12 @@
             </div>
 
             <!-- Thông báo lỗi -->
-            <div th:if="${error}" class="alert-custom alert-error">
+            <div th:if="${errorMsg}" class="alert-custom alert-error">
                 <i class="bi bi-exclamation-circle-fill" style="font-size: 18px; flex-shrink: 0; margin-top: 1px;"></i>
-                <span th:text="${error}"></span>
+                <span th:text="${errorMsg}"></span>
             </div>
+            
+            <div th:if="${successMsg}" class="alert alert-success" style="background: rgba(111,207,154,0.1); border-color: #6fcf97; color: #6fcf97; border-radius: 10px; font-size: 0.9rem;" th:text="${successMsg}"></div>
 
             <!-- Form Đăng nhập -->
             <form action="/login" method="post">
@@ -319,14 +341,8 @@
                     <label class="form-label-custom" for="email">Email</label>
                     <div class="input-wrapper">
                         <i class="bi bi-envelope input-icon"></i>
-                        <input
-                            type="email"
-                            class="form-input"
-                            id="email"
-                            name="email"
-                            placeholder="example@gmail.com"
-                            autocomplete="email"
-                            required>
+                        <input type="email" class="form-input" id="email" name="email" placeholder="example@gmail.com"
+                            autocomplete="email" required>
                     </div>
                 </div>
 
@@ -335,15 +351,10 @@
                     <label class="form-label-custom" for="password">Mật Khẩu</label>
                     <div class="input-wrapper">
                         <i class="bi bi-lock input-icon"></i>
-                        <input
-                            type="password"
-                            class="form-input"
-                            id="password"
-                            name="password"
-                            placeholder="Nhập mật khẩu"
-                            autocomplete="current-password"
-                            required>
-                        <button type="button" class="toggle-password" onclick="togglePassword()" title="Hiện/Ẩn mật khẩu">
+                        <input type="password" class="form-input" id="password" name="password"
+                            placeholder="Nhập mật khẩu" autocomplete="current-password" required>
+                        <button type="button" class="toggle-password" onclick="togglePassword()"
+                            title="Hiện/Ẩn mật khẩu">
                             <i class="bi bi-eye" id="eyeIcon"></i>
                         </button>
                     </div>

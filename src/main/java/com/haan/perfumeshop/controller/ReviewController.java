@@ -18,11 +18,14 @@ public class ReviewController {
 
     @Autowired
     private ReviewRepository reviewRepository;
+
     @Autowired
     private PerfumeRepository perfumeRepository;
+
     @Autowired
     private OrderDetailRepository orderDetailRepository;
 
+    // API Hứng dữ liệu khi khách gửi form đánh giá
     @PostMapping("/review/submit")
     public String submitReview(
             @RequestParam("perfumeId") Long perfumeId,
@@ -31,48 +34,46 @@ public class ReviewController {
             HttpSession session,
             RedirectAttributes redirectAttributes) {
 
-        // 1. Kiểm tra đăng nhập
+        // 1. Lấy thông tin User đang đăng nhập
         User currentUser = (User) session.getAttribute("loggedInUser");
         if (currentUser == null) {
+            redirectAttributes.addFlashAttribute("reviewError", "Bạn cần đăng nhập để gửi đánh giá.");
             return "redirect:/login";
         }
 
-        // 2. Kiểm tra số sao hợp lệ
-        if (soSao == null || soSao < 1 || soSao > 5) {
-            redirectAttributes.addFlashAttribute("reviewError", "Vui lòng chọn số sao từ 1 đến 5.");
-            return "redirect:/product/" + perfumeId;
+        // 2. Tìm thông tin chai nước hoa
+        Perfume perfume = perfumeRepository.findById(perfumeId).orElse(null);
+        if (perfume == null) {
+            redirectAttributes.addFlashAttribute("reviewError", "Không tìm thấy sản phẩm.");
+            return "redirect:/";
         }
 
-        // 3. Kiểm tra đã mua hàng chưa
-        boolean hasBought = orderDetailRepository.existsByUserAndPerfumeDelivered(
-                currentUser.getId_user(), perfumeId);
+        // 3. Kiểm tra bảo mật kép: Khách đã mua hàng mới được đánh giá?
+        boolean hasBought = orderDetailRepository.existsByUserAndPerfumeDelivered(currentUser.getId_user(), perfumeId);
         if (!hasBought) {
-            redirectAttributes.addFlashAttribute("reviewError", "Bạn cần mua và nhận sản phẩm này trước khi đánh giá.");
+            redirectAttributes.addFlashAttribute("reviewError",
+                    "Bạn chỉ được đánh giá những sản phẩm đã mua và nhận thành công.");
             return "redirect:/product/" + perfumeId;
         }
 
-        // 4. Kiểm tra đã đánh giá chưa (ĐÃ CẬP NHẬT TÊN HÀM MỚI TẠI ĐÂY)
-        boolean alreadyRated = reviewRepository
-                .findReviewByUserAndPerfume(currentUser.getId_user(), perfumeId)
+        // 4. Kiểm tra bảo mật kép: Khách đã từng đánh giá chai này chưa?
+        boolean alreadyRated = reviewRepository.findReviewByUserAndPerfume(currentUser.getId_user(), perfumeId)
                 .isPresent();
         if (alreadyRated) {
             redirectAttributes.addFlashAttribute("reviewError", "Bạn đã đánh giá sản phẩm này rồi.");
             return "redirect:/product/" + perfumeId;
         }
 
-        // 5. Tìm sản phẩm
-        Perfume perfume = perfumeRepository.findById(perfumeId)
-                .orElseThrow(() -> new RuntimeException("Không tìm thấy sản phẩm!"));
-
-        // 6. Lưu đánh giá
+        // 5. Mọi thứ hợp lệ -> Tạo và lưu Review mới vào Database
         Review review = new Review();
         review.setUser(currentUser);
         review.setPerfume(perfume);
         review.setSo_sao(soSao);
-        review.setNoi_dung(noiDung != null ? noiDung.trim() : "");
+        review.setNoi_dung(noiDung);
         reviewRepository.save(review);
 
-        redirectAttributes.addFlashAttribute("reviewSuccess", "Cảm ơn bạn đã đánh giá sản phẩm! ⭐");
+        // 6. Trả thông báo thành công và load lại trang chi tiết
+        redirectAttributes.addFlashAttribute("reviewSuccess", "Cảm ơn bạn đã đánh giá sản phẩm!");
         return "redirect:/product/" + perfumeId;
     }
 }

@@ -1,7 +1,7 @@
 package com.haan.perfumeshop.controller;
 
 import com.haan.perfumeshop.model.User;
-import com.haan.perfumeshop.service.UserService;
+import com.haan.perfumeshop.repository.UserRepository;
 import jakarta.servlet.http.HttpSession;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
@@ -9,89 +9,188 @@ import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
 @Controller
 public class UserController {
 
     @Autowired
-    private UserService userService;
+    private UserRepository userRepository;
 
-    // ==========================================
-    // PHẦN 1: LOGIC ĐĂNG NHẬP & ĐĂNG XUẤT
-    // ==========================================
-
-    // Hiển thị trang Đăng nhập
-    @GetMapping("/login")
-    public String showLoginPage() {
-        return "login";
-    }
-
-    // Xử lý khi người dùng bấm nút Đăng nhập
-    @PostMapping("/login")
-    public String processLogin(@RequestParam String email,
-            @RequestParam String password,
-            HttpSession session,
-            Model model) {
-        try {
-            User loggedInUser = userService.loginUser(email, password);
-            // Lưu thông tin người dùng vào Session để mang đi khắp các trang
-            session.setAttribute("loggedInUser", loggedInUser);
-
-            // Kiểm tra quyền của user và lưu vào Session
-            if ("ADMIN".equals(loggedInUser.getRole())) {
-                session.setAttribute("userRole", "ADMIN"); // Chiếc chìa khóa vào trang Admin
-                return "redirect:/admin/dashboard"; // Admin → vào Dashboard quản trị
-            }
-
-            session.setAttribute("userRole", "CUSTOMER");
-            return "redirect:/"; // Khách hàng → quay về trang chủ
-        } catch (Exception e) {
-            model.addAttribute("error", e.getMessage());
-            return "login"; // Đăng nhập lỗi thì đứng lại trang login và báo lỗi
+    // 1. Hiển thị trang Hồ sơ cá nhân
+    @GetMapping("/profile")
+    public String showProfilePage(HttpSession session, Model model) {
+        User loggedInUser = (User) session.getAttribute("loggedInUser");
+        if (loggedInUser == null) {
+            return "redirect:/login"; // Chưa đăng nhập thì đuổi về trang login
         }
+
+        // Lấy dữ liệu mới nhất từ Database phòng trường hợp vừa cập nhật
+        User currentUser = userRepository.findById(loggedInUser.getId_user()).orElse(null);
+        model.addAttribute("user", currentUser);
+        return "profile";
     }
 
-    // Xử lý Đăng xuất
+    // 2. Cập nhật thông tin cá nhân
+    @PostMapping("/profile/update")
+    public String updateProfile(
+            @RequestParam("fullName") String fullName,
+            @RequestParam(value = "phone", required = false) String phone,
+            @RequestParam(value = "address", required = false) String address,
+            HttpSession session,
+            RedirectAttributes redirectAttributes) {
+
+        User loggedInUser = (User) session.getAttribute("loggedInUser");
+        if (loggedInUser == null)
+            return "redirect:/login";
+
+        User currentUser = userRepository.findById(loggedInUser.getId_user()).orElse(null);
+        if (currentUser != null) {
+            currentUser.setFullName(fullName);
+            // Lưu ý: Nếu trong model User của bạn biến điện thoại là so_dien_thoai hay
+            // dia_chi thì sửa lại cho khớp nhé
+            // currentUser.setSo_dien_thoai(phone);
+            // currentUser.setDia_chi(address);
+
+            userRepository.save(currentUser);
+            session.setAttribute("loggedInUser", currentUser); // Cập nhật lại session
+
+            redirectAttributes.addFlashAttribute("successMsg", "Cập nhật thông tin thành công!");
+        }
+        return "redirect:/profile";
+    }
+
+    // 3. Đổi mật khẩu
+    @PostMapping("/profile/change-password")
+    public String changePassword(
+            @RequestParam("oldPassword") String oldPassword,
+            @RequestParam("newPassword") String newPassword,
+            @RequestParam("confirmPassword") String confirmPassword,
+            HttpSession session,
+            RedirectAttributes redirectAttributes) {
+
+        User loggedInUser = (User) session.getAttribute("loggedInUser");
+        if (loggedInUser == null)
+            return "redirect:/login";
+
+        User currentUser = userRepository.findById(loggedInUser.getId_user()).orElse(null);
+
+        // Kiểm tra mật khẩu cũ (Tạm thời so sánh chuỗi, ở Phần 2 chúng ta sẽ thay bằng
+        // BCrypt)
+        if (!currentUser.getPassword().equals(oldPassword)) {
+            redirectAttributes.addFlashAttribute("errorMsg", "Mật khẩu cũ không chính xác!");
+            return "redirect:/profile";
+        }
+
+        // Kiểm tra mật khẩu mới và xác nhận
+        if (!newPassword.equals(confirmPassword)) {
+            redirectAttributes.addFlashAttribute("errorMsg", "Mật khẩu xác nhận không khớp!");
+            return "redirect:/profile";
+        }
+
+        // Lưu mật khẩu mới
+        currentUser.setPassword(newPassword);
+        userRepository.save(currentUser);
+
+        redirectAttributes.addFlashAttribute("successMsg", "Đổi mật khẩu thành công!");
+        return "redirect:/profile";
+    }
+
+    // ==========================================
+    // CHỨC NĂNG ĐĂNG NHẬP / ĐĂNG XUẤT
+    // ==========================================
+
+    // 1. Hiển thị trang Login
+    @GetMapping("/login")
+    public String showLoginPage(HttpSession session) {
+        // Nếu khách đã đăng nhập rồi thì không cho vào trang login nữa, đẩy về trang chủ
+        if (session.getAttribute("loggedInUser") != null) {
+            return "redirect:/";
+        }
+        return "login"; // Gọi file login.html
+    }
+
+    // 2. Xử lý khi khách bấm nút "Đăng nhập"
+    @PostMapping("/login")
+    public String processLogin(
+            @RequestParam("email") String email,
+            @RequestParam("password") String password,
+            HttpSession session,
+            RedirectAttributes redirectAttributes) {
+
+        // Tìm user theo email
+        User user = userRepository.findByEmail(email).orElse(null);
+
+        // Kiểm tra xem user có tồn tại và mật khẩu có khớp không
+        // (Tạm thời so sánh chữ thường, lát nữa qua phần Mã hóa mình sẽ nâng cấp sau)
+        if (user != null && user.getPassword().equals(password)) {
+            // Đăng nhập thành công -> Lưu user vào Session
+            session.setAttribute("loggedInUser", user);
+            
+            // Nếu email là admin thì đẩy vào trang admin (bạn có thể đổi email này thành email thật của bạn)
+            if (user.getEmail().equals("admin@gmail.com") || "ADMIN".equals(user.getRole())) {
+                return "redirect:/admin/dashboard";
+            }
+            return "redirect:/"; // Khách thường thì về trang chủ
+        }
+
+        // Sai email hoặc mật khẩu
+        redirectAttributes.addFlashAttribute("errorMsg", "Email hoặc mật khẩu không chính xác!");
+        return "redirect:/login";
+    }
+
+    // 3. Xử lý Đăng xuất
     @GetMapping("/logout")
     public String logout(HttpSession session) {
-        session.removeAttribute("loggedInUser"); // Xóa trí nhớ của hệ thống về user này
-        session.removeAttribute("userRole");     // Xóa quyền đã lưu
-        return "redirect:/";
+        session.removeAttribute("loggedInUser"); // Xóa session
+        return "redirect:/login"; // Đuổi về trang login
     }
 
     // ==========================================
-    // PHẦN 2: LOGIC ĐĂNG KÝ TÀI KHOẢN MỚI
+    // CHỨC NĂNG ĐĂNG KÝ TÀI KHOẢN
     // ==========================================
 
-    // Hiển thị trang Đăng ký
+    // 4. Hiển thị trang Đăng ký
     @GetMapping("/register")
-    public String showRegisterPage() {
-        return "register";
+    public String showRegisterPage(HttpSession session) {
+        if (session.getAttribute("loggedInUser") != null) {
+            return "redirect:/";
+        }
+        return "register"; // Mở file register.html
     }
 
-    // Xử lý khi người dùng bấm nút Đăng ký
+    // 5. Xử lý khi khách bấm nút "Đăng ký"
     @PostMapping("/register")
     public String processRegister(
-            @RequestParam String fullName,
-            @RequestParam String email,
-            @RequestParam(required = false, defaultValue = "") String phone,
-            @RequestParam String password,
-            @RequestParam String confirmPassword,
-            Model model) {
-        try {
-            userService.registerUser(fullName, email, phone, password, confirmPassword);
+            @RequestParam("fullName") String fullName,
+            @RequestParam("email") String email,
+            @RequestParam("password") String password,
+            @RequestParam("confirmPassword") String confirmPassword,
+            RedirectAttributes redirectAttributes) {
 
-            // Đăng ký thành công → chuyển sang trang login kèm thông báo
-            model.addAttribute("success", "🎉 Chúc mừng! Tài khoản đã được tạo thành công. Mời bạn đăng nhập.");
-            return "login";
-
-        } catch (Exception e) {
-            // Thất bại → đứng lại trang register, giữ lại giá trị đã nhập để tiện sửa
-            model.addAttribute("error", e.getMessage());
-            model.addAttribute("fullNameValue", fullName);
-            model.addAttribute("emailValue", email);
-            model.addAttribute("phoneValue", phone);
-            return "register";
+        // Kiểm tra xem 2 ô mật khẩu có gõ giống nhau không
+        if (!password.equals(confirmPassword)) {
+            redirectAttributes.addFlashAttribute("errorMsg", "Mật khẩu xác nhận không khớp!");
+            return "redirect:/register";
         }
+
+        // Kiểm tra xem Email này đã có ai dùng trong Database chưa
+        if (userRepository.findByEmail(email).isPresent()) {
+            redirectAttributes.addFlashAttribute("errorMsg", "Email này đã được sử dụng! Vui lòng dùng email khác.");
+            return "redirect:/register";
+        }
+
+        // Nếu mọi thứ ok -> Tạo tài khoản mới
+        User newUser = new User();
+        newUser.setFullName(fullName);
+        newUser.setEmail(email);
+        newUser.setPassword(password); // Tạm thời lưu thẳng mật khẩu, nếu cần mã hóa mình sẽ nâng cấp sau
+        newUser.setRole("user"); 
+
+        userRepository.save(newUser);
+
+        // Đăng ký xong thì đá về trang Login kèm thông báo
+        redirectAttributes.addFlashAttribute("successMsg", "Đăng ký thành công! Vui lòng đăng nhập.");
+        return "redirect:/login";
     }
 }

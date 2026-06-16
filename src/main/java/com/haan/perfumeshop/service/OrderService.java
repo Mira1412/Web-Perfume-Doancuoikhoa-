@@ -54,18 +54,18 @@ public class OrderService {
             // =========================================================
             // SỬA LỖI Ở ĐÂY: Xử lý chuỗi giá bán thành số để tính toán
             // =========================================================
-            String giaBanChuoi = perfume.getGia_ban();
             double giaBanSo = 0;
 
-            if (giaBanChuoi != null && !giaBanChuoi.isEmpty()) {
-                try {
-                    // Cắt lấy phần số đầu tiên trước dấu "-"
-                    String giaDauTien = giaBanChuoi.split("-")[0].trim();
-                    giaDauTien = giaDauTien.replace(".", "").replace(",", "");
-                    giaBanSo = Double.parseDouble(giaDauTien);
-                } catch (Exception e) {
-                    giaBanSo = 0; // Tránh sập web nếu chuỗi không hợp lệ
-                }
+            // =========================================================
+            // SỬA LỖI Ở ĐÂY: Xử lý chuỗi giá bán thành số để tính toán
+            // =========================================================
+            // Nếu khách mua dung tích (biến thể), lấy giá của biến thể
+            if (item.getVariant() != null) {
+                giaBanSo = item.getVariant().getGia_ban(); 
+            } 
+            // Nếu khách mua chai gốc (không chọn dung tích), lấy giá gốc
+            else {
+                giaBanSo = perfume.getGiaBanNumeric();
             }
             // =========================================================
 

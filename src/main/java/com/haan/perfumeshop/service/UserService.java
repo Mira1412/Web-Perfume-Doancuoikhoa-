@@ -39,7 +39,7 @@ public class UserService {
         }
 
         // 4. Kiểm tra email đã tồn tại trong hệ thống chưa
-        User existingUser = userRepository.findByEmail(email.trim().toLowerCase());
+        User existingUser = userRepository.findByEmail(email.trim().toLowerCase()).orElse(null);
         if (existingUser != null) {
             throw new Exception("Email \"" + email + "\" đã được đăng ký. Vui lòng dùng email khác!");
         }
@@ -66,7 +66,7 @@ public class UserService {
             throw new Exception("Vui lòng nhập mật khẩu!");
         }
 
-        User user = userRepository.findByEmail(email.trim().toLowerCase());
+        User user = userRepository.findByEmail(email.trim().toLowerCase()).orElse(null);
 
         // Nếu không tìm thấy user hoặc sai mật khẩu
         if (user == null || !user.getPassword().equals(password)) {

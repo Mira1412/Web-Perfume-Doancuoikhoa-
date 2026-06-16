@@ -15,7 +15,7 @@ public class DataSeeder implements CommandLineRunner {
     @Override
     public void run(String... args) throws Exception {
 
-        if (userRepository.findByEmail("admin@haan.vn") == null) {
+        if (userRepository.findByEmail("admin@haan.vn").isEmpty()) {
             User admin = new User();
             admin.setEmail("admin@haan.vn");
             admin.setPassword("123456");

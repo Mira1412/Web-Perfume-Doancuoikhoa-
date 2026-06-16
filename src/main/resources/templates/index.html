@@ -756,6 +756,7 @@
                         <i class="bi bi-bag"></i> Giỏ hàng
                     </a>
                 </li>
+                <li><a href="/profile" class="nav-link-item"><i class="bi bi-person-circle"></i> Hồ sơ</a></li>
                 <li>
                     <a href="/orders" class="nav-link-item">
                         <i class="bi bi-receipt"></i> Đơn hàng của tôi
@@ -846,61 +847,64 @@
                 </span>
             </div>
 
-            <!-- ====== BỘ LỌC ====== -->
-            <form method="GET" action="/" id="filter-form">
-                <div class="filter-bar">
-                    <span class="filter-label"><i class="bi bi-funnel"></i> Lọc:</span>
+            <div class="row">
+                <!-- ====== BỘ LỌC (CỘT TRÁI) ====== -->
+                <div class="col-lg-3 col-md-4 mb-4">
+                    <form action="/" method="GET" class="filter-form p-4" style="background: var(--dark-2); border-radius: 16px; border: 1px solid var(--border); position: sticky; top: 90px;">
+                        <h5 style="color: var(--gold); font-weight: 600; margin-bottom: 20px;">
+                            <i class="bi bi-funnel"></i> Bộ Lọc Sản Phẩm
+                        </h5>
+                        
+                        <input type="hidden" name="keyword" th:value="${keyword}">
 
-                    <!-- Dropdown Thương hiệu -->
-                    <select name="thuong_hieu" class="filter-select"
-                            th:classappend="${selectedThuongHieu != null and selectedThuongHieu != ''} ? 'active-filter' : ''"
-                            onchange="this.form.submit()">
-                        <option value="">Tất cả thương hiệu</option>
-                        <option th:each="th : ${thuongHieus}"
-                                th:value="${th}"
-                                th:text="${th}"
-                                th:selected="${th == selectedThuongHieu}">
-                        </option>
-                    </select>
+                        <div class="mb-4">
+                            <label class="form-label" style="color: var(--text-primary); font-size: 0.9rem;">Thương hiệu</label>
+                            <select name="thuong_hieu" class="form-select" style="background: var(--dark-3); color: var(--text-primary); border-color: rgba(255,255,255,0.1);">
+                                <option value="">-- Tất cả --</option>
+                                <option th:each="th : ${thuongHieus}" 
+                                        th:value="${th}" 
+                                        th:text="${th}" 
+                                        th:selected="${th == selectedThuongHieu}"></option>
+                            </select>
+                        </div>
 
-                    <!-- Dropdown Nhóm hương -->
-                    <select name="nhom_huong" class="filter-select"
-                            th:classappend="${selectedNhomHuong != null and selectedNhomHuong != ''} ? 'active-filter' : ''"
-                            onchange="this.form.submit()">
-                        <option value="">Tất cả nhóm hương</option>
-                        <option th:each="nh : ${nhomHuongs}"
-                                th:value="${nh}"
-                                th:text="${nh}"
-                                th:selected="${nh == selectedNhomHuong}">
-                        </option>
-                    </select>
+                        <div class="mb-4">
+                            <label class="form-label" style="color: var(--text-primary); font-size: 0.9rem;">Nhóm hương</label>
+                            <select name="nhom_huong" class="form-select" style="background: var(--dark-3); color: var(--text-primary); border-color: rgba(255,255,255,0.1);">
+                                <option value="">-- Tất cả --</option>
+                                <option th:each="nh : ${nhomHuongs}" 
+                                        th:value="${nh}" 
+                                        th:text="${nh}" 
+                                        th:selected="${nh == selectedNhomHuong}"></option>
+                            </select>
+                        </div>
 
-                    <!-- Dropdown Khoảng giá -->
-                    <select name="gia_range" class="filter-select"
-                            th:classappend="${selectedGiaRange != null and selectedGiaRange != ''} ? 'active-filter' : ''"
-                            onchange="this.form.submit()">
-                        <option value="">Tất cả mức giá</option>
-                        <option value="duoi1tr"  th:selected="${selectedGiaRange == 'duoi1tr'}">Dưới 1 triệu</option>
-                        <option value="1tr_3tr"  th:selected="${selectedGiaRange == '1tr_3tr'}">1 – 3 triệu</option>
-                        <option value="3tr_5tr"  th:selected="${selectedGiaRange == '3tr_5tr'}">3 – 5 triệu</option>
-                        <option value="tren5tr"  th:selected="${selectedGiaRange == 'tren5tr'}">Trên 5 triệu</option>
-                    </select>
+                        <div class="mb-4">
+                            <label class="form-label" style="color: var(--text-primary); font-size: 0.9rem;">Mức giá</label>
+                            <select name="gia_range" class="form-select" style="background: var(--dark-3); color: var(--text-primary); border-color: rgba(255,255,255,0.1);">
+                                <option value="">-- Tất cả --</option>
+                                <option value="duoi1tr" th:selected="${selectedGiaRange == 'duoi1tr'}">Dưới 1.000.000 đ</option>
+                                <option value="1tr_3tr" th:selected="${selectedGiaRange == '1tr_3tr'}">1.000.000 đ - 3.000.000 đ</option>
+                                <option value="3tr_5tr" th:selected="${selectedGiaRange == '3tr_5tr'}">3.000.000 đ - 5.000.000 đ</option>
+                                <option value="tren5tr" th:selected="${selectedGiaRange == 'tren5tr'}">Trên 5.000.000 đ</option>
+                            </select>
+                        </div>
 
-                    <!-- Nút Xóa bộ lọc (chỉ hiện khi đang lọc) -->
-                    <a href="/" class="btn-clear-filter"
-                       th:if="${(selectedThuongHieu != null and selectedThuongHieu != '') or (selectedNhomHuong != null and selectedNhomHuong != '') or (selectedGiaRange != null and selectedGiaRange != '')}">
-                        <i class="bi bi-x-circle"></i> Xóa bộ lọc
-                    </a>
-
-                    <!-- Thông tin kết quả -->
-                    <span class="filter-result-info" th:if="${totalItems != null}">
-                        Tìm thấy <strong th:text="${totalItems}">0</strong> sản phẩm
-                    </span>
+                        <button type="submit" class="btn w-100 mb-2" style="background: linear-gradient(135deg, var(--gold), var(--gold-dark)); color: #1a1a1a; font-weight: 600; border-radius: 10px;">
+                            Áp Dụng
+                        </button>
+                        
+                        <a href="/" class="btn w-100" style="border: 1px solid rgba(255,255,255,0.1); color: var(--text-muted); border-radius: 10px;">
+                            Xóa Lọc
+                        </a>
+                    </form>
                 </div>
-            </form>
+
+                <!-- ====== DANH SÁCH SẢN PHẨM (CỘT PHẢI) ====== -->
+                <div class="col-lg-9 col-md-8">
 
             <!-- ====== TÌM KIẾM ====== -->
-            <div class="container mt-4 mb-4">
+            <div class="mt-4 mb-4">
                 <form action="/" method="GET" class="d-flex" style="max-width: 500px; margin: 0 auto;">
                     <div class="input-group">
                         <span class="input-group-text" style="background: var(--dark-3); border-color: var(--border); color: var(--gold);">
@@ -1015,6 +1019,8 @@
                th:if="${totalPages != null and totalPages > 1}">
                 Trang <span th:text="${currentPage + 1}">1</span> / <span th:text="${totalPages}">1</span>
             </p>
+                </div> <!-- End Cột Phải -->
+            </div> <!-- End Row -->
 
         </div>
     </section>
