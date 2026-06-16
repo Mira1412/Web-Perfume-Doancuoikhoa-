@@ -899,6 +899,28 @@
                 </div>
             </form>
 
+            <!-- ====== TÌM KIẾM ====== -->
+            <div class="container mt-4 mb-4">
+                <form action="/" method="GET" class="d-flex" style="max-width: 500px; margin: 0 auto;">
+                    <div class="input-group">
+                        <span class="input-group-text" style="background: var(--dark-3); border-color: var(--border); color: var(--gold);">
+                            <i class="bi bi-search"></i>
+                        </span>
+                        <input type="text" name="keyword" th:value="${keyword}" class="form-control" 
+                               placeholder="Tìm tên nước hoa hoặc thương hiệu..." 
+                               style="background: var(--dark-2); border-color: var(--border); color: var(--text-primary);">
+                        <button type="submit" class="btn" style="background: linear-gradient(135deg, var(--gold), var(--gold-dark)); color: #1a1a1a; font-weight: 600;">
+                            Tìm kiếm
+                        </button>
+                    </div>
+                </form>
+                
+                <div th:if="${perfumes.empty and keyword != null}" class="text-center mt-4">
+                    <p style="color: var(--text-muted);">Không tìm thấy sản phẩm nào khớp với từ khóa "<span th:text="${keyword}" style="color: var(--gold);"></span>".</p>
+                    <a href="/" class="btn btn-sm btn-outline-secondary mt-2">Xóa tìm kiếm</a>
+                </div>
+            </div>
+
             <!-- ====== LƯỚI SẢN PHẨM ====== -->
             <div class="products-grid">
                 <!-- Empty state -->

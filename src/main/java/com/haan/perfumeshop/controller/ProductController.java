@@ -34,13 +34,20 @@ public class ProductController {
 
     @GetMapping({ "", "/", "/index" })
     public String showHomePage(
+            @RequestParam(value = "keyword", required = false) String keyword,
             @RequestParam(value = "thuong_hieu", required = false) String thuongHieu,
             @RequestParam(value = "nhom_huong", required = false) String nhomHuong,
             @RequestParam(value = "gia_range", required = false) String giaRange,
             @RequestParam(value = "page", defaultValue = "0") int page,
             Model model) {
 
-        List<Perfume> filtered = perfumeRepository.findAll(PerfumeSpecification.filter(thuongHieu, nhomHuong));
+        List<Perfume> filtered;
+        if (keyword != null && !keyword.trim().isEmpty()) {
+            filtered = perfumeRepository.searchPerfumes(keyword.trim());
+            model.addAttribute("keyword", keyword);
+        } else {
+            filtered = perfumeRepository.findAll(PerfumeSpecification.filter(thuongHieu, nhomHuong));
+        }
 
         if (giaRange != null && !giaRange.isEmpty()) {
             filtered = filtered.stream().filter(p -> {

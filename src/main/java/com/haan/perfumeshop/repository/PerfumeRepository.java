@@ -17,4 +17,9 @@ public interface PerfumeRepository extends JpaRepository<Perfume, Long>, JpaSpec
     // Lấy danh sách các nhóm hương duy nhất để hiển thị trong dropdown bộ lọc
     @Query("SELECT DISTINCT p.nhom_huong FROM Perfume p WHERE p.nhom_huong IS NOT NULL ORDER BY p.nhom_huong")
     List<String> findDistinctNhomHuong();
+
+    // BỔ SUNG HÀM TÌM KIẾM
+    // LOWER() giúp tìm kiếm không phân biệt chữ hoa, chữ thường
+    @Query("SELECT p FROM Perfume p WHERE LOWER(p.ten_sp) LIKE LOWER(CONCAT('%', :keyword, '%')) OR LOWER(p.thuong_hieu) LIKE LOWER(CONCAT('%', :keyword, '%'))")
+    List<Perfume> searchPerfumes(@org.springframework.data.repository.query.Param("keyword") String keyword);
 }
