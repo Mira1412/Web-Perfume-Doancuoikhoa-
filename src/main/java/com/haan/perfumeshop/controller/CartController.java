@@ -72,4 +72,17 @@ public class CartController {
         cartService.removeFromCart(idGioHang);
         return ResponseEntity.ok("Đã xóa sản phẩm khỏi giỏ hàng thành công!");
     }
+
+    @PutMapping("/update/{idGioHang}")
+    public ResponseEntity<String> updateQuantity(@PathVariable Long idGioHang, @RequestParam("quantity") int quantity) {
+        try {
+            Cart updated = cartService.updateQuantity(idGioHang, quantity);
+            if (updated != null) {
+                return ResponseEntity.ok("Cập nhật số lượng thành công!");
+            }
+            return ResponseEntity.status(400).body("Không thể cập nhật số lượng!");
+        } catch (Exception e) {
+            return ResponseEntity.status(500).body("Lỗi: " + e.getMessage());
+        }
+    }
 }

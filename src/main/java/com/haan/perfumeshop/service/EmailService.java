@@ -47,12 +47,30 @@ public class EmailService {
 
         // Tạo lệnh gửi
         SimpleMailMessage message = new SimpleMailMessage();
-        message.setFrom("no-reply@haloshop.com");
+        message.setFrom("lucy139200556@gmail.com");
         message.setTo(toEmail);
         message.setSubject(subject);
         message.setText(body);
 
         // Thực thi gửi
+        mailSender.send(message);
+    }
+
+    // Hàm gửi mật khẩu tạm thời khi khách quên mật khẩu
+    public void sendForgotPasswordEmail(String toEmail, String temporaryPassword) {
+        SimpleMailMessage message = new SimpleMailMessage();
+        message.setFrom("lucy139200556@gmail.com");
+        message.setTo(toEmail);
+        message.setSubject("🌸 Khôi phục mật khẩu tài khoản Halo Shop");
+        
+        String body = "Xin chào,\n\n"
+                + "Hệ thống nhận được yêu cầu khôi phục mật khẩu cho tài khoản gắn liền với Email này.\n"
+                + "Mật khẩu tạm thời mới của bạn là: " + temporaryPassword + "\n\n"
+                + "Vui lòng sử dụng mật khẩu này để đăng nhập lại vào hệ thống. Sau khi đăng nhập thành công, bạn nên vào ngay trang 'Hồ sơ cá nhân' để đổi lại mật khẩu mới nhằm bảo mật tài khoản.\n\n"
+                + "Trân trọng,\n"
+                + "Đội ngũ Halo Shop.";
+                
+        message.setText(body);
         mailSender.send(message);
     }
 }

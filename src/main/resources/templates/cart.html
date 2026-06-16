@@ -233,6 +233,46 @@
             min-width: 40px;
         }
 
+        .cart-qty-wrapper {
+            display: inline-flex;
+            align-items: center;
+            background: rgba(255,255,255,0.05);
+            border: 1px solid rgba(255,255,255,0.1);
+            border-radius: 10px;
+            overflow: hidden;
+        }
+
+        .cart-qty-btn {
+            background: transparent;
+            border: none;
+            color: var(--text-primary);
+            width: 34px;
+            height: 34px;
+            cursor: pointer;
+            font-size: 1rem;
+            font-weight: 600;
+            transition: all 0.2s;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .cart-qty-btn:hover {
+            background: rgba(201, 169, 110, 0.2);
+            color: var(--gold);
+        }
+
+        .cart-qty-value {
+            min-width: 36px;
+            text-align: center;
+            font-size: 0.9rem;
+            font-weight: 600;
+            color: var(--text-primary);
+            border-left: 1px solid rgba(255,255,255,0.08);
+            border-right: 1px solid rgba(255,255,255,0.08);
+            padding: 6px 0;
+        }
+
         .cart-subtotal {
             font-family: 'Inter', sans-serif;
             font-size: 1.1rem;
@@ -571,7 +611,11 @@
                                     </td>
                                     
                                     <td data-label="Số lượng">
-                                        <span class="cart-qty-badge" th:text="${item.so_luong}">1</span>
+                                        <div class="cart-qty-wrapper">
+                                            <button class="cart-qty-btn" th:onclick="'updateQty(' + ${item.id} + ', ' + (${item.so_luong} - 1) + ')'" th:disabled="${item.so_luong <= 1}">−</button>
+                                            <span class="cart-qty-value" th:text="${item.so_luong}">1</span>
+                                            <button class="cart-qty-btn" th:onclick="'updateQty(' + ${item.id} + ', ' + (${item.so_luong} + 1) + ')'">+</button>
+                                        </div>
                                     </td>
                                     
                                     <td data-label="Thành tiền">
@@ -674,6 +718,21 @@
                     }
                 })
                 .catch(() => showToast('Không thể kết nối, vui lòng thử lại.', 'error'));
+        }
+
+        function updateQty(idGioHang, newQty) {
+            if (newQty < 1) return;
+            fetch('/api/cart/update/' + idGioHang + '?quantity=' + newQty, {
+                method: 'PUT'
+            })
+            .then(response => {
+                if (response.ok) {
+                    window.location.reload(); // Tải lại trang để cập nhật giá tiền
+                } else {
+                    showToast('Không thể cập nhật số lượng!', 'error');
+                }
+            })
+            .catch(() => showToast('Không thể kết nối, vui lòng thử lại.', 'error'));
         }
 
         function checkoutOrder() {

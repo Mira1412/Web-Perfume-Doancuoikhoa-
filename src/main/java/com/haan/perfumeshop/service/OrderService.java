@@ -22,11 +22,20 @@ public class OrderService {
     @Autowired
     private CartService cartService;
 
+    @Autowired
+    private EmailService emailService; // Dịch vụ gửi email
+
+    @Autowired
+    private UserRepository userRepository; // Để lấy thông tin User đầy đủ từ Database
+
     // Logic Chốt Đơn Hàng từ Giỏ Hàng (Cài đặt Quy tắc 2 - Kiểm tra và trừ tồn kho)
     @Transactional(rollbackFor = Exception.class)
     public Order checkoutOrder(User user) throws Exception {
+        // 0. Lấy thông tin User đầy đủ từ Database (để có email, họ tên... phục vụ gửi mail)
+        User fullUser = userRepository.findById(user.getId_user()).orElse(user);
+
         // 1. Lấy toàn bộ món đồ trong giỏ của khách ra
-        List<Cart> cartItems = cartService.getCartByUserId(user.getId_user());
+        List<Cart> cartItems = cartService.getCartByUserId(fullUser.getId_user());
         if (cartItems.isEmpty()) {
             throw new Exception("Giỏ hàng của bạn đang trống, không thể đặt hàng!");
         }
@@ -42,7 +51,7 @@ public class OrderService {
 
         // 3. Nếu mọi thứ hợp lệ, tiến hành tạo đơn hàng tổng (Order)
         Order order = new Order();
-        order.setUser(user);
+        order.setUser(fullUser);
         order.setTrang_thai("Pending");
         Order savedOrder = orderRepository.save(order);
 
@@ -89,7 +98,15 @@ public class OrderService {
         orderRepository.save(savedOrder);
 
         // 5. Đặt hàng hoàn tất, tiến hành xóa sạch giỏ hàng tạm thời
-        cartService.clearCart(user.getId_user());
+        cartService.clearCart(fullUser.getId_user());
+
+        // 6. Gửi email xác nhận đơn hàng cho khách
+        try {
+            emailService.sendOrderConfirmationEmail(savedOrder);
+        } catch (Exception e) {
+            // Nếu gửi mail thất bại thì vẫn cho đặt hàng thành công, chỉ in log lỗi
+            System.out.println("⚠️ Gửi email xác nhận thất bại: " + e.getMessage());
+        }
 
         return savedOrder;
     }

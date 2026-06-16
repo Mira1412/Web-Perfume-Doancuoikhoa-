@@ -10,12 +10,16 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
+import com.haan.perfumeshop.service.EmailService;
 
 @Controller
 public class UserController {
 
     @Autowired
     private UserRepository userRepository;
+
+    @Autowired
+    private EmailService emailService; // Khai báo gọi dịch vụ gửi mail
 
     // 1. Hiển thị trang Hồ sơ cá nhân
     @GetMapping("/profile")
@@ -191,6 +195,52 @@ public class UserController {
 
         // Đăng ký xong thì đá về trang Login kèm thông báo
         redirectAttributes.addFlashAttribute("successMsg", "Đăng ký thành công! Vui lòng đăng nhập.");
+        return "redirect:/login";
+    }
+
+    // ==========================================
+    // CHỨC NĂNG QUÊN MẬT KHẨU
+    // ==========================================
+
+    // 1. Hiển thị trang Quên mật khẩu
+    @GetMapping("/forgot-password")
+    public String showForgotPasswordPage(HttpSession session) {
+        if (session.getAttribute("loggedInUser") != null) {
+            return "redirect:/";
+        }
+        return "forgot-password"; // Gọi file forgot-password.html
+    }
+
+    // 2. Xử lý khi khách bấm nút "Gửi yêu cầu"
+    @PostMapping("/forgot-password")
+    public String processForgotPassword(
+            @RequestParam("email") String email,
+            RedirectAttributes redirectAttributes) {
+
+        // Tìm xem email khách nhập có tồn tại trong hệ thống không
+        User user = userRepository.findByEmail(email).orElse(null);
+        if (user == null) {
+            redirectAttributes.addFlashAttribute("errorMsg", "Email này không tồn tại trong hệ thống!");
+            return "redirect:/forgot-password";
+        }
+
+        // Tạo một chuỗi mật khẩu ngẫu nhiên dài 8 ký tự (dùng UUID của Java)
+        String tempPassword = java.util.UUID.randomUUID().toString().substring(0, 8);
+
+        // Lưu mật khẩu tạm thời này vào Database của khách
+        user.setPassword(tempPassword);
+        userRepository.save(user);
+
+        // Thực thi gửi mail chứa mật khẩu tạm thời cho khách
+        try {
+            emailService.sendForgotPasswordEmail(email, tempPassword);
+            redirectAttributes.addFlashAttribute("successMsg", "Mật khẩu mới đã được gửi vào Gmail của bạn. Vui lòng kiểm tra hộp thư!");
+        } catch (Exception e) {
+            redirectAttributes.addFlashAttribute("errorMsg", "Có lỗi xảy ra trong quá trình gửi mail: " + e.getMessage());
+            return "redirect:/forgot-password";
+        }
+
+        // Gửi thành công thì chuyển hướng khách về trang Login để họ đăng nhập bằng pass mới
         return "redirect:/login";
     }
 }

@@ -63,6 +63,16 @@ public class CartService {
         return cartRepository.save(cart);
     }
 
+    // Cập nhật số lượng sản phẩm trong giỏ hàng
+    public Cart updateQuantity(Long idGioHang, int newQuantity) {
+        Cart cart = cartRepository.findById(idGioHang).orElse(null);
+        if (cart != null && newQuantity > 0) {
+            cart.setSo_luong(newQuantity);
+            return cartRepository.save(cart);
+        }
+        return cart;
+    }
+
     // Xóa một món đồ khỏi giỏ hàng
     public void removeFromCart(Long idGioHang) {
         cartRepository.deleteById(idGioHang);
