@@ -5,7 +5,7 @@ import lombok.Data;
 import lombok.ToString;
 import lombok.EqualsAndHashCode;
 import java.util.List;
-
+import java.util.ArrayList;
 @Entity
 @Table(name = "perfumes")
 @Data
@@ -18,8 +18,8 @@ public class Perfume {
     private String ten_sp;
     private String thuong_hieu;
     private String nhom_huong;
-    private String dung_tich;
-    private String gia_ban; // Đã đổi sang String ở bước trước
+    // private String dung_tich;
+    // private String gia_ban; // Đã đổi sang String ở bước trước
     private Integer ton_kho;
     private String hinh_anh;
 
@@ -34,15 +34,22 @@ public class Perfume {
     private String toa_huong;
     private String xuat_xu;
 
+    @Column(name = "gioi_tinh")
+    private String gioi_tinh;
+
     @ToString.Exclude
     @EqualsAndHashCode.Exclude
-    @OneToMany(mappedBy = "perfume", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
-    private List<PerfumeVariant> variants;
+    @OneToMany(mappedBy = "perfume", cascade = CascadeType.ALL, orphanRemoval = true)
+    private List<PerfumeVariant> variants = new ArrayList<>();
+
+    public List<PerfumeVariant> getVariants() { return variants; }
+    public void setVariants(List<PerfumeVariant> variants) { this.variants = variants; }
 
     public Long getId_nuoc_hoa() {
         return this.id_nuoc_hoa;
     }
 
+    /*
     public double getGiaBanNumeric() {
         if (gia_ban == null || gia_ban.isEmpty()) {
             return 0.0;
@@ -57,4 +64,5 @@ public class Perfume {
             return 0.0;
         }
     }
+    */
 }

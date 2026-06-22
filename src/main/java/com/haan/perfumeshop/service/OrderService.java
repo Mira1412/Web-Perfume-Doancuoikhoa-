@@ -2,7 +2,6 @@ package com.haan.perfumeshop.service;
 
 import com.haan.perfumeshop.model.*;
 import com.haan.perfumeshop.repository.*;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import java.util.List;
@@ -10,28 +9,32 @@ import java.util.List;
 @Service
 public class OrderService {
 
-    @Autowired
-    private OrderRepository orderRepository;
+    // 1. SỬA CẢNH BÁO VÀNG: Gom tất cả @Autowired thành Constructor Injection
+    private final OrderRepository orderRepository;
+    private final OrderDetailRepository orderDetailRepository;
+    private final PerfumeRepository perfumeRepository;
+    private final CartService cartService;
+    private final EmailService emailService;
+    private final UserRepository userRepository;
 
-    @Autowired
-    private OrderDetailRepository orderDetailRepository;
+    public OrderService(OrderRepository orderRepository,
+            OrderDetailRepository orderDetailRepository,
+            PerfumeRepository perfumeRepository,
+            CartService cartService,
+            EmailService emailService,
+            UserRepository userRepository) {
+        this.orderRepository = orderRepository;
+        this.orderDetailRepository = orderDetailRepository;
+        this.perfumeRepository = perfumeRepository;
+        this.cartService = cartService;
+        this.emailService = emailService;
+        this.userRepository = userRepository;
+    }
 
-    @Autowired
-    private PerfumeRepository perfumeRepository;
-
-    @Autowired
-    private CartService cartService;
-
-    @Autowired
-    private EmailService emailService; // Dịch vụ gửi email
-
-    @Autowired
-    private UserRepository userRepository; // Để lấy thông tin User đầy đủ từ Database
-
-    // Logic Chốt Đơn Hàng từ Giỏ Hàng (Cài đặt Quy tắc 2 - Kiểm tra và trừ tồn kho)
+    // Logic Chốt Đơn Hàng từ Giỏ Hàng
     @Transactional(rollbackFor = Exception.class)
     public Order checkoutOrder(User user) throws Exception {
-        // 0. Lấy thông tin User đầy đủ từ Database (để có email, họ tên... phục vụ gửi mail)
+        // 0. Lấy thông tin User đầy đủ từ Database
         User fullUser = userRepository.findById(user.getId_user()).orElse(user);
 
         // 1. Lấy toàn bộ món đồ trong giỏ của khách ra
@@ -40,7 +43,9 @@ public class OrderService {
             throw new Exception("Giỏ hàng của bạn đang trống, không thể đặt hàng!");
         }
 
-        // 2. Kiểm tra hàng tồn kho trước khi tạo hóa đơn (Quy tắc 2)
+        // 2. Kiểm tra hàng tồn kho trước khi tạo hóa đơn
+        // (Lưu ý: Tạm thời vẫn trừ tồn kho ở chai gốc. Nếu sau này bạn muốn trừ tồn kho
+        // chi tiết theo từng biến thể dung tích, bạn sẽ cập nhật thêm ở đây).
         for (Cart item : cartItems) {
             Perfume perfume = item.getPerfume();
             if (perfume.getTon_kho() < item.getSo_luong()) {
@@ -56,25 +61,27 @@ public class OrderService {
         Order savedOrder = orderRepository.save(order);
 
         double tongTien = 0.0;
+
         // 4. Lưu chi tiết đơn hàng và thực hiện trừ số lượng tồn kho vật lý
         for (Cart item : cartItems) {
             Perfume perfume = item.getPerfume();
-
-            // =========================================================
-            // SỬA LỖI Ở ĐÂY: Xử lý chuỗi giá bán thành số để tính toán
-            // =========================================================
             double giaBanSo = 0;
 
             // =========================================================
-            // SỬA LỖI Ở ĐÂY: Xử lý chuỗi giá bán thành số để tính toán
+            // 2. SỬA LỖI ĐỎ: Xử lý chuỗi giá bán thành số để tính toán
             // =========================================================
-            // Nếu khách mua dung tích (biến thể), lấy giá của biến thể
-            if (item.getVariant() != null) {
-                giaBanSo = item.getVariant().getGia_ban(); 
-            } 
-            // Nếu khách mua chai gốc (không chọn dung tích), lấy giá gốc
-            else {
-                giaBanSo = perfume.getGiaBanNumeric();
+            try {
+                if (item.getVariant() != null && item.getVariant().getGia_ban() != null) {
+                    // Lấy giá từ biến thể và ép kiểu thành số
+                    String priceStr = item.getVariant().getGia_ban().replaceAll("[^\\d]", "");
+                    giaBanSo = Double.parseDouble(priceStr);
+                } else if (perfume.getVariants() != null && !perfume.getVariants().isEmpty()) {
+                    // Nếu không có biến thể cụ thể, lấy giá của biến thể đầu tiên làm mặc định
+                    String priceStr = perfume.getVariants().get(0).getGia_ban().replaceAll("[^\\d]", "");
+                    giaBanSo = Double.parseDouble(priceStr);
+                }
+            } catch (Exception e) {
+                giaBanSo = 0; // Chống sập hệ thống nếu lỗi parse số
             }
             // =========================================================
 
@@ -83,10 +90,10 @@ public class OrderService {
             detail.setOrder(savedOrder);
             detail.setPerfume(perfume);
             detail.setSo_luong_mua(item.getSo_luong());
-            detail.setGia_luc_mua(giaBanSo); // Đã sử dụng biến giá tiền bằng số
+            detail.setGia_luc_mua(giaBanSo);
             orderDetailRepository.save(detail);
 
-            tongTien += (item.getSo_luong() * giaBanSo); // Đã sử dụng biến giá tiền bằng số
+            tongTien += (item.getSo_luong() * giaBanSo);
 
             // Cập nhật lại số lượng tồn kho mới sau khi trừ
             perfume.setTon_kho(perfume.getTon_kho() - item.getSo_luong());
@@ -110,4 +117,4 @@ public class OrderService {
 
         return savedOrder;
     }
-}   
+}

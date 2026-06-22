@@ -4,6 +4,7 @@ import com.haan.perfumeshop.model.User;
 import com.haan.perfumeshop.repository.UserRepository;
 import jakarta.servlet.http.HttpSession;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -20,6 +21,9 @@ public class UserController {
 
     @Autowired
     private EmailService emailService; // Khai báo gọi dịch vụ gửi mail
+
+    @Autowired
+    private BCryptPasswordEncoder passwordEncoder;
 
     // 1. Hiển thị trang Hồ sơ cá nhân
     @GetMapping("/profile")
@@ -79,9 +83,8 @@ public class UserController {
 
         User currentUser = userRepository.findById(loggedInUser.getId_user()).orElse(null);
 
-        // Kiểm tra mật khẩu cũ (Tạm thời so sánh chuỗi, ở Phần 2 chúng ta sẽ thay bằng
-        // BCrypt)
-        if (!currentUser.getPassword().equals(oldPassword)) {
+        // Kiểm tra mật khẩu cũ bằng hàm matches
+        if (!passwordEncoder.matches(oldPassword, currentUser.getPassword())) {
             redirectAttributes.addFlashAttribute("errorMsg", "Mật khẩu cũ không chính xác!");
             return "redirect:/profile";
         }
@@ -92,8 +95,8 @@ public class UserController {
             return "redirect:/profile";
         }
 
-        // Lưu mật khẩu mới
-        currentUser.setPassword(newPassword);
+        // Mã hóa mật khẩu mới trước khi lưu
+        currentUser.setPassword(passwordEncoder.encode(newPassword));
         userRepository.save(currentUser);
 
         redirectAttributes.addFlashAttribute("successMsg", "Đổi mật khẩu thành công!");
@@ -125,9 +128,8 @@ public class UserController {
         // Tìm user theo email
         User user = userRepository.findByEmail(email).orElse(null);
 
-        // Kiểm tra xem user có tồn tại và mật khẩu có khớp không
-        // (Tạm thời so sánh chữ thường, lát nữa qua phần Mã hóa mình sẽ nâng cấp sau)
-        if (user != null && user.getPassword().equals(password)) {
+        // Kiểm tra xem user có tồn tại và mật khẩu có khớp không (dùng BCrypt)
+        if (user != null && passwordEncoder.matches(password, user.getPassword())) {
             // Đăng nhập thành công -> Lưu user vào Session
             session.setAttribute("loggedInUser", user);
             
@@ -188,7 +190,7 @@ public class UserController {
         User newUser = new User();
         newUser.setFullName(fullName);
         newUser.setEmail(email);
-        newUser.setPassword(password); // Tạm thời lưu thẳng mật khẩu, nếu cần mã hóa mình sẽ nâng cấp sau
+        newUser.setPassword(passwordEncoder.encode(password)); // Mã hóa mật khẩu bằng BCrypt trước khi lưu
         newUser.setRole("user"); 
 
         userRepository.save(newUser);
@@ -227,8 +229,8 @@ public class UserController {
         // Tạo một chuỗi mật khẩu ngẫu nhiên dài 8 ký tự (dùng UUID của Java)
         String tempPassword = java.util.UUID.randomUUID().toString().substring(0, 8);
 
-        // Lưu mật khẩu tạm thời này vào Database của khách
-        user.setPassword(tempPassword);
+        // Lưu mật khẩu tạm thời đã mã hóa vào Database
+        user.setPassword(passwordEncoder.encode(tempPassword));
         userRepository.save(user);
 
         // Thực thi gửi mail chứa mật khẩu tạm thời cho khách

@@ -1,0 +1,845 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org" lang="vi">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title th:text="${title} + ' — Admin Halo'"></title>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.0/font/bootstrap-icons.css" rel="stylesheet">
+    <style>
+        :root {
+            --gold: #c9a96e;
+            --gold-light: #e8d5b0;
+            --gold-dark: #a07840;
+            --dark: #0d0d1a;
+            --dark-2: #141428;
+            --dark-3: #1c1c35;
+            --dark-4: #222240;
+            --text-primary: #f0ece4;
+            --text-muted: rgba(240, 236, 228, 0.5);
+            --border: rgba(201, 169, 110, 0.2);
+            --success: #6fc97a;
+            --danger: #ff6b7a;
+            --warning: #ffca28;
+        }
+
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+
+        body {
+            background-color: var(--dark);
+            font-family: 'Inter', sans-serif;
+            color: var(--text-primary);
+            min-height: 100vh;
+            padding: 40px 0;
+        }
+
+        /* ====== CARD ====== */
+        .card-custom {
+            background: var(--dark-2);
+            border: 1px solid var(--border);
+            border-radius: 20px;
+            padding: 0;
+            box-shadow: 0 15px 40px rgba(0,0,0,0.5);
+            overflow: hidden;
+        }
+
+        .card-header-custom {
+            background: linear-gradient(135deg, rgba(201, 169, 110, 0.1), rgba(201, 169, 110, 0.03));
+            border-bottom: 1px solid var(--border);
+            padding: 28px 36px;
+            display: flex;
+            align-items: center;
+            gap: 16px;
+        }
+
+        .card-header-icon {
+            width: 52px;
+            height: 52px;
+            border-radius: 14px;
+            background: rgba(201, 169, 110, 0.15);
+            color: var(--gold);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 1.4rem;
+        }
+
+        .card-header-custom h3 {
+            font-size: 1.25rem;
+            font-weight: 600;
+            color: #fff;
+            margin: 0;
+        }
+
+        .card-header-custom p {
+            font-size: 0.8rem;
+            color: var(--text-muted);
+            margin: 4px 0 0 0;
+        }
+
+        .card-body-custom {
+            padding: 36px;
+        }
+
+        /* ====== BACK LINK ====== */
+        .back-link {
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+            color: var(--gold);
+            text-decoration: none;
+            font-size: 0.88rem;
+            font-weight: 500;
+            padding: 8px 16px;
+            border-radius: 10px;
+            transition: all 0.2s;
+            margin-bottom: 24px;
+        }
+
+        .back-link:hover {
+            background: rgba(201, 169, 110, 0.1);
+            color: var(--gold-light);
+        }
+
+        /* ====== FORM FIELDS ====== */
+        .form-control, .form-select {
+            background: var(--dark-3);
+            border: 1px solid rgba(255,255,255,0.08);
+            color: #fff;
+            padding: 12px 16px;
+            border-radius: 10px;
+            font-family: 'Inter', sans-serif;
+            font-size: 0.9rem;
+            transition: all 0.25s ease;
+        }
+
+        .form-control:focus, .form-select:focus {
+            background: var(--dark-4);
+            border-color: var(--gold);
+            color: #fff;
+            box-shadow: 0 0 0 3px rgba(201, 169, 110, 0.15);
+        }
+
+        .form-control:hover:not(:focus), .form-select:hover:not(:focus) {
+            border-color: rgba(255, 255, 255, 0.15);
+        }
+
+        .form-control::placeholder {
+            color: rgba(240, 236, 228, 0.25);
+        }
+
+        .form-label {
+            font-size: 0.82rem;
+            font-weight: 500;
+            color: var(--text-muted);
+            text-transform: uppercase;
+            letter-spacing: 0.6px;
+            margin-bottom: 8px;
+        }
+
+        .required-star {
+            color: var(--danger);
+            margin-left: 3px;
+        }
+
+        /* ====== SECTION DIVIDER ====== */
+        .section-label {
+            font-size: 0.72rem;
+            font-weight: 600;
+            color: var(--gold);
+            text-transform: uppercase;
+            letter-spacing: 1.2px;
+            margin: 28px 0 18px;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .section-label::after {
+            content: '';
+            flex: 1;
+            height: 1px;
+            background: rgba(201, 169, 110, 0.15);
+        }
+
+        .section-label i {
+            font-size: 0.85rem;
+        }
+
+        /* ====== VALIDATION STYLES ====== */
+        .form-control.is-invalid, .form-select.is-invalid {
+            border-color: var(--danger) !important;
+            box-shadow: 0 0 0 3px rgba(255, 107, 122, 0.15) !important;
+        }
+
+        .form-control.is-valid, .form-select.is-valid {
+            border-color: var(--success) !important;
+            box-shadow: 0 0 0 3px rgba(111, 201, 122, 0.1) !important;
+        }
+
+        .invalid-feedback {
+            display: none;
+            font-size: 0.78rem;
+            color: var(--danger);
+            margin-top: 6px;
+            align-items: center;
+            gap: 5px;
+        }
+
+        .invalid-feedback.show {
+            display: flex;
+        }
+
+        .invalid-feedback i {
+            font-size: 0.72rem;
+        }
+
+        .char-counter {
+            font-size: 0.72rem;
+            color: var(--text-muted);
+            text-align: right;
+            margin-top: 4px;
+            transition: color 0.2s;
+        }
+
+        .char-counter.warning {
+            color: var(--warning);
+        }
+
+        .char-counter.danger {
+            color: var(--danger);
+        }
+
+        .form-hint {
+            font-size: 0.75rem;
+            color: var(--text-muted);
+            margin-top: 6px;
+            display: flex;
+            align-items: center;
+            gap: 5px;
+        }
+
+        .form-hint i {
+            font-size: 0.7rem;
+        }
+
+        /* ====== FILE UPLOAD ====== */
+        .file-upload-area {
+            border: 2px dashed rgba(255, 255, 255, 0.1);
+            border-radius: 14px;
+            padding: 28px 20px;
+            text-align: center;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            position: relative;
+        }
+
+        .file-upload-area:hover {
+            border-color: var(--gold);
+            background: rgba(201, 169, 110, 0.05);
+        }
+
+        .file-upload-area.dragging {
+            border-color: var(--gold);
+            background: rgba(201, 169, 110, 0.08);
+        }
+
+        .file-upload-area .upload-icon {
+            font-size: 2rem;
+            color: var(--text-muted);
+            margin-bottom: 8px;
+            transition: color 0.3s;
+        }
+
+        .file-upload-area:hover .upload-icon {
+            color: var(--gold);
+        }
+
+        .file-upload-area .upload-text {
+            font-size: 0.85rem;
+            color: var(--text-muted);
+        }
+
+        .file-upload-area .upload-text strong {
+            color: var(--gold);
+        }
+
+        .file-upload-area .upload-hint {
+            font-size: 0.72rem;
+            color: rgba(240, 236, 228, 0.3);
+            margin-top: 4px;
+        }
+
+        .file-upload-area input[type="file"] {
+            position: absolute;
+            top: 0; left: 0;
+            width: 100%; height: 100%;
+            opacity: 0;
+            cursor: pointer;
+        }
+
+        .file-info {
+            margin-top: 10px;
+            font-size: 0.8rem;
+            color: var(--gold-light);
+            display: none;
+            align-items: center;
+            gap: 6px;
+        }
+
+        .file-info.show {
+            display: flex;
+            justify-content: center;
+        }
+
+        .image-preview-box {
+            margin-top: 14px;
+            width: 140px;
+            height: 140px;
+            border: 2px solid rgba(201, 169, 110, 0.3);
+            border-radius: 14px;
+            overflow: hidden;
+            display: none;
+        }
+
+        .image-preview-box img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+        }
+
+        .image-preview-box.has-image {
+            display: inline-block;
+        }
+
+        .file-error {
+            display: none;
+            font-size: 0.78rem;
+            color: var(--danger);
+            margin-top: 8px;
+            align-items: center;
+            gap: 5px;
+        }
+
+        .file-error.show {
+            display: flex;
+            justify-content: center;
+        }
+
+        /* ====== BUTTONS ====== */
+        .btn-gold {
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+            background: linear-gradient(135deg, var(--gold), var(--gold-dark));
+            color: #1a1a1a;
+            font-weight: 600;
+            font-family: 'Inter', sans-serif;
+            border: none;
+            padding: 13px 30px;
+            border-radius: 12px;
+            font-size: 0.9rem;
+            cursor: pointer;
+            transition: all 0.25s;
+        }
+
+        .btn-gold:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 8px 25px rgba(201,169,110,0.35);
+        }
+
+        .btn-gold:active {
+            transform: translateY(0);
+        }
+
+        .btn-gold:disabled {
+            opacity: 0.5;
+            cursor: not-allowed;
+            transform: none !important;
+            box-shadow: none !important;
+        }
+
+        .btn-cancel {
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+            padding: 13px 24px;
+            background: transparent;
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            border-radius: 12px;
+            color: var(--text-muted);
+            font-family: 'Inter', sans-serif;
+            font-size: 0.9rem;
+            font-weight: 500;
+            cursor: pointer;
+            text-decoration: none;
+            transition: all 0.25s ease;
+        }
+
+        .btn-cancel:hover {
+            border-color: rgba(255, 255, 255, 0.25);
+            color: var(--text-primary);
+            background: rgba(255, 255, 255, 0.04);
+        }
+
+        .form-actions {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            padding-top: 12px;
+        }
+
+        /* ====== VALIDATION SUMMARY ====== */
+        .validation-summary {
+            display: none;
+            background: rgba(255, 107, 122, 0.1);
+            border: 1px solid rgba(255, 107, 122, 0.25);
+            border-radius: 12px;
+            padding: 16px 20px;
+            margin-bottom: 24px;
+            font-size: 0.85rem;
+            color: var(--danger);
+            align-items: center;
+            gap: 10px;
+        }
+
+        .validation-summary.show {
+            display: flex;
+        }
+
+        .validation-summary i {
+            font-size: 1.1rem;
+        }
+
+        /* ====== ANIMATIONS ====== */
+        @keyframes fadeInUp {
+            from { opacity: 0; transform: translateY(20px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        @keyframes shake {
+            0%, 100% { transform: translateX(0); }
+            25% { transform: translateX(-5px); }
+            75% { transform: translateX(5px); }
+        }
+
+        .animate-in {
+            animation: fadeInUp 0.5s ease forwards;
+        }
+
+        .shake {
+            animation: shake 0.3s ease;
+        }
+
+        /* ====== RESPONSIVE ====== */
+        @media (max-width: 768px) {
+            .card-body-custom { padding: 24px 20px; }
+            .form-actions { flex-direction: column; }
+            .btn-gold, .btn-cancel { width: 100%; justify-content: center; }
+        }
+    </style>
+</head>
+<body>
+
+    <div class="container" style="max-width: 800px;">
+        <a href="/admin/products" class="back-link">
+            <i class="bi bi-arrow-left"></i> Quay lại danh sách
+        </a>
+
+        <div class="card-custom animate-in">
+
+            <div class="card-header-custom">
+                <div class="card-header-icon">
+                    <i class="bi bi-droplet-half"></i>
+                </div>
+                <div>
+                    <h3 th:text="${title}">Tiêu đề form</h3>
+                    <p>Điền đầy đủ thông tin sản phẩm. Các trường có dấu <span style="color: #ff6b7a;">*</span> là bắt buộc.</p>
+                </div>
+            </div>
+
+            <div class="card-body-custom">
+
+                <!-- Validation Summary (hiển thị khi submit mà có lỗi) -->
+                <div class="validation-summary" id="validationSummary">
+                    <i class="bi bi-exclamation-triangle-fill"></i>
+                    <span id="validationMsg">Vui lòng kiểm tra lại các trường được đánh dấu đỏ bên dưới.</span>
+                </div>
+
+                <form th:action="@{/admin/products/save}" th:object="${perfume}" method="POST"
+                      enctype="multipart/form-data" id="productForm" novalidate>
+                    <input type="hidden" th:field="*{id_nuoc_hoa}" />
+
+                    <!-- ====== THÔNG TIN CƠ BẢN ====== -->
+                    <div class="section-label">
+                        <i class="bi bi-info-circle"></i> Thông tin cơ bản
+                    </div>
+
+                    <div class="row g-3">
+                        <!-- Tên nước hoa -->
+                        <div class="col-md-6">
+                            <label class="form-label">Tên nước hoa <span class="required-star">*</span></label>
+                            <input type="text" class="form-control" th:field="*{ten_sp}"
+                                   id="ten_sp" required minlength="2" maxlength="150"
+                                   placeholder="Ví dụ: Bleu de Chanel"
+                                   data-validate="required|minlength:2|maxlength:150">
+                            <div class="invalid-feedback" id="err-ten_sp">
+                                <i class="bi bi-exclamation-circle"></i> <span>Tên sản phẩm phải từ 2 - 150 ký tự.</span>
+                            </div>
+                            <div class="char-counter" id="counter-ten_sp">0 / 150</div>
+                        </div>
+
+                        <!-- Thương hiệu -->
+                        <div class="col-md-6">
+                            <label class="form-label">Thương hiệu <span class="required-star">*</span></label>
+                            <input type="text" class="form-control" th:field="*{thuong_hieu}"
+                                   id="thuong_hieu" required minlength="2" maxlength="100"
+                                   placeholder="Ví dụ: Chanel, Dior, Gucci..."
+                                   data-validate="required|minlength:2|maxlength:100">
+                            <div class="invalid-feedback" id="err-thuong_hieu">
+                                <i class="bi bi-exclamation-circle"></i> <span>Thương hiệu phải từ 2 - 100 ký tự.</span>
+                            </div>
+                        </div>
+
+                        <!-- Giá bán -->
+                        <div class="col-md-6">
+                            <label class="form-label">Giá bán <span class="required-star">*</span></label>
+                            <input type="text" class="form-control" th:field="*{gia_ban}"
+                                   id="gia_ban" required maxlength="50"
+                                   placeholder="Ví dụ: 2.500.000 hoặc 1.500.000 - 2.000.000"
+                                   data-validate="required|maxlength:50">
+                            <div class="invalid-feedback" id="err-gia_ban">
+                                <i class="bi bi-exclamation-circle"></i> <span>Vui lòng nhập giá bán.</span>
+                            </div>
+                            <div class="form-hint">
+                                <i class="bi bi-info-circle"></i> Cho phép nhập chữ, số và ký tự tự do
+                            </div>
+                        </div>
+
+                        <!-- Dung tích -->
+                        <div class="col-md-6">
+                            <label class="form-label">Dung tích <span class="required-star">*</span></label>
+                            <input type="text" class="form-control" th:field="*{dung_tich}"
+                                   id="dung_tich" required maxlength="50"
+                                   placeholder="Ví dụ: 100ml, 50ml..."
+                                   data-validate="required|maxlength:50">
+                            <div class="invalid-feedback" id="err-dung_tich">
+                                <i class="bi bi-exclamation-circle"></i> <span>Vui lòng nhập dung tích.</span>
+                            </div>
+                        </div>
+
+                        <!-- Nhóm hương -->
+                        <div class="col-md-6">
+                            <label class="form-label">Nhóm hương</label>
+                            <input type="text" class="form-control" th:field="*{nhom_huong}"
+                                   id="nhom_huong" maxlength="100"
+                                   placeholder="Ví dụ: Hương gỗ thơm, Hương hoa...">
+                        </div>
+
+                        <!-- Phong cách -->
+                        <div class="col-md-6">
+                            <label class="form-label">Phong cách</label>
+                            <input type="text" class="form-control" th:field="*{phong_cach}"
+                                   id="phong_cach" maxlength="100"
+                                   placeholder="Ví dụ: Sang trọng, Lịch lãm">
+                        </div>
+
+                        <!-- Giới tính -->
+                        <div class="col-md-6">
+                            <label class="form-label">Giới tính <span class="required-star">*</span></label>
+                            <select class="form-select" th:field="*{gioi_tinh}" id="gioi_tinh" required
+                                    data-validate="required">
+                                <option value="" disabled>— Chọn giới tính —</option>
+                                <option value="Nữ">Nữ</option>
+                                <option value="Nam">Nam</option>
+                                <option value="Unisex">Unisex (Nam &amp; Nữ)</option>
+                            </select>
+                            <div class="invalid-feedback" id="err-gioi_tinh">
+                                <i class="bi bi-exclamation-circle"></i> <span>Vui lòng chọn giới tính.</span>
+                            </div>
+                        </div>
+
+                        <!-- Xuất xứ -->
+                        <div class="col-md-6">
+                            <label class="form-label">Xuất xứ</label>
+                            <input type="text" class="form-control" th:field="*{xuat_xu}"
+                                   id="xuat_xu" maxlength="100"
+                                   placeholder="Ví dụ: Pháp, Ý, Tây Ban Nha...">
+                        </div>
+                    </div>
+
+                    <!-- ====== HÌNH ẢNH ====== -->
+                    <div class="section-label">
+                        <i class="bi bi-image"></i> Hình ảnh sản phẩm
+                    </div>
+
+                    <div class="file-upload-area" id="dropZone">
+                        <div class="upload-icon"><i class="bi bi-cloud-arrow-up"></i></div>
+                        <div class="upload-text">Kéo thả ảnh vào đây hoặc <strong>nhấn để chọn file</strong></div>
+                        <div class="upload-hint">Hỗ trợ: JPG, PNG, WEBP — Tối đa 5MB</div>
+                        <input type="file" name="imageFile" id="imageFileInput" accept="image/jpeg,image/png,image/webp">
+                        <div class="file-info" id="fileInfo">
+                            <i class="bi bi-file-earmark-image"></i> <span id="fileName"></span>
+                        </div>
+                    </div>
+                    <div class="file-error" id="fileError">
+                        <i class="bi bi-exclamation-circle"></i> <span id="fileErrorMsg"></span>
+                    </div>
+                    <div class="image-preview-box" id="imagePreview">
+                        <img id="previewImg" src="" alt="Preview">
+                    </div>
+                    <div class="form-hint" style="margin-top: 10px;">
+                        <i class="bi bi-info-circle"></i> Nếu đang chỉnh sửa và muốn giữ ảnh cũ, hãy để trống ô này.
+                    </div>
+
+                    <!-- ====== MÔ TẢ ====== -->
+                    <div class="section-label">
+                        <i class="bi bi-card-text"></i> Mô tả sản phẩm
+                    </div>
+
+                    <div>
+                        <textarea class="form-control" th:field="*{mo_ta}" id="mo_ta" rows="5"
+                                  maxlength="2000"
+                                  placeholder="Nhập bài viết giới thiệu chi tiết về mùi hương, cảm nhận, độ bền hương..."></textarea>
+                        <div class="char-counter" id="counter-mo_ta">0 / 2000</div>
+                    </div>
+
+                    <!-- ====== ACTIONS ====== -->
+                    <div class="form-actions" style="margin-top: 28px;">
+                        <button type="submit" class="btn-gold" id="btnSubmit">
+                            <i class="bi bi-check-lg"></i> Lưu Sản Phẩm
+                        </button>
+                        <a href="/admin/products" class="btn-cancel">
+                            <i class="bi bi-x-lg"></i> Hủy bỏ
+                        </a>
+                    </div>
+
+                </form>
+            </div>
+        </div>
+    </div>
+
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+    <script>
+        // ==========================================
+        // 1. REALTIME CHARACTER COUNTER
+        // ==========================================
+        function setupCharCounter(inputId, maxLen) {
+            const input = document.getElementById(inputId);
+            const counter = document.getElementById('counter-' + inputId);
+            if (!input || !counter) return;
+
+            function update() {
+                const len = input.value.length;
+                counter.textContent = len + ' / ' + maxLen;
+                counter.classList.remove('warning', 'danger');
+                if (len >= maxLen) {
+                    counter.classList.add('danger');
+                } else if (len >= maxLen * 0.85) {
+                    counter.classList.add('warning');
+                }
+            }
+
+            input.addEventListener('input', update);
+            update(); // Khởi tạo lần đầu (cho trường hợp edit có dữ liệu sẵn)
+        }
+
+        setupCharCounter('ten_sp', 150);
+        setupCharCounter('mo_ta', 2000);
+
+        // ==========================================
+        // 2. REALTIME FIELD VALIDATION (on blur)
+        // ==========================================
+        function validateField(input) {
+            const rules = input.getAttribute('data-validate');
+            if (!rules) return true;
+
+            const ruleList = rules.split('|');
+            const errEl = document.getElementById('err-' + input.id);
+            let valid = true;
+            let msg = '';
+
+            for (const rule of ruleList) {
+                const [name, param] = rule.split(':');
+
+                if (name === 'required' && !input.value.trim()) {
+                    valid = false;
+                    if (input.tagName === 'SELECT') {
+                        msg = 'Vui lòng chọn một giá trị.';
+                    } else {
+                        msg = 'Trường này không được để trống.';
+                    }
+                    break;
+                }
+
+                if (name === 'minlength' && input.value.trim().length < parseInt(param)) {
+                    valid = false;
+                    msg = 'Tối thiểu ' + param + ' ký tự.';
+                    break;
+                }
+
+                if (name === 'maxlength' && input.value.length > parseInt(param)) {
+                    valid = false;
+                    msg = 'Tối đa ' + param + ' ký tự.';
+                    break;
+                }
+            }
+
+            if (valid) {
+                input.classList.remove('is-invalid');
+                if (input.value.trim()) input.classList.add('is-valid');
+                if (errEl) errEl.classList.remove('show');
+            } else {
+                input.classList.remove('is-valid');
+                input.classList.add('is-invalid');
+                if (errEl) {
+                    errEl.querySelector('span').textContent = msg;
+                    errEl.classList.add('show');
+                }
+            }
+
+            return valid;
+        }
+
+        // Gắn event "blur" cho tất cả input có data-validate
+        document.querySelectorAll('[data-validate]').forEach(function(input) {
+            input.addEventListener('blur', function() {
+                validateField(this);
+            });
+            // Khi người dùng bắt đầu gõ lại → xóa trạng thái lỗi
+            input.addEventListener('input', function() {
+                if (this.classList.contains('is-invalid')) {
+                    this.classList.remove('is-invalid');
+                    const errEl = document.getElementById('err-' + this.id);
+                    if (errEl) errEl.classList.remove('show');
+                }
+            });
+        });
+
+        // ==========================================
+        // 3. FORM SUBMIT VALIDATION
+        // ==========================================
+        document.getElementById('productForm').addEventListener('submit', function(e) {
+            const fields = this.querySelectorAll('[data-validate]');
+            let allValid = true;
+            let firstInvalid = null;
+
+            fields.forEach(function(field) {
+                if (!validateField(field)) {
+                    allValid = false;
+                    if (!firstInvalid) firstInvalid = field;
+                }
+            });
+
+            const summary = document.getElementById('validationSummary');
+
+            if (!allValid) {
+                e.preventDefault();
+                summary.classList.add('show');
+                summary.classList.add('shake');
+                setTimeout(function() { summary.classList.remove('shake'); }, 300);
+
+                if (firstInvalid) {
+                    firstInvalid.focus();
+                    firstInvalid.scrollIntoView({ behavior: 'smooth', block: 'center' });
+                }
+            } else {
+                summary.classList.remove('show');
+                // Disable nút submit để chống nhấn đúp
+                document.getElementById('btnSubmit').disabled = true;
+                document.getElementById('btnSubmit').innerHTML =
+                    '<i class="bi bi-hourglass-split"></i> Đang lưu...';
+            }
+        });
+
+        // ==========================================
+        // 4. FILE UPLOAD VALIDATION & PREVIEW
+        // ==========================================
+        const MAX_FILE_SIZE = 5 * 1024 * 1024; // 5MB
+        const ALLOWED_TYPES = ['image/jpeg', 'image/png', 'image/webp'];
+
+        function handleFileSelect(input) {
+            const preview = document.getElementById('imagePreview');
+            const previewImg = document.getElementById('previewImg');
+            const fileInfo = document.getElementById('fileInfo');
+            const fileNameEl = document.getElementById('fileName');
+            const fileError = document.getElementById('fileError');
+            const fileErrorMsg = document.getElementById('fileErrorMsg');
+
+            // Reset
+            preview.classList.remove('has-image');
+            fileInfo.classList.remove('show');
+            fileError.classList.remove('show');
+
+            if (!input.files || !input.files[0]) return;
+
+            const file = input.files[0];
+
+            // Kiểm tra định dạng
+            if (!ALLOWED_TYPES.includes(file.type)) {
+                fileError.classList.add('show');
+                fileErrorMsg.textContent = 'Định dạng không hỗ trợ! Chỉ chấp nhận JPG, PNG, WEBP.';
+                input.value = ''; // Clear file input
+                return;
+            }
+
+            // Kiểm tra kích thước
+            if (file.size > MAX_FILE_SIZE) {
+                fileError.classList.add('show');
+                const sizeMB = (file.size / (1024 * 1024)).toFixed(1);
+                fileErrorMsg.textContent = 'File quá lớn (' + sizeMB + 'MB)! Tối đa cho phép 5MB.';
+                input.value = '';
+                return;
+            }
+
+            // Hiển thị tên file
+            fileNameEl.textContent = file.name + ' (' + (file.size / 1024).toFixed(0) + ' KB)';
+            fileInfo.classList.add('show');
+
+            // Preview ảnh
+            const reader = new FileReader();
+            reader.onload = function(e) {
+                previewImg.src = e.target.result;
+                preview.classList.add('has-image');
+            };
+            reader.readAsDataURL(file);
+        }
+
+        document.getElementById('imageFileInput').addEventListener('change', function() {
+            handleFileSelect(this);
+        });
+
+        // Drag & Drop
+        const dropZone = document.getElementById('dropZone');
+        const fileInput = document.getElementById('imageFileInput');
+
+        dropZone.addEventListener('dragover', function(e) {
+            e.preventDefault();
+            dropZone.classList.add('dragging');
+        });
+
+        dropZone.addEventListener('dragleave', function() {
+            dropZone.classList.remove('dragging');
+        });
+
+        dropZone.addEventListener('drop', function(e) {
+            e.preventDefault();
+            dropZone.classList.remove('dragging');
+            if (e.dataTransfer.files.length > 0) {
+                fileInput.files = e.dataTransfer.files;
+                handleFileSelect(fileInput);
+            }
+        });
+
+        // ==========================================
+        // 5. TRIM KHOẢNG TRẮNG THỪA KHI BLUR
+        // ==========================================
+        document.querySelectorAll('input[type="text"]').forEach(function(input) {
+            input.addEventListener('blur', function() {
+                this.value = this.value.trim();
+            });
+        });
+    </script>
+</body>
+</html>

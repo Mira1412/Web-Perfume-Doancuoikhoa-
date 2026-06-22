@@ -10,28 +10,53 @@ public class PerfumeVariant {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id_bien_the;
 
-    private String dung_tich; // Ví dụ: 50ml, 100ml
-    private Long gia_ban;     // Giá riêng cho dung tích này
-    private Integer ton_kho;  // Số lượng kho riêng cho dung tích này
+    private String dung_tich;
+    private String gia_ban; // Dùng String hoặc Double tùy theo kiểu cũ bạn đang thiết lập
+    private Integer so_luong_ton = 100; // Số lượng mặc định
 
-    // Liên kết ngược lại với chai nước hoa gốc
+    // Nối ngược lại với bảng Nước hoa gốc (Nhiều Biến thể thuộc về 1 Nước hoa)
     @ManyToOne
     @JoinColumn(name = "id_nuoc_hoa")
     private Perfume perfume;
 
-    // --- GETTERS VÀ SETTERS ---
-    public Long getId_bien_the() { return id_bien_the; }
-    public void setId_bien_the(Long id_bien_the) { this.id_bien_the = id_bien_the; }
+    // --- GETTER & SETTER ---
+    public Long getId_bien_the() {
+        return id_bien_the;
+    }
 
-    public String getDung_tich() { return dung_tich; }
-    public void setDung_tich(String dung_tich) { this.dung_tich = dung_tich; }
+    public void setId_bien_the(Long id_bien_the) {
+        this.id_bien_the = id_bien_the;
+    }
 
-    public Long getGia_ban() { return gia_ban; }
-    public void setGia_ban(Long gia_ban) { this.gia_ban = gia_ban; }
+    public String getDung_tich() {
+        return dung_tich;
+    }
 
-    public Integer getTon_kho() { return ton_kho; }
-    public void setTon_kho(Integer ton_kho) { this.ton_kho = ton_kho; }
+    public void setDung_tich(String dung_tich) {
+        this.dung_tich = dung_tich;
+    }
 
-    public Perfume getPerfume() { return perfume; }
-    public void setPerfume(Perfume perfume) { this.perfume = perfume; }
+    public String getGia_ban() {
+        return gia_ban;
+    }
+
+    public void setGia_ban(String gia_ban) {
+        this.gia_ban = gia_ban;
+    }
+
+    public Integer getSo_luong_ton() {
+        return so_luong_ton;
+    }
+
+    public void setSo_luong_ton(Integer so_luong_ton) {
+        this.so_luong_ton = so_luong_ton;
+    }
+
+    public Perfume getPerfume() {
+        return perfume;
+    }
+
+    public void setPerfume(Perfume perfume) {
+        this.perfume = perfume;
+    }
 }

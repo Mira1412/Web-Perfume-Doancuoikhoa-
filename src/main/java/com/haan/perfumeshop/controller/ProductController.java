@@ -8,7 +8,6 @@ import com.haan.perfumeshop.repository.PerfumeRepository;
 import com.haan.perfumeshop.repository.PerfumeSpecification;
 import com.haan.perfumeshop.repository.ReviewRepository;
 import jakarta.servlet.http.HttpSession;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -25,12 +24,17 @@ public class ProductController {
 
     private static final int PAGE_SIZE = 12;
 
-    @Autowired
-    private PerfumeRepository perfumeRepository;
-    @Autowired
-    private ReviewRepository reviewRepository;
-    @Autowired
-    private OrderDetailRepository orderDetailRepository;
+    // 1. Sửa cảnh báo @Autowired: Chuyển sang Constructor Injection chuẩn bảo mật
+    private final PerfumeRepository perfumeRepository;
+    private final ReviewRepository reviewRepository;
+    private final OrderDetailRepository orderDetailRepository;
+
+    public ProductController(PerfumeRepository perfumeRepository, ReviewRepository reviewRepository,
+            OrderDetailRepository orderDetailRepository) {
+        this.perfumeRepository = perfumeRepository;
+        this.reviewRepository = reviewRepository;
+        this.orderDetailRepository = orderDetailRepository;
+    }
 
     @GetMapping({ "", "/", "/index" })
     public String showHomePage(
@@ -51,7 +55,24 @@ public class ProductController {
 
         if (giaRange != null && !giaRange.isEmpty()) {
             filtered = filtered.stream().filter(p -> {
-                double gia = p.getGiaBanNumeric();
+
+                // 2. Sửa lỗi lấy giá: Tự động tìm mức giá rẻ nhất trong các biến thể để làm mốc
+                // lọc
+                double gia = 0;
+                if (p.getVariants() != null && !p.getVariants().isEmpty()) {
+                    gia = p.getVariants().stream()
+                            .mapToDouble(v -> {
+                                try {
+                                    // Loại bỏ chữ "đ" và các dấu phẩy, chỉ lấy số nguyên
+                                    return Double.parseDouble(v.getGia_ban().replaceAll("[^\\d]", ""));
+                                } catch (Exception e) {
+                                    return 0;
+                                }
+                            })
+                            .min() // Lấy giá thấp nhất
+                            .orElse(0);
+                }
+
                 switch (giaRange) {
                     case "duoi1tr":
                         return gia > 0 && gia < 1_000_000;
@@ -98,16 +119,16 @@ public class ProductController {
                 .orElseThrow(() -> new RuntimeException("Không tìm thấy nước hoa này!"));
         model.addAttribute("perfume", perfume);
 
-        // ---- Load reviews (Đã sửa tên hàm) ----
+        // ---- Load reviews ----
         List<Review> reviews = reviewRepository.findByPerfumeIdOrderByNgayTaoDesc(id);
         model.addAttribute("reviews", reviews);
         model.addAttribute("reviewCount", reviews.size());
 
-        // ---- Điểm trung bình (Đã sửa tên hàm) ----
+        // ---- Điểm trung bình ----
         Double avgRating = reviewRepository.findAverageRatingByPerfumeId(id);
         model.addAttribute("avgRating", avgRating != null ? Math.round(avgRating * 10.0) / 10.0 : 0.0);
 
-        // ---- Phân bố theo mức sao (Đã sửa tên hàm) ----
+        // ---- Phân bố theo mức sao ----
         Map<Integer, Long> starDist = new HashMap<>();
         for (int i = 1; i <= 5; i++)
             starDist.put(i, 0L);
@@ -124,7 +145,6 @@ public class ProductController {
             boolean hasBought = orderDetailRepository.existsByUserAndPerfumeDelivered(
                     currentUser.getId_user(), id);
 
-            // Đã sửa tên hàm kiểm tra review
             alreadyRated = reviewRepository
                     .findReviewByUserAndPerfume(currentUser.getId_user(), id)
                     .isPresent();

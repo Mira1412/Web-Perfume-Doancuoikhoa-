@@ -608,34 +608,40 @@
                 <table class="products-table" id="products-table">
                     <thead>
                         <tr>
-                            <th>ID</th>
-                            <th>Tên sản phẩm</th>
-                            <th>Giá bán</th>
-                            <th>Tồn kho</th>
-                            <th style="text-align: right;">Thao tác</th>
+                            <th>Ảnh</th>
+                            <th>Tên Sản Phẩm</th>
+                            <th>Thương Hiệu</th>
+                            <th>Giới Tính</th>
+                            <th>Giá Bán</th>
+                            <th>Dung Tích</th>
+                            <th class="text-center" style="text-align: right;">Thao Tác</th>
                         </tr>
                     </thead>
                     <tbody>
                         <tr th:each="p : ${perfumes}" class="product-row">
-                            <td data-label="ID">
-                                <span class="product-id" th:text="'#' + ${p.id_nuoc_hoa}">#1</span>
+                            <td data-label="Ảnh"><img th:src="${p.hinh_anh}" class="product-img-preview" alt="product" style="width: 50px; height: 50px; object-fit: cover; border-radius: 8px; border: 1px solid var(--border);"></td>
+                            <td data-label="Tên Sản Phẩm">
+                                <span class="product-name" th:text="${p.ten_sp}" style="font-weight: 600;">Tên sản phẩm</span>
                             </td>
-                            <td data-label="Tên sản phẩm">
-                                <span class="product-name" th:text="${p.ten_sp}">Chanel...</span>
+                            <td data-label="Thương Hiệu" th:text="${p.thuong_hieu}">Hãng</td>
+                            <td data-label="Giới Tính">
+                                <span class="badge" style="background: rgba(255,255,255,0.1); color: #f0ece4; border: 1px solid rgba(255,255,255,0.2);" th:text="${p.gioi_tinh}">Nữ</span>
                             </td>
-                            <td data-label="Giá bán" th:text="${p.gia_ban}">2.000.000 đ</td>
-                            <td data-label="Tồn kho">
-                                <span class="stock-badge stock-ok" th:if="${p.ton_kho > 10}">
-                                    <i class="bi bi-check-circle-fill"></i>
-                                    <span th:text="${p.ton_kho}">50</span>
+                            <td data-label="Giá Bán" style="color: var(--gold);">
+                                <span th:if="${p.variants != null and !p.variants.isEmpty()}" 
+                                      th:text="${p.variants[0].gia_ban} + ' đ'">
                                 </span>
-                                <span class="stock-badge stock-low" th:if="${p.ton_kho > 0 and p.ton_kho <= 10}">
-                                    <i class="bi bi-exclamation-triangle-fill"></i>
-                                    <span th:text="${p.ton_kho}">5</span>
+                                <span th:if="${p.variants == null or p.variants.isEmpty()}" class="badge bg-danger">
+                                    Chưa thiết lập giá
                                 </span>
-                                <span class="stock-badge stock-out" th:if="${p.ton_kho == 0}">
-                                    <i class="bi bi-x-circle-fill"></i>
-                                    Hết hàng
+                            </td>
+                            
+                            <td data-label="Dung Tích">
+                                <span th:if="${p.variants != null and !p.variants.isEmpty()}" class="badge bg-info text-dark"
+                                      th:text="${p.variants.size()} + ' phân loại'">
+                                </span>
+                                <span th:if="${p.variants == null or p.variants.isEmpty()}" class="text-muted">
+                                    Trống
                                 </span>
                             </td>
                             <td data-label="Thao tác" style="text-align: right;">
@@ -654,7 +660,7 @@
                         </tr>
                         <!-- No results row (shown via JS) -->
                         <tr class="no-results-row" id="no-results-row">
-                            <td colspan="5">
+                            <td colspan="7">
                                 <i class="bi bi-search" style="font-size: 1.5rem; display: block; margin-bottom: 10px; opacity: 0.4;"></i>
                                 Không tìm thấy sản phẩm phù hợp.
                             </td>
