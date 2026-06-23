@@ -26,6 +26,10 @@ public class User {
     @Column(name = "phone")
     private String phone;
 
+    // Địa chỉ giao hàng
+    @Column(name = "address")
+    private String address;
+
     // Vai trò: "customer" hoặc "admin"
     private String role;
 

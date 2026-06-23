@@ -112,6 +112,38 @@
             text-decoration: none;
         }
 
+        /* ====== FLASH MESSAGE ALERTS ====== */
+        .flash-alert {
+            border-radius: 12px;
+            padding: 14px 20px;
+            font-size: 0.875rem;
+            font-weight: 500;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            margin-bottom: 20px;
+            animation: slideDown 0.4s ease forwards;
+        }
+
+        .flash-alert i { font-size: 1.1rem; }
+
+        .flash-alert-success {
+            background: rgba(111, 201, 122, 0.12);
+            border: 1px solid rgba(111, 201, 122, 0.3);
+            color: #6fc97a;
+        }
+
+        .flash-alert-error {
+            background: rgba(220, 53, 69, 0.12);
+            border: 1px solid rgba(220, 53, 69, 0.3);
+            color: #ff6b7a;
+        }
+
+        @keyframes slideDown {
+            from { opacity: 0; transform: translateY(-10px); }
+            to   { opacity: 1; transform: translateY(0); }
+        }
+
         /* ====== TOOLBAR ====== */
         .toolbar {
             display: flex;
@@ -174,7 +206,7 @@
         /* ====== SEARCH BAR ====== */
         .search-wrapper {
             position: relative;
-            width: 280px;
+            width: 320px;
         }
 
         .search-wrapper i {
@@ -224,8 +256,8 @@
         }
 
         .products-table thead th {
-            padding: 18px 20px;
-            font-size: 0.75rem;
+            padding: 18px 16px;
+            font-size: 0.72rem;
             font-weight: 500;
             text-transform: uppercase;
             letter-spacing: 0.8px;
@@ -244,66 +276,156 @@
         .products-table tbody tr:hover { background: rgba(255, 255, 255, 0.025); }
 
         .products-table td {
-            padding: 18px 20px;
+            padding: 14px 16px;
             vertical-align: middle;
+            font-size: 0.875rem;
         }
 
         .product-id {
-            font-size: 1.05rem;
+            font-size: 0.82rem;
             font-weight: 600;
-            color: #ffffff;
+            color: var(--text-muted);
+            font-family: 'Courier New', monospace;
         }
 
         .product-name {
-            font-size: 0.95rem;
-            font-weight: 500;
+            font-size: 0.92rem;
+            font-weight: 600;
             color: var(--text-primary);
+            line-height: 1.4;
+        }
+
+        .product-brand {
+            font-size: 0.78rem;
+            color: var(--text-muted);
+            margin-top: 2px;
         }
 
         .product-price {
-            font-size: 1.05rem;
+            font-size: 1rem;
             font-weight: 600;
             color: var(--gold);
         }
 
-        .product-stock {
-            font-size: 0.9rem;
-            font-weight: 500;
-        }
-
-        .stock-badge {
+        /* ====== BADGES ====== */
+        .badge-custom {
             display: inline-flex;
             align-items: center;
             gap: 5px;
             padding: 4px 12px;
             border-radius: 8px;
-            font-size: 0.8rem;
+            font-size: 0.78rem;
             font-weight: 500;
         }
 
-        .stock-ok {
-            background: rgba(111, 201, 122, 0.12);
-            border: 1px solid rgba(111, 201, 122, 0.25);
-            color: #6fc97a;
+        .badge-gender {
+            background: rgba(201, 169, 110, 0.1);
+            border: 1px solid rgba(201, 169, 110, 0.25);
+            color: var(--gold-light);
         }
 
-        .stock-low {
-            background: rgba(255, 193, 7, 0.12);
+        .badge-gender.nam {
+            background: rgba(110, 165, 201, 0.12);
+            border-color: rgba(110, 165, 201, 0.3);
+            color: #8fbfdd;
+        }
+
+        .badge-gender.nu {
+            background: rgba(201, 110, 165, 0.12);
+            border-color: rgba(201, 110, 165, 0.3);
+            color: #d98fba;
+        }
+
+        .badge-gender.unisex {
+            background: rgba(201, 169, 110, 0.12);
+            border-color: rgba(201, 169, 110, 0.3);
+            color: var(--gold-light);
+        }
+
+        .badge-fragrance {
+            background: rgba(160, 120, 64, 0.12);
+            border: 1px solid rgba(160, 120, 64, 0.25);
+            color: var(--gold-light);
+            font-size: 0.75rem;
+        }
+
+        .badge-variant-count {
+            background: rgba(110, 165, 201, 0.12);
+            border: 1px solid rgba(110, 165, 201, 0.25);
+            color: #6ea5c9;
+        }
+
+        .badge-no-variant {
+            background: rgba(255, 193, 7, 0.1);
             border: 1px solid rgba(255, 193, 7, 0.25);
             color: #ffca28;
         }
 
-        .stock-out {
-            background: rgba(220, 53, 69, 0.12);
+        .badge-no-price {
+            background: rgba(220, 53, 69, 0.1);
             border: 1px solid rgba(220, 53, 69, 0.25);
             color: #ff6b7a;
         }
+
+        /* ====== PRODUCT IMAGE ====== */
+        .product-img-preview {
+            width: 48px;
+            height: 48px;
+            object-fit: cover;
+            border-radius: 10px;
+            border: 1px solid var(--border);
+            background: var(--dark-3);
+            transition: transform 0.25s ease;
+        }
+
+        .product-img-preview:hover {
+            transform: scale(1.6);
+            z-index: 10;
+            position: relative;
+            box-shadow: 0 8px 30px rgba(0, 0, 0, 0.5);
+        }
+
+        .product-img-placeholder {
+            width: 48px;
+            height: 48px;
+            border-radius: 10px;
+            border: 1px dashed rgba(255,255,255,0.15);
+            background: var(--dark-3);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 1.2rem;
+            color: var(--text-muted);
+        }
+
+        /* ====== VARIANT PILLS ====== */
+        .variant-pills {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 4px;
+            margin-top: 4px;
+        }
+
+        .variant-pill {
+            display: inline-flex;
+            align-items: center;
+            gap: 4px;
+            padding: 2px 8px;
+            border-radius: 6px;
+            font-size: 0.7rem;
+            background: rgba(255,255,255,0.05);
+            border: 1px solid rgba(255,255,255,0.08);
+            color: var(--text-muted);
+        }
+
+        .variant-pill .v-size { color: var(--text-primary); font-weight: 500; }
+        .variant-pill .v-price { color: var(--gold); }
 
         /* ====== ACTION BUTTONS ====== */
         .action-buttons {
             display: flex;
             align-items: center;
-            gap: 8px;
+            gap: 6px;
         }
 
         .btn-action {
@@ -317,6 +439,7 @@
             text-decoration: none;
             transition: all 0.25s ease;
             border: 1px solid transparent;
+            cursor: pointer;
         }
 
         .btn-edit {
@@ -330,6 +453,19 @@
             color: #8fbfdd;
             transform: translateY(-1px);
             box-shadow: 0 4px 12px rgba(110, 165, 201, 0.2);
+        }
+
+        .btn-variant {
+            background: rgba(201, 169, 110, 0.1);
+            border-color: rgba(201, 169, 110, 0.25);
+            color: var(--gold);
+        }
+
+        .btn-variant:hover {
+            background: rgba(201, 169, 110, 0.2);
+            color: var(--gold-light);
+            transform: translateY(-1px);
+            box-shadow: 0 4px 12px rgba(201, 169, 110, 0.2);
         }
 
         .btn-delete {
@@ -485,6 +621,12 @@
         }
 
         /* ====== RESPONSIVE ====== */
+        @media (max-width: 992px) {
+            .products-table { font-size: 0.82rem; }
+            .products-table td { padding: 12px 10px; }
+            .products-table thead th { padding: 14px 10px; }
+        }
+
         @media (max-width: 768px) {
             .toolbar {
                 flex-direction: column;
@@ -574,6 +716,16 @@
     <section class="products-section">
         <div class="container">
 
+            <!-- Flash Messages -->
+            <div th:if="${successMsg}" class="flash-alert flash-alert-success animate-in" id="flash-success">
+                <i class="bi bi-check-circle-fill"></i>
+                <span th:text="${successMsg}">Thành công!</span>
+            </div>
+            <div th:if="${errorMsg}" class="flash-alert flash-alert-error animate-in" id="flash-error">
+                <i class="bi bi-exclamation-triangle-fill"></i>
+                <span th:text="${errorMsg}">Có lỗi xảy ra!</span>
+            </div>
+
             <!-- Toolbar -->
             <div class="toolbar animate-in delay-1">
                 <div class="toolbar-left">
@@ -587,7 +739,7 @@
                 </div>
                 <div class="search-wrapper">
                     <i class="bi bi-search"></i>
-                    <input type="text" class="search-input" id="search-product" placeholder="Tìm kiếm sản phẩm..." autocomplete="off">
+                    <input type="text" class="search-input" id="search-product" placeholder="Tìm theo tên, thương hiệu, nhóm hương..." autocomplete="off">
                 </div>
             </div>
 
@@ -608,51 +760,101 @@
                 <table class="products-table" id="products-table">
                     <thead>
                         <tr>
+                            <th>ID</th>
                             <th>Ảnh</th>
-                            <th>Tên Sản Phẩm</th>
-                            <th>Thương Hiệu</th>
+                            <th>Sản Phẩm</th>
                             <th>Giới Tính</th>
-                            <th>Giá Bán</th>
-                            <th>Dung Tích</th>
-                            <th class="text-center" style="text-align: right;">Thao Tác</th>
+                            <th>Nhóm Hương</th>
+                            <th>Phân Loại & Giá</th>
+                            <th>Xuất Xứ</th>
+                            <th class="text-end">Thao Tác</th>
                         </tr>
                     </thead>
                     <tbody>
                         <tr th:each="p : ${perfumes}" class="product-row">
-                            <td data-label="Ảnh"><img th:src="${p.hinh_anh}" class="product-img-preview" alt="product" style="width: 50px; height: 50px; object-fit: cover; border-radius: 8px; border: 1px solid var(--border);"></td>
-                            <td data-label="Tên Sản Phẩm">
-                                <span class="product-name" th:text="${p.ten_sp}" style="font-weight: 600;">Tên sản phẩm</span>
+                            <!-- ID -->
+                            <td data-label="ID">
+                                <span class="product-id" th:text="'#' + ${p.id_nuoc_hoa}">#1</span>
                             </td>
-                            <td data-label="Thương Hiệu" th:text="${p.thuong_hieu}">Hãng</td>
+
+                            <!-- Ảnh -->
+                            <td data-label="Ảnh">
+                                <img th:if="${p.hinh_anh != null and !p.hinh_anh.isEmpty()}"
+                                     th:src="${p.hinh_anh}" class="product-img-preview" alt="product">
+                                <div th:unless="${p.hinh_anh != null and !p.hinh_anh.isEmpty()}" class="product-img-placeholder">
+                                    <i class="bi bi-image"></i>
+                                </div>
+                            </td>
+
+                            <!-- Tên + Thương hiệu -->
+                            <td data-label="Sản Phẩm">
+                                <span class="product-name" th:text="${p.ten_sp}">Tên sản phẩm</span>
+                                <div class="product-brand">
+                                    <i class="bi bi-building" style="font-size: 0.7rem;"></i>
+                                    <span th:text="${p.thuong_hieu != null and !p.thuong_hieu.isEmpty()} ? ${p.thuong_hieu} : 'Chưa rõ'">Thương hiệu</span>
+                                </div>
+                            </td>
+
+                            <!-- Giới tính -->
                             <td data-label="Giới Tính">
-                                <span class="badge" style="background: rgba(255,255,255,0.1); color: #f0ece4; border: 1px solid rgba(255,255,255,0.2);" th:text="${p.gioi_tinh}">Nữ</span>
+                                <span class="badge-custom badge-gender"
+                                      th:classappend="${p.gioi_tinh != null && p.gioi_tinh.toLowerCase().contains('nam') && !p.gioi_tinh.toLowerCase().contains('nữ')} ? 'nam' : (${p.gioi_tinh != null && p.gioi_tinh.toLowerCase().contains('nữ') && !p.gioi_tinh.toLowerCase().contains('nam')} ? 'nu' : 'unisex')"
+                                      th:text="${p.gioi_tinh != null and !p.gioi_tinh.isEmpty()} ? ${p.gioi_tinh} : 'N/A'">Unisex</span>
                             </td>
-                            <td data-label="Giá Bán" style="color: var(--gold);">
-                                <span th:if="${p.variants != null and !p.variants.isEmpty()}" 
-                                      th:text="${p.variants[0].gia_ban} + ' đ'">
-                                </span>
-                                <span th:if="${p.variants == null or p.variants.isEmpty()}" class="badge bg-danger">
-                                    Chưa thiết lập giá
-                                </span>
+
+                            <!-- Nhóm hương -->
+                            <td data-label="Nhóm Hương">
+                                <span th:if="${p.nhom_huong != null and !p.nhom_huong.isEmpty()}"
+                                      class="badge-custom badge-fragrance"
+                                      th:text="${p.nhom_huong}">Hương Gỗ</span>
+                                <span th:unless="${p.nhom_huong != null and !p.nhom_huong.isEmpty()}"
+                                      style="color: var(--text-muted); font-size: 0.8rem;">—</span>
                             </td>
-                            
-                            <td data-label="Dung Tích">
-                                <span th:if="${p.variants != null and !p.variants.isEmpty()}" class="badge bg-info text-dark"
-                                      th:text="${p.variants.size()} + ' phân loại'">
-                                </span>
-                                <span th:if="${p.variants == null or p.variants.isEmpty()}" class="text-muted">
-                                    Trống
-                                </span>
+
+                            <!-- Phân loại & Giá -->
+                            <td data-label="Phân Loại & Giá">
+                                <!-- Có variants -->
+                                <div th:if="${p.variants != null and !p.variants.isEmpty()}">
+                                    <span class="badge-custom badge-variant-count" style="margin-bottom: 4px;">
+                                        <i class="bi bi-layers"></i>
+                                        <span th:text="${p.variants.size()} + ' phân loại'">2 phân loại</span>
+                                    </span>
+                                    <div class="variant-pills">
+                                        <span th:each="v : ${p.variants}" class="variant-pill">
+                                            <span class="v-size" th:text="${v.dung_tich}">100ml</span>
+                                            <span class="v-price" th:text="'— ' + ${v.gia_ban} + 'đ'">— 500.000đ</span>
+                                        </span>
+                                    </div>
+                                </div>
+                                <!-- Không có variants -->
+                                <div th:unless="${p.variants != null and !p.variants.isEmpty()}">
+                                    <span class="badge-custom badge-no-variant">
+                                        <i class="bi bi-exclamation-circle"></i> Chưa có phân loại
+                                    </span>
+                                </div>
                             </td>
-                            <td data-label="Thao tác" style="text-align: right;">
+
+                            <!-- Xuất xứ -->
+                            <td data-label="Xuất Xứ">
+                                <span th:if="${p.xuat_xu != null and !p.xuat_xu.isEmpty()}"
+                                      style="font-size: 0.85rem;"
+                                      th:text="${p.xuat_xu}">Pháp</span>
+                                <span th:unless="${p.xuat_xu != null and !p.xuat_xu.isEmpty()}"
+                                      style="color: var(--text-muted); font-size: 0.8rem;">—</span>
+                            </td>
+
+                            <!-- Thao tác -->
+                            <td data-label="Thao tác" class="text-end">
                                 <div class="action-buttons" style="justify-content: flex-end;">
-                                    <a th:href="@{'/admin/products/edit/' + ${p.id_nuoc_hoa}}" class="btn-action btn-edit" th:id="'btn-edit-' + ${p.id_nuoc_hoa}">
+                                    <a th:href="@{'/admin/products/edit/' + ${p.id_nuoc_hoa}}" class="btn-action btn-edit"
+                                       th:id="'btn-edit-' + ${p.id_nuoc_hoa}" title="Chỉnh sửa sản phẩm">
                                         <i class="bi bi-pencil-square"></i> Sửa
                                     </a>
                                     <button type="button" class="btn-action btn-delete"
                                             th:id="'btn-delete-' + ${p.id_nuoc_hoa}"
                                             th:attr="data-product-name=${p.ten_sp}, data-delete-url=@{'/admin/products/delete/' + ${p.id_nuoc_hoa}}"
-                                            onclick="showDeleteModal(this)">
+                                            onclick="showDeleteModal(this)"
+                                            title="Xóa sản phẩm">
                                         <i class="bi bi-trash3"></i> Xóa
                                     </button>
                                 </div>
@@ -660,7 +862,7 @@
                         </tr>
                         <!-- No results row (shown via JS) -->
                         <tr class="no-results-row" id="no-results-row">
-                            <td colspan="7">
+                            <td colspan="8">
                                 <i class="bi bi-search" style="font-size: 1.5rem; display: block; margin-bottom: 10px; opacity: 0.4;"></i>
                                 Không tìm thấy sản phẩm phù hợp.
                             </td>
@@ -692,7 +894,7 @@
                     Bạn có chắc chắn muốn xóa sản phẩm <strong id="deleteProductName" style="color: var(--gold);"></strong>?
                     <br><br>
                     <span style="color: var(--text-muted); font-size: 0.82rem;">
-                        <i class="bi bi-info-circle"></i> Hành động này không thể hoàn tác.
+                        <i class="bi bi-info-circle"></i> Hành động này không thể hoàn tác. Tất cả phân loại (dung tích, giá) của sản phẩm cũng sẽ bị xóa.
                     </span>
                 </div>
                 <div class="modal-footer">
@@ -707,7 +909,7 @@
 
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
     <script>
-        // ====== SEARCH FILTER ======
+        // ====== SEARCH FILTER (tìm theo tên, thương hiệu, nhóm hương) ======
         document.getElementById('search-product')?.addEventListener('input', function () {
             const keyword = this.value.toLowerCase().trim();
             const rows = document.querySelectorAll('.product-row');
@@ -716,8 +918,10 @@
 
             rows.forEach(row => {
                 const name = row.querySelector('.product-name')?.textContent.toLowerCase() || '';
+                const brand = row.querySelector('.product-brand')?.textContent.toLowerCase() || '';
                 const id = row.querySelector('.product-id')?.textContent.toLowerCase() || '';
-                const match = name.includes(keyword) || id.includes(keyword);
+                const fragrance = row.querySelector('.badge-fragrance')?.textContent.toLowerCase() || '';
+                const match = name.includes(keyword) || brand.includes(keyword) || id.includes(keyword) || fragrance.includes(keyword);
                 row.style.display = match ? '' : 'none';
                 if (match) visibleCount++;
             });
@@ -736,6 +940,16 @@
             const modal = new bootstrap.Modal(document.getElementById('deleteModal'));
             modal.show();
         }
+
+        // ====== AUTO-HIDE FLASH MESSAGES (sau 5 giây) ======
+        setTimeout(function() {
+            document.querySelectorAll('.flash-alert').forEach(el => {
+                el.style.transition = 'opacity 0.4s ease, transform 0.4s ease';
+                el.style.opacity = '0';
+                el.style.transform = 'translateY(-10px)';
+                setTimeout(() => el.remove(), 400);
+            });
+        }, 5000);
     </script>
 </body>
 

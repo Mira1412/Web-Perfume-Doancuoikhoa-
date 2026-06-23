@@ -612,6 +612,33 @@
             color: var(--text-muted);
         }
 
+        /* ==================== VARIANT BUTTONS ==================== */
+        .variant-btn {
+            display: inline-block;
+            padding: 3px 10px;
+            font-size: 0.72rem;
+            font-weight: 500;
+            border: 1px solid rgba(201, 169, 110, 0.3);
+            border-radius: 6px;
+            color: var(--text-muted);
+            cursor: pointer;
+            transition: all 0.2s;
+            user-select: none;
+        }
+
+        .variant-btn:hover {
+            border-color: var(--gold);
+            color: var(--gold);
+            background: rgba(201, 169, 110, 0.08);
+        }
+
+        .variant-btn.selected {
+            border-color: var(--gold);
+            background: rgba(201, 169, 110, 0.15);
+            color: var(--gold);
+            font-weight: 600;
+        }
+
         /* ==================== RESPONSIVE ==================== */
         @media (max-width: 768px) {
             .hero-stats { gap: 24px; }
@@ -940,17 +967,22 @@
                 <div class="product-card" th:each="perfume : ${perfumes}">
                     <a th:href="@{'/product/' + ${perfume.id_nuoc_hoa}}" class="product-img-wrapper"
                         style="display: block; text-decoration: none;">
-                        <img th:src="${perfume.hinh_anh}" class="product-img" th:alt="${perfume.ten_sp}" alt="Nước hoa">
+                        <img th:src="${perfume.hinh_anh}" class="product-img" th:alt="${perfume.ten_sp}" alt="Nước hoa"
+                             onerror="this.src='/images/no-image.png'">
                         <div class="product-brand-badge" th:text="${perfume.thuong_hieu}">Brand</div>
-                        <div th:if="${perfume.ton_kho > 10}" class="product-stock-badge badge-in-stock">
-                            <i class="bi bi-check-circle-fill"></i> Còn hàng
-                        </div>
-                        <div th:if="${perfume.ton_kho > 0 and perfume.ton_kho <= 10}" class="product-stock-badge badge-low-stock">
-                            <i class="bi bi-exclamation-circle-fill"></i> Sắp hết
-                        </div>
-                        <div th:if="${perfume.ton_kho <= 0}" class="product-stock-badge badge-out-stock">
-                            <i class="bi bi-x-circle-fill"></i> Hết hàng
-                        </div>
+
+                        <!-- Badge tồn kho: dựa vào tổng số lượng các biến thể -->
+                        <th:block th:with="totalStock=${#aggregates.sum(perfume.variants.![so_luong_ton ?: 0])}">
+                            <div th:if="${totalStock != null and totalStock > 10}" class="product-stock-badge badge-in-stock">
+                                <i class="bi bi-check-circle-fill"></i> Còn hàng
+                            </div>
+                            <div th:if="${totalStock != null and totalStock > 0 and totalStock <= 10}" class="product-stock-badge badge-low-stock">
+                                <i class="bi bi-exclamation-circle-fill"></i> Sắp hết
+                            </div>
+                            <div th:if="${totalStock == null or totalStock <= 0}" class="product-stock-badge badge-out-stock">
+                                <i class="bi bi-x-circle-fill"></i> Hết hàng
+                            </div>
+                        </th:block>
                     </a>
 
                     <div class="product-body">
@@ -959,24 +991,56 @@
                         </a>
                         <div class="product-meta">
                             <span class="product-meta-tag" th:if="${perfume.nhom_huong}" th:text="${perfume.nhom_huong}">Hương</span>
-                            <span class="product-meta-tag" th:if="${perfume.dung_tich}" th:text="${perfume.dung_tich}">Dung tích</span>
+                            <span class="product-meta-tag" th:if="${perfume.gioi_tinh}" th:text="${perfume.gioi_tinh}">Giới tính</span>
                         </div>
-                        <div class="product-price">
-                            <span th:text="${perfume.gia_ban}">0 đ</span>
+
+                        <!-- Hiển thị giá từ biến thể -->
+                        <div th:if="${!perfume.variants.empty}">
+                            <!-- Nếu chỉ có 1 biến thể: hiển giá và dung tích thẳng -->
+                            <div th:if="${perfume.variants.size() == 1}">
+                                <div class="product-price">
+                                    <span th:text="${perfume.variants[0].gia_ban}">0 đ</span>
+                                </div>
+                                <div style="font-size: 0.75rem; color: var(--text-muted); margin-top: 4px;">
+                                    <i class="bi bi-droplet"></i>
+                                    <span th:text="${perfume.variants[0].dung_tich}">100ml</span>
+                                </div>
+                            </div>
+                            <!-- Nếu có nhiều biến thể: hiển các nút dung tích -->
+                            <div th:if="${perfume.variants.size() > 1}">
+                                <div style="font-size: 0.72rem; color: var(--text-muted); margin-bottom: 6px; text-transform: uppercase; letter-spacing: 0.5px;">Chọn dung tích:</div>
+                                <div style="display: flex; flex-wrap: wrap; gap: 5px; margin-bottom: 8px;">
+                                    <span th:each="v, vst : ${perfume.variants}"
+                                          th:text="${v.dung_tich}"
+                                          th:data-variant-id="${v.id_bien_the}"
+                                          th:data-gia="${v.gia_ban}"
+                                          th:data-card-id="${perfume.id_nuoc_hoa}"
+                                          th:id="'variant-' + ${perfume.id_nuoc_hoa} + '-' + ${vst.index}"
+                                          onclick="selectVariant(this)"
+                                          class="variant-btn"
+                                          th:classappend="${vst.first} ? ' selected' : ''">100ml</span>
+                                </div>
+                                <!-- Giá cập nhật theo biến thể -->
+                                <div class="product-price" th:id="'price-' + ${perfume.id_nuoc_hoa}">
+                                    <span th:text="${perfume.variants[0].gia_ban}">0 đ</span>
+                                </div>
+                            </div>
                         </div>
-                        <div class="product-stock-info">
-                            <i class="bi bi-box-seam"></i>
-                            <span>Còn </span>
-                            <strong th:text="${perfume.ton_kho}">0</strong>
-                            <span> chai</span>
+                        <!-- Không có biến thể -->
+                        <div th:if="${perfume.variants.empty}">
+                            <div class="product-price">Liên hệ để biết giá</div>
                         </div>
                     </div>
 
                     <div class="product-footer">
-                        <button class="btn-add-cart" th:disabled="${perfume.ton_kho <= 0}"
-                            th:onclick="${perfume.ton_kho > 0} ? 'addToCart(' + ${perfume.id_nuoc_hoa} + ')' : 'return false'">
+                        <button class="btn-add-cart"
+                            th:id="'btn-cart-' + ${perfume.id_nuoc_hoa}"
+                            th:data-perfume-id="${perfume.id_nuoc_hoa}"
+                            th:data-variant-id="${!perfume.variants.empty ? perfume.variants[0].id_bien_the : null}"
+                            th:disabled="${perfume.variants.empty}"
+                            onclick="addToCartFromCard(this)">
                             <i class="bi bi-bag-plus"></i>
-                            <span th:text="${perfume.ton_kho > 0} ? 'Thêm vào giỏ' : 'Hết hàng'">Thêm vào giỏ</span>
+                            <span th:text="${!perfume.variants.empty ? 'Thêm vào giỏ' : 'Hết hàng'}">Thêm vào giỏ</span>
                         </button>
                     </div>
                 </div>
@@ -1051,7 +1115,9 @@
     <script th:inline="javascript">
         const userId = /*[[${session.loggedInUser != null ? session.loggedInUser.id_user : null}]]*/ null;
 
-        // Hiển thị toast thông báo đẹp thay cho alert()
+        // =============================================
+        // TOAST NOTIFICATION
+        // =============================================
         function showToast(message, type = 'success') {
             const container = document.getElementById('toastContainer');
             const toast = document.createElement('div');
@@ -1066,16 +1132,52 @@
             }, 3000);
         }
 
-        function addToCart(idNuocHoa) {
+        // =============================================
+        // CHỌN BIẾN THỂ DUNG TÍCH
+        // =============================================
+        function selectVariant(btn) {
+            const perfumeId = btn.dataset.cardId;
+            const variantId = btn.dataset.variantId;
+            const gia = btn.dataset.gia;
+
+            // Cập nhật trạng thái selected trong nhóm nút
+            btn.closest('div').querySelectorAll('.variant-btn').forEach(b => b.classList.remove('selected'));
+            btn.classList.add('selected');
+
+            // Cập nhật giá hiển thị
+            const priceEl = document.getElementById('price-' + perfumeId);
+            if (priceEl) priceEl.querySelector('span').textContent = gia || '';
+
+            // Cập nhật nút giỏ hàng
+            const cartBtn = document.getElementById('btn-cart-' + perfumeId);
+            if (cartBtn) cartBtn.dataset.variantId = variantId;
+        }
+
+        // =============================================
+        // THÊM VÀO GIỒ HÀNG (Từ nút trên card)
+        // =============================================
+        function addToCartFromCard(btn) {
             if (userId == null) {
                 showToast('Vui lòng đăng nhập để thêm vào giỏ hàng!', 'error');
                 setTimeout(() => window.location.href = '/login', 1500);
                 return;
             }
 
+            const perfumeId = btn.dataset.perfumeId;
+            const variantId = btn.dataset.variantId;
+
+            if (!variantId) {
+                showToast('Vui lòng chọn dung tích sản phẩm!', 'error');
+                return;
+            }
+
+            btn.disabled = true;
+            btn.innerHTML = '<i class="bi bi-hourglass-split"></i> Đang thêm...';
+
             const requestBody = {
                 user: { id_user: userId },
-                perfume: { id_nuoc_hoa: idNuocHoa },
+                perfume: { id_nuoc_hoa: parseInt(perfumeId) },
+                id_bien_the: parseInt(variantId),
                 so_luong: 1
             };
 
@@ -1084,14 +1186,25 @@
                 headers: { 'Content-Type': 'application/json' },
                 body: JSON.stringify(requestBody)
             })
-                .then(response => {
-                    if (response.ok) {
-                        showToast('Đã thêm vào giỏ hàng của bạn!', 'success');
-                    } else {
-                        showToast('Có lỗi xảy ra, vui lòng thử lại.', 'error');
-                    }
-                })
-                .catch(() => showToast('Không thể kết nối, vui lòng thử lại.', 'error'));
+            .then(response => {
+                if (response.ok) {
+                    showToast('Đã thêm vào giỏ hàng của bạn!', 'success');
+                    btn.innerHTML = '<i class="bi bi-check-lg"></i> Đã thêm!';
+                    setTimeout(() => {
+                        btn.disabled = false;
+                        btn.innerHTML = '<i class="bi bi-bag-plus"></i> Thêm vào giỏ';
+                    }, 2000);
+                } else {
+                    showToast('Có lỗi xảy ra, vui lòng thử lại.', 'error');
+                    btn.disabled = false;
+                    btn.innerHTML = '<i class="bi bi-bag-plus"></i> Thêm vào giỏ';
+                }
+            })
+            .catch(() => {
+                showToast('Không thể kết nối, vui lòng thử lại.', 'error');
+                btn.disabled = false;
+                btn.innerHTML = '<i class="bi bi-bag-plus"></i> Thêm vào giỏ';
+            });
         }
     </script>
 </body>

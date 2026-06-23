@@ -129,13 +129,12 @@
                         </div>
                         <div class="mb-3">
                             <label class="form-label">Số điện thoại</label>
-                            <!-- Chỉnh lại tên biến ${user.phone} hoặc ${user.so_dien_thoai} cho khớp model của bạn -->
-                            <input type="text" class="form-control" name="phone" placeholder="Nhập số điện thoại">
+                            <input type="text" class="form-control" name="phone" th:value="${user.phone}" placeholder="Nhập số điện thoại">
                         </div>
                         <div class="mb-4">
                             <label class="form-label">Địa chỉ giao hàng</label>
                             <textarea class="form-control" name="address" rows="3"
-                                placeholder="Nhập địa chỉ mặc định"></textarea>
+                                placeholder="Nhập địa chỉ mặc định" th:text="${user.address}"></textarea>
                         </div>
                         <button type="submit" class="btn btn-gold w-100">Cập nhật thông tin</button>
                     </form>

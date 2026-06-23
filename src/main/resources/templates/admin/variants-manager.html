@@ -155,7 +155,7 @@
                             <div class="mb-4">
                                 <label class="form-label text-muted" style="font-size: 0.85rem;">Số lượng tồn
                                     kho</label>
-                                <input type="number" class="form-input" th:field="*{ton_kho}" placeholder="VD: 10"
+                                <input type="number" class="form-input" th:field="*{so_luong_ton}" placeholder="VD: 10"
                                     required>
                             </div>
                             <button type="submit" class="btn-gold w-100">
@@ -192,9 +192,9 @@
                                     <td th:text="${#numbers.formatDecimal(v.gia_ban, 0, 'COMMA', 0, 'POINT')} + ' đ'">
                                         1.000.000 đ</td>
                                     <td>
-                                        <span class="badge bg-success" th:if="${v.ton_kho > 0}"
-                                            th:text="${v.ton_kho}">10</span>
-                                        <span class="badge bg-danger" th:if="${v.ton_kho <= 0}">Hết hàng</span>
+                                        <span class="badge bg-success" th:if="${v.so_luong_ton > 0}"
+                                            th:text="${v.so_luong_ton}">10</span>
+                                        <span class="badge bg-danger" th:if="${v.so_luong_ton <= 0}">Hết hàng</span>
                                     </td>
                                     <td class="text-end">
                                         <a th:href="@{'/admin/variants/delete/' + ${v.id_bien_the}}"

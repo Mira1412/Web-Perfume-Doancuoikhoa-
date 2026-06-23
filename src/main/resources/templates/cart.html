@@ -603,11 +603,8 @@
                                     </td>
                                     
                                     <td data-label="Đơn giá">
-                                        <span class="cart-price" th:if="${item.variant != null}"
-                                              th:text="${#numbers.formatDecimal(item.variant.gia_ban, 0, 'COMMA', 0, 'POINT')} + ' đ'">0 đ</span>
-                                        
-                                        <span class="cart-price" th:unless="${item.variant != null}"
-                                              th:text="${item.perfume.gia_ban.contains('đ') or item.perfume.gia_ban.toLowerCase().contains('hệ') ? item.perfume.gia_ban : item.perfume.gia_ban + ' đ'}">0 đ</span>
+                                        <span class="cart-price"
+                                              th:text="${#numbers.formatDecimal(item.getPriceNumeric(), 0, 'COMMA', 0, 'POINT')} + ' đ'">0 đ</span>
                                     </td>
                                     
                                     <td data-label="Số lượng">
@@ -619,11 +616,8 @@
                                     </td>
                                     
                                     <td data-label="Thành tiền">
-                                        <span class="cart-subtotal" th:if="${item.variant != null}"
-                                              th:text="${#numbers.formatDecimal(item.variant.gia_ban * item.so_luong, 0, 'COMMA', 0, 'POINT')} + ' đ'">0 đ</span>
-                                              
-                                        <span class="cart-subtotal" th:unless="${item.variant != null}"
-                                              th:text="${#numbers.formatDecimal(item.perfume.getGiaBanNumeric() * item.so_luong, 0, 'COMMA', 0, 'POINT')} + ' đ'">0 đ</span>
+                                        <span class="cart-subtotal"
+                                              th:text="${#numbers.formatDecimal(item.getPriceNumeric() * item.so_luong, 0, 'COMMA', 0, 'POINT')} + ' đ'">0 đ</span>
                                     </td>
                                     
                                     <td>

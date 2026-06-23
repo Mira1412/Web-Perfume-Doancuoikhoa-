@@ -20,12 +20,13 @@ public class CartController {
     private CartService cartService;
 
     // ==============================================================
-    // BỔ SUNG: DTO để hứng chính xác dữ liệu từ hàm JS (detail.html) gửi lên
+    // BỔ SUNG: DTO để hứng chính xác dữ liệu từ hàm JS (detail.html / index.html) gửi lên
     // ==============================================================
     public static class CartRequest {
         public User user;
         public Perfume perfume;
-        public Long id_bien_the; // Bắt lấy ID dung tích khách chọn
+        public Long id_bien_the; // Bắt lấy ID dung tích khách chọn (từ detail.html)
+        public Long variantId;   // Bắt lấy ID dung tích khách chọn (từ index.html)
         public Integer so_luong;
     }
 
@@ -43,10 +44,11 @@ public class CartController {
             cart.setPerfume(request.perfume);
             cart.setSo_luong(request.so_luong != null ? request.so_luong : 1);
 
-            // 2. Nếu khách có chọn dung tích (id_bien_the != null), thì nhét nó vào Giỏ
-            if (request.id_bien_the != null) {
+            // 2. Nếu khách có chọn dung tích, thì nhét nó vào Giỏ
+            Long selectedVariantId = request.id_bien_the != null ? request.id_bien_the : request.variantId;
+            if (selectedVariantId != null) {
                 PerfumeVariant variant = new PerfumeVariant();
-                variant.setId_bien_the(request.id_bien_the);
+                variant.setId_bien_the(selectedVariantId);
                 cart.setVariant(variant);
             }
 

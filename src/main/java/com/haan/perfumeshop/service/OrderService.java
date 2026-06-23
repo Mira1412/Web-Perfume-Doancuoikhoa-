@@ -44,13 +44,21 @@ public class OrderService {
         }
 
         // 2. Kiểm tra hàng tồn kho trước khi tạo hóa đơn
-        // (Lưu ý: Tạm thời vẫn trừ tồn kho ở chai gốc. Nếu sau này bạn muốn trừ tồn kho
-        // chi tiết theo từng biến thể dung tích, bạn sẽ cập nhật thêm ở đây).
         for (Cart item : cartItems) {
             Perfume perfume = item.getPerfume();
-            if (perfume.getTon_kho() < item.getSo_luong()) {
-                throw new Exception("Sản phẩm '" + perfume.getTen_sp() + "' không đủ số lượng trong kho! (Hiện còn: "
-                        + perfume.getTon_kho() + ")");
+            if (item.getVariant() != null) {
+                PerfumeVariant variant = item.getVariant();
+                int currentStock = variant.getSo_luong_ton() != null ? variant.getSo_luong_ton() : 0;
+                if (currentStock < item.getSo_luong()) {
+                    throw new Exception("Sản phẩm '" + perfume.getTen_sp() + " (" + variant.getDung_tich() + ")' không đủ số lượng trong kho! (Hiện còn: "
+                            + currentStock + ")");
+                }
+            } else {
+                int currentStock = perfume.getTon_kho() != null ? perfume.getTon_kho() : 0;
+                if (currentStock < item.getSo_luong()) {
+                    throw new Exception("Sản phẩm '" + perfume.getTen_sp() + "' không đủ số lượng trong kho! (Hiện còn: "
+                            + currentStock + ")");
+                }
             }
         }
 
@@ -96,7 +104,14 @@ public class OrderService {
             tongTien += (item.getSo_luong() * giaBanSo);
 
             // Cập nhật lại số lượng tồn kho mới sau khi trừ
-            perfume.setTon_kho(perfume.getTon_kho() - item.getSo_luong());
+            if (item.getVariant() != null) {
+                PerfumeVariant variant = item.getVariant();
+                int currentStock = variant.getSo_luong_ton() != null ? variant.getSo_luong_ton() : 0;
+                variant.setSo_luong_ton(currentStock - item.getSo_luong());
+            } else {
+                int currentStock = perfume.getTon_kho() != null ? perfume.getTon_kho() : 0;
+                perfume.setTon_kho(currentStock - item.getSo_luong());
+            }
             perfumeRepository.save(perfume);
         }
 

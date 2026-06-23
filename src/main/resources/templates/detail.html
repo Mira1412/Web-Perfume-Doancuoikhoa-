@@ -631,7 +631,9 @@
                 <div class="product-info-col">
                     <h1 class="product-title" th:text="${perfume.ten_sp}">Tên Sản Phẩm</h1>
                     <div class="product-price-wrapper">
-                        <span class="product-price" id="displayPrice" th:text="${perfume.gia_ban} + ' đ'">0 đ</span>
+                        <!-- Hiển thị giá từ biến thể đầu tiên -->
+                        <span class="product-price" id="displayPrice"
+                              th:text="${!perfume.variants.empty ? perfume.variants[0].gia_ban : 'Liên hệ để biết giá'}">0 đ</span>
                     </div>
 
                     <p class="product-desc"
@@ -659,6 +661,7 @@
                                     xứ</span></span></li>
                     </ul>
 
+                    <!-- Phần biến thể dung tích: Nếu không có variants thì ẩn luôn -->
                     <div class="variant-section"
                         th:if="${perfume.variants != null and !#lists.isEmpty(perfume.variants)}">
                         <div class="variant-label">DUNG TÍCH</div>
@@ -672,23 +675,15 @@
                         </div>
                     </div>
 
-                    <div class="variant-section"
-                        th:if="${perfume.variants == null or #lists.isEmpty(perfume.variants)}">
-                        <div class="variant-label">DUNG TÍCH</div>
-                        <div class="variant-buttons">
-                            <button type="button" class="btn-variant active" th:text="${perfume.dung_tich}">Mặc
-                                định</button>
-                        </div>
-                    </div>
-
                     <div class="action-row">
                         <div class="qty-wrapper">
                             <button type="button" class="qty-btn" onclick="decreaseQty()">-</button>
                             <input type="number" id="qtyInput" class="qty-input" value="1" min="1" readonly>
                             <button type="button" class="qty-btn" onclick="increaseQty()">+</button>
                         </div>
-                        <button type="button" class="btn-add-cart" onclick="addToCartDetail()">
-                            ADD TO CART
+                        <button type="button" class="btn-add-cart" onclick="addToCartDetail()"
+                                style="background: linear-gradient(135deg, var(--gold), var(--gold-dark)); color: #1a1a1a;">
+                            <i class="bi bi-bag-plus-fill"></i> THÊM VÀO GIỎ HÀNG
                         </button>
                     </div>
                 </div>
@@ -851,7 +846,8 @@
             clickedButton.classList.add('active');
 
             const rawPrice = clickedButton.getAttribute('data-price');
-            const formattedPrice = new Intl.NumberFormat('vi-VN').format(rawPrice);
+            const numericPrice = parseFloat(rawPrice.replace(/[^\d]/g, '')) || 0;
+            const formattedPrice = new Intl.NumberFormat('vi-VN').format(numericPrice);
             document.getElementById('displayPrice').innerText = formattedPrice + ' đ';
 
             // Lưu ID biến thể được chọn

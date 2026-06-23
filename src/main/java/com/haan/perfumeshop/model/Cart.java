@@ -41,4 +41,27 @@ public class Cart {
     public void setVariant(PerfumeVariant variant) {
         this.variant = variant;
     }
+
+    // ==============================================================
+    // TIỆN ÍCH: Lấy giá bán dưới dạng số thực tế để tính toán/hiển thị
+    // ==============================================================
+    public double getPriceNumeric() {
+        if (variant != null && variant.getGia_ban() != null) {
+            try {
+                String priceStr = variant.getGia_ban().replaceAll("[^\\d]", "");
+                return Double.parseDouble(priceStr);
+            } catch (Exception e) {
+                return 0.0;
+            }
+        }
+        if (perfume != null && perfume.getVariants() != null && !perfume.getVariants().isEmpty()) {
+            try {
+                String priceStr = perfume.getVariants().get(0).getGia_ban().replaceAll("[^\\d]", "");
+                return Double.parseDouble(priceStr);
+            } catch (Exception e) {
+                return 0.0;
+            }
+        }
+        return 0.0;
+    }
 }

@@ -55,10 +55,8 @@ public class UserController {
         User currentUser = userRepository.findById(loggedInUser.getId_user()).orElse(null);
         if (currentUser != null) {
             currentUser.setFullName(fullName);
-            // Lưu ý: Nếu trong model User của bạn biến điện thoại là so_dien_thoai hay
-            // dia_chi thì sửa lại cho khớp nhé
-            // currentUser.setSo_dien_thoai(phone);
-            // currentUser.setDia_chi(address);
+            currentUser.setPhone(phone);
+            currentUser.setAddress(address);
 
             userRepository.save(currentUser);
             session.setAttribute("loggedInUser", currentUser); // Cập nhật lại session

@@ -1,9 +1,14 @@
 <!DOCTYPE html>
 <html xmlns:th="http://www.thymeleaf.org" lang="vi">
+
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title th:text="${title} + ' — Admin Halo'"></title>
+    <title th:text="${isEdit} ? 'Chỉnh Sửa Sản Phẩm — Halo Admin' : 'Thêm Sản Phẩm Mới — Halo Admin'"></title>
+    <meta name="description"
+        th:content="${isEdit} ? 'Chỉnh sửa thông tin sản phẩm nước hoa tại Halo.' : 'Thêm sản phẩm nước hoa mới vào kho hàng Halo.'">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
     <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.0/font/bootstrap-icons.css" rel="stylesheet">
@@ -24,112 +29,167 @@
             --warning: #ffca28;
         }
 
-        * { margin: 0; padding: 0; box-sizing: border-box; }
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
 
         body {
             background-color: var(--dark);
             font-family: 'Inter', sans-serif;
             color: var(--text-primary);
             min-height: 100vh;
-            padding: 40px 0;
         }
 
-        /* ====== CARD ====== */
-        .card-custom {
+        /* ====== NAVBAR (dùng chung) ====== */
+        .navbar-custom {
+            background: rgba(13, 13, 26, 0.95);
+            backdrop-filter: blur(20px);
+            border-bottom: 1px solid var(--border);
+            position: sticky;
+            top: 0;
+            z-index: 1000;
+        }
+
+        .navbar-custom .container {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            height: 70px;
+        }
+
+        .brand-name {
+            font-size: 1.6rem;
+            font-weight: 600;
+            color: var(--gold) !important;
+            text-decoration: none;
+            letter-spacing: 1px;
+        }
+
+        .nav-links {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            list-style: none;
+        }
+
+        .nav-link-item {
+            color: rgba(240, 236, 228, 0.75);
+            text-decoration: none;
+            font-size: 0.875rem;
+            padding: 8px 16px;
+            border-radius: 8px;
+            transition: all 0.2s;
+            display: flex;
+            align-items: center;
+            gap: 6px;
+        }
+
+        .nav-link-item:hover {
+            color: var(--gold);
+            background: rgba(201, 169, 110, 0.1);
+        }
+
+        .btn-home-nav {
+            background: rgba(201, 169, 110, 0.12);
+            border: 1px solid rgba(201, 169, 110, 0.3);
+            color: var(--gold) !important;
+        }
+
+        /* ====== PAGE HEADER ====== */
+        .page-header {
+            background: linear-gradient(to right, var(--dark-2), var(--dark));
+            border-bottom: 1px solid var(--border);
+            padding: 40px 0 32px;
+        }
+
+        .page-header h1 {
+            font-size: 2.2rem;
+            font-weight: 600;
+            color: #ffffff;
+            margin-bottom: 6px;
+        }
+
+        .page-header .breadcrumb-custom {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            font-size: 0.8rem;
+            color: var(--text-muted);
+        }
+
+        .page-header .breadcrumb-custom a {
+            color: var(--gold);
+            text-decoration: none;
+        }
+
+        /* ====== FORM SECTION ====== */
+        .form-section {
+            padding: 40px 0 80px;
+        }
+
+        .form-card {
             background: var(--dark-2);
             border: 1px solid var(--border);
             border-radius: 20px;
-            padding: 0;
-            box-shadow: 0 15px 40px rgba(0,0,0,0.5);
             overflow: hidden;
+            box-shadow: 0 15px 40px rgba(0, 0, 0, 0.3);
         }
 
-        .card-header-custom {
+        .form-card-header {
             background: linear-gradient(135deg, rgba(201, 169, 110, 0.1), rgba(201, 169, 110, 0.03));
             border-bottom: 1px solid var(--border);
-            padding: 28px 36px;
+            padding: 24px 32px;
             display: flex;
             align-items: center;
-            gap: 16px;
+            gap: 14px;
         }
 
-        .card-header-icon {
-            width: 52px;
-            height: 52px;
+        .form-card-header-icon {
+            width: 48px;
+            height: 48px;
             border-radius: 14px;
-            background: rgba(201, 169, 110, 0.15);
-            color: var(--gold);
             display: flex;
             align-items: center;
             justify-content: center;
-            font-size: 1.4rem;
+            font-size: 1.3rem;
         }
 
-        .card-header-custom h3 {
-            font-size: 1.25rem;
+        .form-card-header-icon.add-mode {
+            background: rgba(201, 169, 110, 0.15);
+            color: var(--gold);
+        }
+
+        .form-card-header-icon.edit-mode {
+            background: rgba(255, 193, 7, 0.15);
+            color: #ffca28;
+        }
+
+        .form-card-header h2 {
+            font-size: 1.2rem;
             font-weight: 600;
-            color: #fff;
+            color: #ffffff;
             margin: 0;
         }
 
-        .card-header-custom p {
+        .form-card-header p {
             font-size: 0.8rem;
             color: var(--text-muted);
             margin: 4px 0 0 0;
         }
 
-        .card-body-custom {
-            padding: 36px;
-        }
-
-        /* ====== BACK LINK ====== */
-        .back-link {
-            display: inline-flex;
-            align-items: center;
-            gap: 8px;
-            color: var(--gold);
-            text-decoration: none;
-            font-size: 0.88rem;
-            font-weight: 500;
-            padding: 8px 16px;
-            border-radius: 10px;
-            transition: all 0.2s;
-            margin-bottom: 24px;
-        }
-
-        .back-link:hover {
-            background: rgba(201, 169, 110, 0.1);
-            color: var(--gold-light);
+        .form-card-body {
+            padding: 32px;
         }
 
         /* ====== FORM FIELDS ====== */
-        .form-control, .form-select {
-            background: var(--dark-3);
-            border: 1px solid rgba(255,255,255,0.08);
-            color: #fff;
-            padding: 12px 16px;
-            border-radius: 10px;
-            font-family: 'Inter', sans-serif;
-            font-size: 0.9rem;
-            transition: all 0.25s ease;
+        .form-group {
+            margin-bottom: 24px;
         }
 
-        .form-control:focus, .form-select:focus {
-            background: var(--dark-4);
-            border-color: var(--gold);
-            color: #fff;
-            box-shadow: 0 0 0 3px rgba(201, 169, 110, 0.15);
-        }
-
-        .form-control:hover:not(:focus), .form-select:hover:not(:focus) {
-            border-color: rgba(255, 255, 255, 0.15);
-        }
-
-        .form-control::placeholder {
-            color: rgba(240, 236, 228, 0.25);
-        }
-
-        .form-label {
+        .form-group label {
+            display: block;
             font-size: 0.82rem;
             font-weight: 500;
             color: var(--text-muted);
@@ -138,47 +198,78 @@
             margin-bottom: 8px;
         }
 
-        .required-star {
+        .form-group label .required-dot {
             color: var(--danger);
             margin-left: 3px;
         }
 
-        /* ====== SECTION DIVIDER ====== */
-        .section-label {
-            font-size: 0.72rem;
-            font-weight: 600;
-            color: var(--gold);
-            text-transform: uppercase;
-            letter-spacing: 1.2px;
-            margin: 28px 0 18px;
+        .form-input,
+        .form-select-custom {
+            width: 100%;
+            padding: 13px 16px;
+            background: var(--dark-3);
+            border: 1px solid rgba(255, 255, 255, 0.08);
+            border-radius: 12px;
+            color: var(--text-primary) !important;
+            font-family: 'Inter', sans-serif;
+            font-size: 0.92rem;
+            transition: border-color 0.25s ease, box-shadow 0.25s ease, background-color 0.25s ease;
+            outline: none;
+        }
+
+        textarea.form-input {
+            resize: vertical;
+        }
+
+        .form-input::placeholder {
+            color: rgba(240, 236, 228, 0.25);
+        }
+
+        .form-input:focus,
+        .form-select-custom:focus {
+            border-color: var(--gold);
+            box-shadow: 0 0 0 3px rgba(201, 169, 110, 0.15);
+            background: var(--dark-4);
+            color: var(--text-primary) !important;
+        }
+
+        .form-input:hover:not(:focus),
+        .form-select-custom:hover:not(:focus) {
+            border-color: rgba(255, 255, 255, 0.15);
+        }
+
+        .form-select-custom option {
+            background: var(--dark-3);
+            color: var(--text-primary);
+        }
+
+        .form-hint {
+            font-size: 0.75rem;
+            color: var(--text-muted);
+            margin-top: 6px;
             display: flex;
             align-items: center;
-            gap: 10px;
+            gap: 5px;
         }
 
-        .section-label::after {
-            content: '';
-            flex: 1;
-            height: 1px;
-            background: rgba(201, 169, 110, 0.15);
+        .form-hint i {
+            font-size: 0.7rem;
         }
 
-        .section-label i {
-            font-size: 0.85rem;
-        }
-
-        /* ====== VALIDATION STYLES ====== */
-        .form-control.is-invalid, .form-select.is-invalid {
+        /* ====== VALIDATION ====== */
+        .form-input.is-invalid,
+        .form-select-custom.is-invalid {
             border-color: var(--danger) !important;
             box-shadow: 0 0 0 3px rgba(255, 107, 122, 0.15) !important;
         }
 
-        .form-control.is-valid, .form-select.is-valid {
+        .form-input.is-valid,
+        .form-select-custom.is-valid {
             border-color: var(--success) !important;
             box-shadow: 0 0 0 3px rgba(111, 201, 122, 0.1) !important;
         }
 
-        .invalid-feedback {
+        .invalid-feedback-custom {
             display: none;
             font-size: 0.78rem;
             color: var(--danger);
@@ -187,11 +278,11 @@
             gap: 5px;
         }
 
-        .invalid-feedback.show {
+        .invalid-feedback-custom.show {
             display: flex;
         }
 
-        .invalid-feedback i {
+        .invalid-feedback-custom i {
             font-size: 0.72rem;
         }
 
@@ -211,24 +302,113 @@
             color: var(--danger);
         }
 
-        .form-hint {
-            font-size: 0.75rem;
-            color: var(--text-muted);
-            margin-top: 6px;
-            display: flex;
+        .validation-summary {
+            display: none;
+            background: rgba(255, 107, 122, 0.1);
+            border: 1px solid rgba(255, 107, 122, 0.25);
+            border-radius: 12px;
+            padding: 16px 20px;
+            margin-bottom: 24px;
+            font-size: 0.85rem;
+            color: var(--danger);
             align-items: center;
-            gap: 5px;
+            gap: 10px;
         }
 
-        .form-hint i {
-            font-size: 0.7rem;
+        .validation-summary.show {
+            display: flex;
+        }
+
+        .validation-summary i {
+            font-size: 1.1rem;
+        }
+
+        /* ====== FLASH ALERTS ====== */
+        .flash-alert {
+            border-radius: 12px;
+            padding: 14px 20px;
+            font-size: 0.875rem;
+            font-weight: 500;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            margin-bottom: 20px;
+            animation: slideDown 0.4s ease forwards;
+        }
+
+        .flash-alert i {
+            font-size: 1.1rem;
+        }
+
+        .flash-alert-success {
+            background: rgba(111, 201, 122, 0.12);
+            border: 1px solid rgba(111, 201, 122, 0.3);
+            color: #6fc97a;
+        }
+
+        .flash-alert-error {
+            background: rgba(220, 53, 69, 0.12);
+            border: 1px solid rgba(220, 53, 69, 0.3);
+            color: #ff6b7a;
+        }
+
+        @keyframes slideDown {
+            from {
+                opacity: 0;
+                transform: translateY(-10px);
+            }
+
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        /* ====== ROW LAYOUT ====== */
+        .form-row {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 20px;
+        }
+
+        .form-row-3 {
+            display: grid;
+            grid-template-columns: 1fr 1fr 1fr;
+            gap: 20px;
+        }
+
+        /* ====== SECTION DIVIDER ====== */
+        .form-divider {
+            border: none;
+            border-top: 1px solid rgba(255, 255, 255, 0.06);
+            margin: 8px 0 24px;
+        }
+
+        .form-section-label {
+            font-size: 0.72rem;
+            font-weight: 600;
+            color: var(--gold);
+            text-transform: uppercase;
+            letter-spacing: 1.2px;
+            margin-bottom: 20px;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .form-section-label::after {
+            content: '';
+            flex: 1;
+            height: 1px;
+            background: rgba(201, 169, 110, 0.15);
         }
 
         /* ====== FILE UPLOAD ====== */
         .file-upload-area {
+            margin-top: 8px;
             border: 2px dashed rgba(255, 255, 255, 0.1);
             border-radius: 14px;
-            padding: 28px 20px;
+            padding: 30px 20px;
             text-align: center;
             cursor: pointer;
             transition: all 0.3s ease;
@@ -246,9 +426,9 @@
         }
 
         .file-upload-area .upload-icon {
-            font-size: 2rem;
+            font-size: 2.2rem;
             color: var(--text-muted);
-            margin-bottom: 8px;
+            margin-bottom: 10px;
             transition: color 0.3s;
         }
 
@@ -257,8 +437,9 @@
         }
 
         .file-upload-area .upload-text {
-            font-size: 0.85rem;
+            font-size: 0.88rem;
             color: var(--text-muted);
+            margin-bottom: 4px;
         }
 
         .file-upload-area .upload-text strong {
@@ -266,15 +447,16 @@
         }
 
         .file-upload-area .upload-hint {
-            font-size: 0.72rem;
+            font-size: 0.75rem;
             color: rgba(240, 236, 228, 0.3);
-            margin-top: 4px;
         }
 
         .file-upload-area input[type="file"] {
             position: absolute;
-            top: 0; left: 0;
-            width: 100%; height: 100%;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
             opacity: 0;
             cursor: pointer;
         }
@@ -293,26 +475,6 @@
             justify-content: center;
         }
 
-        .image-preview-box {
-            margin-top: 14px;
-            width: 140px;
-            height: 140px;
-            border: 2px solid rgba(201, 169, 110, 0.3);
-            border-radius: 14px;
-            overflow: hidden;
-            display: none;
-        }
-
-        .image-preview-box img {
-            width: 100%;
-            height: 100%;
-            object-fit: cover;
-        }
-
-        .image-preview-box.has-image {
-            display: inline-block;
-        }
-
         .file-error {
             display: none;
             font-size: 0.78rem;
@@ -327,33 +489,101 @@
             justify-content: center;
         }
 
+        /* ====== CURRENT IMAGE (Edit mode) ====== */
+        .current-image-box {
+            margin-top: 12px;
+            margin-bottom: 16px;
+            display: flex;
+            align-items: center;
+            gap: 16px;
+            padding: 14px;
+            background: var(--dark-3);
+            border: 1px solid rgba(255, 255, 255, 0.06);
+            border-radius: 12px;
+        }
+
+        .current-image-box img {
+            width: 80px;
+            height: 80px;
+            object-fit: cover;
+            border-radius: 10px;
+            border: 1px solid var(--border);
+        }
+
+        .current-image-info {
+            font-size: 0.8rem;
+            color: var(--text-muted);
+        }
+
+        .current-image-info strong {
+            display: block;
+            color: var(--text-primary);
+            font-size: 0.85rem;
+            margin-bottom: 2px;
+        }
+
+        .image-preview-box {
+            margin-top: 14px;
+            width: 160px;
+            height: 160px;
+            border: 2px solid rgba(201, 169, 110, 0.3);
+            border-radius: 14px;
+            overflow: hidden;
+            display: none;
+        }
+
+        .image-preview-box img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+        }
+
+        .image-preview-box.has-image {
+            display: block;
+        }
+
         /* ====== BUTTONS ====== */
-        .btn-gold {
+        .form-actions {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            padding-top: 8px;
+        }
+
+        .btn-save {
             display: inline-flex;
             align-items: center;
             gap: 8px;
+            padding: 13px 28px;
             background: linear-gradient(135deg, var(--gold), var(--gold-dark));
-            color: #1a1a1a;
-            font-weight: 600;
-            font-family: 'Inter', sans-serif;
             border: none;
-            padding: 13px 30px;
             border-radius: 12px;
+            color: #1a1a1a;
+            font-family: 'Inter', sans-serif;
             font-size: 0.9rem;
+            font-weight: 600;
             cursor: pointer;
-            transition: all 0.25s;
+            transition: all 0.25s ease;
         }
 
-        .btn-gold:hover {
+        .btn-save.edit-mode {
+            background: linear-gradient(135deg, #ffca28, #e6a800);
+        }
+
+        .btn-save:hover {
             transform: translateY(-2px);
-            box-shadow: 0 8px 25px rgba(201,169,110,0.35);
+            box-shadow: 0 8px 25px rgba(201, 169, 110, 0.35);
         }
 
-        .btn-gold:active {
+        .btn-save.edit-mode:hover {
+            box-shadow: 0 8px 25px rgba(255, 202, 40, 0.35);
+        }
+
+        .btn-save:active {
             transform: translateY(0);
         }
 
-        .btn-gold:disabled {
+        .btn-save:disabled {
             opacity: 0.5;
             cursor: not-allowed;
             transform: none !important;
@@ -383,45 +613,48 @@
             background: rgba(255, 255, 255, 0.04);
         }
 
-        .form-actions {
-            display: flex;
-            align-items: center;
-            gap: 12px;
-            padding-top: 12px;
+        /* ====== FOOTER ====== */
+        .footer-credit {
+            text-align: center;
+            color: var(--text-muted);
+            font-size: 0.82rem;
+            margin-top: 40px;
+            padding-top: 24px;
+            border-top: 1px solid rgba(255, 255, 255, 0.05);
         }
 
-        /* ====== VALIDATION SUMMARY ====== */
-        .validation-summary {
-            display: none;
-            background: rgba(255, 107, 122, 0.1);
-            border: 1px solid rgba(255, 107, 122, 0.25);
-            border-radius: 12px;
-            padding: 16px 20px;
-            margin-bottom: 24px;
-            font-size: 0.85rem;
-            color: var(--danger);
-            align-items: center;
-            gap: 10px;
-        }
-
-        .validation-summary.show {
-            display: flex;
-        }
-
-        .validation-summary i {
-            font-size: 1.1rem;
+        .footer-credit strong {
+            color: var(--gold);
+            font-weight: 600;
         }
 
         /* ====== ANIMATIONS ====== */
         @keyframes fadeInUp {
-            from { opacity: 0; transform: translateY(20px); }
-            to { opacity: 1; transform: translateY(0); }
+            from {
+                opacity: 0;
+                transform: translateY(20px);
+            }
+
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
         }
 
         @keyframes shake {
-            0%, 100% { transform: translateX(0); }
-            25% { transform: translateX(-5px); }
-            75% { transform: translateX(5px); }
+
+            0%,
+            100% {
+                transform: translateX(0);
+            }
+
+            25% {
+                transform: translateX(-5px);
+            }
+
+            75% {
+                transform: translateX(5px);
+            }
         }
 
         .animate-in {
@@ -434,191 +667,368 @@
 
         /* ====== RESPONSIVE ====== */
         @media (max-width: 768px) {
-            .card-body-custom { padding: 24px 20px; }
-            .form-actions { flex-direction: column; }
-            .btn-gold, .btn-cancel { width: 100%; justify-content: center; }
+
+            .form-row,
+            .form-row-3 {
+                grid-template-columns: 1fr;
+            }
+
+            .form-card-body {
+                padding: 24px 20px;
+            }
+
+            .page-header h1 {
+                font-size: 1.6rem;
+            }
+
+            .form-actions {
+                flex-direction: column;
+            }
+
+            .btn-save,
+            .btn-cancel {
+                width: 100%;
+                justify-content: center;
+            }
+
+            .nav-links {
+                gap: 4px;
+            }
+
+            .nav-link-item {
+                padding: 6px 10px;
+                font-size: 0.78rem;
+            }
         }
     </style>
 </head>
+
 <body>
 
-    <div class="container" style="max-width: 800px;">
-        <a href="/admin/products" class="back-link">
-            <i class="bi bi-arrow-left"></i> Quay lại danh sách
-        </a>
+    <!-- ====== NAVBAR ====== -->
+    <nav class="navbar-custom">
+        <div class="container">
+            <a class="brand-name" href="/">🌸 Halo Admin</a>
+            <ul class="nav-links">
+                <li>
+                    <a href="/" class="nav-link-item btn-home-nav">
+                        <i class="bi bi-shop"></i> Cửa hàng
+                    </a>
+                </li>
+                <li>
+                    <a href="/admin/dashboard" class="nav-link-item">
+                        <i class="bi bi-speedometer2"></i> Dashboard
+                    </a>
+                </li>
+                <li>
+                    <a href="/admin/products" class="nav-link-item" style="color: var(--gold);">
+                        <i class="bi bi-box-seam"></i> Sản phẩm
+                    </a>
+                </li>
+                <li>
+                    <a href="/admin/orders" class="nav-link-item">
+                        <i class="bi bi-receipt"></i> Đơn hàng
+                    </a>
+                </li>
+            </ul>
+        </div>
+    </nav>
 
-        <div class="card-custom animate-in">
-
-            <div class="card-header-custom">
-                <div class="card-header-icon">
-                    <i class="bi bi-droplet-half"></i>
-                </div>
-                <div>
-                    <h3 th:text="${title}">Tiêu đề form</h3>
-                    <p>Điền đầy đủ thông tin sản phẩm. Các trường có dấu <span style="color: #ff6b7a;">*</span> là bắt buộc.</p>
+    <!-- ====== PAGE HEADER ====== -->
+    <div class="page-header">
+        <div class="container">
+            <!-- Chế độ Thêm mới -->
+            <div th:unless="${isEdit}">
+                <h1><i class="bi bi-plus-circle"
+                        style="color: var(--gold); font-size: 1.8rem; margin-right: 12px;"></i>Thêm Sản Phẩm Mới</h1>
+                <div class="breadcrumb-custom" style="margin-top: 8px;">
+                    <a href="/"><i class="bi bi-house"></i> Trang chủ</a>
+                    <i class="bi bi-chevron-right" style="font-size: 10px;"></i>
+                    <a href="/admin/products">Sản phẩm</a>
+                    <i class="bi bi-chevron-right" style="font-size: 10px;"></i>
+                    <span>Thêm mới</span>
                 </div>
             </div>
-
-            <div class="card-body-custom">
-
-                <!-- Validation Summary (hiển thị khi submit mà có lỗi) -->
-                <div class="validation-summary" id="validationSummary">
-                    <i class="bi bi-exclamation-triangle-fill"></i>
-                    <span id="validationMsg">Vui lòng kiểm tra lại các trường được đánh dấu đỏ bên dưới.</span>
+            <!-- Chế độ Chỉnh sửa -->
+            <div th:if="${isEdit}">
+                <h1><i class="bi bi-pencil-square"
+                        style="color: #ffca28; font-size: 1.8rem; margin-right: 12px;"></i>Chỉnh Sửa Sản Phẩm</h1>
+                <div class="breadcrumb-custom" style="margin-top: 8px;">
+                    <a href="/"><i class="bi bi-house"></i> Trang chủ</a>
+                    <i class="bi bi-chevron-right" style="font-size: 10px;"></i>
+                    <a href="/admin/products">Sản phẩm</a>
+                    <i class="bi bi-chevron-right" style="font-size: 10px;"></i>
+                    <span>Chỉnh sửa</span>
                 </div>
-
-                <form th:action="@{/admin/products/save}" th:object="${perfume}" method="POST"
-                      enctype="multipart/form-data" id="productForm" novalidate>
-                    <input type="hidden" th:field="*{id_nuoc_hoa}" />
-
-                    <!-- ====== THÔNG TIN CƠ BẢN ====== -->
-                    <div class="section-label">
-                        <i class="bi bi-info-circle"></i> Thông tin cơ bản
-                    </div>
-
-                    <div class="row g-3">
-                        <!-- Tên nước hoa -->
-                        <div class="col-md-6">
-                            <label class="form-label">Tên nước hoa <span class="required-star">*</span></label>
-                            <input type="text" class="form-control" th:field="*{ten_sp}"
-                                   id="ten_sp" required minlength="2" maxlength="150"
-                                   placeholder="Ví dụ: Bleu de Chanel"
-                                   data-validate="required|minlength:2|maxlength:150">
-                            <div class="invalid-feedback" id="err-ten_sp">
-                                <i class="bi bi-exclamation-circle"></i> <span>Tên sản phẩm phải từ 2 - 150 ký tự.</span>
-                            </div>
-                            <div class="char-counter" id="counter-ten_sp">0 / 150</div>
-                        </div>
-
-                        <!-- Thương hiệu -->
-                        <div class="col-md-6">
-                            <label class="form-label">Thương hiệu <span class="required-star">*</span></label>
-                            <input type="text" class="form-control" th:field="*{thuong_hieu}"
-                                   id="thuong_hieu" required minlength="2" maxlength="100"
-                                   placeholder="Ví dụ: Chanel, Dior, Gucci..."
-                                   data-validate="required|minlength:2|maxlength:100">
-                            <div class="invalid-feedback" id="err-thuong_hieu">
-                                <i class="bi bi-exclamation-circle"></i> <span>Thương hiệu phải từ 2 - 100 ký tự.</span>
-                            </div>
-                        </div>
-
-                        <!-- Giá bán -->
-                        <div class="col-md-6">
-                            <label class="form-label">Giá bán <span class="required-star">*</span></label>
-                            <input type="text" class="form-control" th:field="*{gia_ban}"
-                                   id="gia_ban" required maxlength="50"
-                                   placeholder="Ví dụ: 2.500.000 hoặc 1.500.000 - 2.000.000"
-                                   data-validate="required|maxlength:50">
-                            <div class="invalid-feedback" id="err-gia_ban">
-                                <i class="bi bi-exclamation-circle"></i> <span>Vui lòng nhập giá bán.</span>
-                            </div>
-                            <div class="form-hint">
-                                <i class="bi bi-info-circle"></i> Cho phép nhập chữ, số và ký tự tự do
-                            </div>
-                        </div>
-
-                        <!-- Dung tích -->
-                        <div class="col-md-6">
-                            <label class="form-label">Dung tích <span class="required-star">*</span></label>
-                            <input type="text" class="form-control" th:field="*{dung_tich}"
-                                   id="dung_tich" required maxlength="50"
-                                   placeholder="Ví dụ: 100ml, 50ml..."
-                                   data-validate="required|maxlength:50">
-                            <div class="invalid-feedback" id="err-dung_tich">
-                                <i class="bi bi-exclamation-circle"></i> <span>Vui lòng nhập dung tích.</span>
-                            </div>
-                        </div>
-
-                        <!-- Nhóm hương -->
-                        <div class="col-md-6">
-                            <label class="form-label">Nhóm hương</label>
-                            <input type="text" class="form-control" th:field="*{nhom_huong}"
-                                   id="nhom_huong" maxlength="100"
-                                   placeholder="Ví dụ: Hương gỗ thơm, Hương hoa...">
-                        </div>
-
-                        <!-- Phong cách -->
-                        <div class="col-md-6">
-                            <label class="form-label">Phong cách</label>
-                            <input type="text" class="form-control" th:field="*{phong_cach}"
-                                   id="phong_cach" maxlength="100"
-                                   placeholder="Ví dụ: Sang trọng, Lịch lãm">
-                        </div>
-
-                        <!-- Giới tính -->
-                        <div class="col-md-6">
-                            <label class="form-label">Giới tính <span class="required-star">*</span></label>
-                            <select class="form-select" th:field="*{gioi_tinh}" id="gioi_tinh" required
-                                    data-validate="required">
-                                <option value="" disabled>— Chọn giới tính —</option>
-                                <option value="Nữ">Nữ</option>
-                                <option value="Nam">Nam</option>
-                                <option value="Unisex">Unisex (Nam &amp; Nữ)</option>
-                            </select>
-                            <div class="invalid-feedback" id="err-gioi_tinh">
-                                <i class="bi bi-exclamation-circle"></i> <span>Vui lòng chọn giới tính.</span>
-                            </div>
-                        </div>
-
-                        <!-- Xuất xứ -->
-                        <div class="col-md-6">
-                            <label class="form-label">Xuất xứ</label>
-                            <input type="text" class="form-control" th:field="*{xuat_xu}"
-                                   id="xuat_xu" maxlength="100"
-                                   placeholder="Ví dụ: Pháp, Ý, Tây Ban Nha...">
-                        </div>
-                    </div>
-
-                    <!-- ====== HÌNH ẢNH ====== -->
-                    <div class="section-label">
-                        <i class="bi bi-image"></i> Hình ảnh sản phẩm
-                    </div>
-
-                    <div class="file-upload-area" id="dropZone">
-                        <div class="upload-icon"><i class="bi bi-cloud-arrow-up"></i></div>
-                        <div class="upload-text">Kéo thả ảnh vào đây hoặc <strong>nhấn để chọn file</strong></div>
-                        <div class="upload-hint">Hỗ trợ: JPG, PNG, WEBP — Tối đa 5MB</div>
-                        <input type="file" name="imageFile" id="imageFileInput" accept="image/jpeg,image/png,image/webp">
-                        <div class="file-info" id="fileInfo">
-                            <i class="bi bi-file-earmark-image"></i> <span id="fileName"></span>
-                        </div>
-                    </div>
-                    <div class="file-error" id="fileError">
-                        <i class="bi bi-exclamation-circle"></i> <span id="fileErrorMsg"></span>
-                    </div>
-                    <div class="image-preview-box" id="imagePreview">
-                        <img id="previewImg" src="" alt="Preview">
-                    </div>
-                    <div class="form-hint" style="margin-top: 10px;">
-                        <i class="bi bi-info-circle"></i> Nếu đang chỉnh sửa và muốn giữ ảnh cũ, hãy để trống ô này.
-                    </div>
-
-                    <!-- ====== MÔ TẢ ====== -->
-                    <div class="section-label">
-                        <i class="bi bi-card-text"></i> Mô tả sản phẩm
-                    </div>
-
-                    <div>
-                        <textarea class="form-control" th:field="*{mo_ta}" id="mo_ta" rows="5"
-                                  maxlength="2000"
-                                  placeholder="Nhập bài viết giới thiệu chi tiết về mùi hương, cảm nhận, độ bền hương..."></textarea>
-                        <div class="char-counter" id="counter-mo_ta">0 / 2000</div>
-                    </div>
-
-                    <!-- ====== ACTIONS ====== -->
-                    <div class="form-actions" style="margin-top: 28px;">
-                        <button type="submit" class="btn-gold" id="btnSubmit">
-                            <i class="bi bi-check-lg"></i> Lưu Sản Phẩm
-                        </button>
-                        <a href="/admin/products" class="btn-cancel">
-                            <i class="bi bi-x-lg"></i> Hủy bỏ
-                        </a>
-                    </div>
-
-                </form>
             </div>
         </div>
     </div>
+
+    <!-- ====== FORM CONTENT ====== -->
+    <section class="form-section">
+        <div class="container">
+            <div class="row justify-content-center">
+                <div class="col-lg-8">
+
+                    <!-- Flash Messages -->
+                    <div th:if="${successMsg}" class="flash-alert flash-alert-success">
+                        <i class="bi bi-check-circle-fill"></i>
+                        <span th:text="${successMsg}">Thành công!</span>
+                    </div>
+                    <div th:if="${errorMsg}" class="flash-alert flash-alert-error">
+                        <i class="bi bi-exclamation-triangle-fill"></i>
+                        <span th:text="${errorMsg}">Có lỗi xảy ra!</span>
+                    </div>
+
+                    <div class="form-card animate-in">
+
+                        <!-- Card Header -->
+                        <div class="form-card-header">
+                            <div th:unless="${isEdit}" class="form-card-header-icon add-mode">
+                                <i class="bi bi-droplet-half"></i>
+                            </div>
+                            <div th:if="${isEdit}" class="form-card-header-icon edit-mode">
+                                <i class="bi bi-pencil"></i>
+                            </div>
+                            <div>
+                                <h2 th:unless="${isEdit}">Thông tin nước hoa</h2>
+                                <h2 th:if="${isEdit}">Cập nhật thông tin nước hoa</h2>
+                                <p th:unless="${isEdit}">Điền đầy đủ thông tin sản phẩm để thêm vào kho hàng. Các trường
+                                    có dấu <span style="color: #ff6b7a;">*</span> là bắt buộc.</p>
+                                <p th:if="${isEdit}">Chỉnh sửa các thông tin sản phẩm cần thay đổi</p>
+                            </div>
+                        </div>
+
+                        <div class="form-card-body">
+
+                            <!-- Validation Summary -->
+                            <div class="validation-summary" id="validationSummary">
+                                <i class="bi bi-exclamation-triangle-fill"></i>
+                                <span>Vui lòng kiểm tra lại các trường được đánh dấu đỏ bên dưới.</span>
+                            </div>
+
+                            <form th:action="${isEdit} ? @{/admin/products/update} : @{/admin/products/save}"
+                                th:object="${perfume}" method="POST" enctype="multipart/form-data" id="productForm"
+                                novalidate>
+
+                                <!-- Hidden fields -->
+                                <input type="hidden" th:field="*{id_nuoc_hoa}">
+                                <input th:if="${isEdit}" type="hidden" th:field="*{hinh_anh}">
+
+                                <!-- ====== THÔNG TIN CƠ BẢN ====== -->
+                                <div class="form-section-label">
+                                    <i class="bi bi-info-circle"></i> Thông tin cơ bản
+                                </div>
+
+                                <!-- Tên sản phẩm (full width) -->
+                                <div class="form-group">
+                                    <label>Tên sản phẩm <span class="required-dot">*</span></label>
+                                    <input type="text" th:field="*{ten_sp}" class="form-input" id="ten_sp" required
+                                        minlength="2" maxlength="150" placeholder="VD: Chanel No.5 Eau de Parfum"
+                                        data-validate="required|minlength:2|maxlength:150">
+                                    <div class="invalid-feedback-custom" id="err-ten_sp">
+                                        <i class="bi bi-exclamation-circle"></i> <span>Tên sản phẩm phải từ 2 - 150 ký
+                                            tự.</span>
+                                    </div>
+                                    <div class="char-counter" id="counter-ten_sp">0 / 150</div>
+                                </div>
+
+                                <!-- Thương hiệu + Nhóm hương -->
+                                <div class="form-row">
+                                    <div class="form-group">
+                                        <label>Thương hiệu <span class="required-dot">*</span></label>
+                                        <input type="text" th:field="*{thuong_hieu}" class="form-input" id="thuong_hieu"
+                                            required minlength="2" maxlength="100"
+                                            placeholder="VD: Chanel, Dior, Gucci..."
+                                            data-validate="required|minlength:2|maxlength:100">
+                                        <div class="invalid-feedback-custom" id="err-thuong_hieu">
+                                            <i class="bi bi-exclamation-circle"></i> <span>Thương hiệu phải từ 2 - 100
+                                                ký tự.</span>
+                                        </div>
+                                    </div>
+                                    <div class="form-group">
+                                        <label>Nhóm hương</label>
+                                        <input type="text" th:field="*{nhom_huong}" class="form-input" id="nhom_huong"
+                                            maxlength="100" placeholder="VD: Hương hoa, Hương gỗ, Oriental...">
+                                    </div>
+                                </div>
+
+                                <!-- Giới tính + Xuất xứ -->
+                                <div class="form-row">
+                                    <div class="form-group">
+                                        <label>Giới tính <span class="required-dot">*</span></label>
+                                        <select th:field="*{gioi_tinh}" class="form-select-custom" id="gioi_tinh"
+                                            required data-validate="required">
+                                            <option value="" disabled>— Chọn giới tính —</option>
+                                            <option value="Nữ">Nữ</option>
+                                            <option value="Nam">Nam</option>
+                                            <option value="Unisex">Unisex (Nam &amp; Nữ)</option>
+                                        </select>
+                                        <div class="invalid-feedback-custom" id="err-gioi_tinh">
+                                            <i class="bi bi-exclamation-circle"></i> <span>Vui lòng chọn giới
+                                                tính.</span>
+                                        </div>
+                                    </div>
+                                    <div class="form-group">
+                                        <label>Xuất xứ</label>
+                                        <input type="text" th:field="*{xuat_xu}" class="form-input" id="xuat_xu"
+                                            maxlength="100" placeholder="VD: Pháp, Ý, Tây Ban Nha...">
+                                    </div>
+                                </div>
+
+                                <!-- Phong cách -->
+                                <div class="form-row">
+                                    <div class="form-group">
+                                        <label>Phong cách</label>
+                                        <input type="text" th:field="*{phong_cach}" class="form-input" id="phong_cach"
+                                            maxlength="100" placeholder="VD: Sang trọng, Quyến rũ, Thanh lịch...">
+                                    </div>
+                                </div>
+
+                                <hr class="form-divider">
+
+                                <!-- ====== ĐẶC TÍNH HƯƠNG ====== -->
+                                <div class="form-section-label">
+                                    <i class="bi bi-wind"></i> Đặc tính hương
+                                </div>
+
+                                <div class="form-row">
+                                    <div class="form-group">
+                                        <label>Thời gian lưu hương</label>
+                                        <input type="text" th:field="*{luu_huong}" class="form-input" id="luu_huong"
+                                            maxlength="100" placeholder="VD: 7 - 12 giờ">
+                                        <div class="form-hint">
+                                            <i class="bi bi-info-circle"></i> Thời gian mùi hương tồn tại trên da
+                                        </div>
+                                    </div>
+                                    <div class="form-group">
+                                        <label>Độ tỏa hương</label>
+                                        <input type="text" th:field="*{toa_huong}" class="form-input" id="toa_huong"
+                                            maxlength="100" placeholder="VD: Gần — trong vòng 1 cánh tay">
+                                        <div class="form-hint">
+                                            <i class="bi bi-info-circle"></i> Phạm vi lan tỏa của mùi hương
+                                        </div>
+                                    </div>
+                                </div>
+
+                                <hr class="form-divider">
+
+                                <!-- ====== MÔ TẢ ====== -->
+                                <div class="form-section-label">
+                                    <i class="bi bi-card-text"></i> Mô tả sản phẩm
+                                </div>
+
+                                <div class="form-group">
+                                    <label>Mô tả chi tiết</label>
+                                    <textarea th:field="*{mo_ta}" class="form-input" id="mo_ta" rows="5"
+                                        maxlength="2000"
+                                        placeholder="Nhập bài viết giới thiệu chi tiết về mùi hương, cảm nhận, độ bền hương, phù hợp dịp nào..."></textarea>
+                                    <div class="char-counter" id="counter-mo_ta">0 / 2000</div>
+                                </div>
+
+                                <hr class="form-divider">
+
+                                <!-- ====== PHÂN LOẠI DUNG TÍCH & GIÁ BÁN ====== -->
+                                <div class="form-section-label">
+                                    <i class="bi bi-tags"></i> Phân loại dung tích & Giá bán
+                                </div>
+
+                                <div id="variants-container">
+                                    <div class="row g-3 mb-3 variant-row align-items-end"
+                                        th:each="variant, stat : *{variants}">
+
+                                        <input type="hidden" th:field="*{variants[__${stat.index}__].id_bien_the}" />
+
+                                        <div class="col-md-4">
+                                            <label class="form-label text-white-50">Dung tích</label>
+                                            <input type="text" class="form-input"
+                                                th:field="*{variants[__${stat.index}__].dung_tich}"
+                                                placeholder="VD: 50ml" required>
+                                        </div>
+                                        <div class="col-md-4">
+                                            <label class="form-label text-white-50">Giá bán (Nhập số hoặc chữ)</label>
+                                            <input type="text" class="form-input"
+                                                th:field="*{variants[__${stat.index}__].gia_ban}"
+                                                placeholder="VD: 2.500.000 đ" required>
+                                        </div>
+                                        <div class="col-md-3">
+                                            <label class="form-label text-white-50">Số lượng kho</label>
+                                            <input type="number" class="form-input"
+                                                th:field="*{variants[__${stat.index}__].so_luong_ton}"
+                                                placeholder="VD: 100" required>
+                                        </div>
+                                        <div class="col-md-1 text-end">
+                                            <button type="button" class="btn btn-outline-danger btn-sm w-100" onclick="removeVariantRow(this)" style="height: 46px;" title="Xóa phân loại này">
+                                                <i class="bi bi-trash"></i>
+                                            </button>
+                                        </div>
+                                    </div>
+                                </div>
+
+                                <div class="mb-4 mt-2">
+                                    <button type="button" class="btn btn-sm btn-outline-light"
+                                        style="border-color: var(--gold); color: var(--gold);"
+                                        onclick="addVariantRow()">
+                                        <i class="bi bi-plus"></i> Thêm phân loại dung tích
+                                    </button>
+                                </div>
+
+                                <hr class="form-divider">
+
+                                <!-- ====== HÌNH ẢNH ====== -->
+                                <div class="form-section-label">
+                                    <i class="bi bi-image"></i> Hình ảnh sản phẩm
+                                </div>
+
+                                <hr style="border-color: rgba(201, 169, 110, 0.3); margin: 40px 0;">
+                                <div class="mb-4">
+                                    <h5 class="mb-3" style="color: var(--gold);"><i class="bi bi-image"></i> HÌNH ẢNH
+                                        SẢN PHẨM</h5>
+
+                                    <!-- Ảnh hiện tại (chỉ hiện khi edit + có ảnh) -->
+                                    <div th:if="${isEdit and perfume.hinh_anh != null and !perfume.hinh_anh.isEmpty()}"
+                                        class="current-image-box" style="margin-bottom: 16px;">
+                                        <img th:src="${perfume.hinh_anh}" alt="Ảnh sản phẩm">
+                                        <div class="current-image-info">
+                                            <strong>Ảnh hiện tại</strong>
+                                            <span>Nếu muốn giữ ảnh cũ, chỉ cần để trống ô bên dưới</span>
+                                        </div>
+                                    </div>
+
+                                    <input type="file" class="form-control p-3" name="imageFile" accept="image/*"
+                                        style="background: var(--dark-3); border: 1px dashed rgba(201, 169, 110, 0.5); color: #fff;">
+                                    <div class="form-text text-white-50 mt-2" style="font-size: 0.85rem;">
+                                        <i class="bi bi-info-circle"></i> Nếu đang chỉnh sửa sản phẩm và muốn giữ nguyên
+                                        ảnh cũ, bạn chỉ cần để trống ô này.
+                                    </div>
+                                </div>
+
+                                <!-- ====== ACTIONS ====== -->
+                                <div class="form-actions" style="margin-top: 12px;">
+                                    <button type="submit" id="btnSubmit"
+                                        th:class="${isEdit} ? 'btn-save edit-mode' : 'btn-save'">
+                                        <i class="bi bi-check-lg"></i>
+                                        <span th:text="${isEdit} ? 'Cập nhật sản phẩm' : 'Lưu sản phẩm'">Lưu sản
+                                            phẩm</span>
+                                    </button>
+                                    <a href="/admin/products" class="btn-cancel">
+                                        <i class="bi bi-x-lg"></i> Hủy bỏ
+                                    </a>
+                                </div>
+
+                            </form>
+                        </div>
+                    </div>
+
+                    <!-- Footer Credit -->
+                    <div class="footer-credit">
+                        <p>Hệ thống quản trị được xây dựng bởi <strong>Phạm Hà An</strong></p>
+                    </div>
+
+                </div>
+            </div>
+        </div>
+    </section>
 
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
     <script>
@@ -703,12 +1113,12 @@
         }
 
         // Gắn event "blur" cho tất cả input có data-validate
-        document.querySelectorAll('[data-validate]').forEach(function(input) {
-            input.addEventListener('blur', function() {
+        document.querySelectorAll('[data-validate]').forEach(function (input) {
+            input.addEventListener('blur', function () {
                 validateField(this);
             });
             // Khi người dùng bắt đầu gõ lại → xóa trạng thái lỗi
-            input.addEventListener('input', function() {
+            input.addEventListener('input', function () {
                 if (this.classList.contains('is-invalid')) {
                     this.classList.remove('is-invalid');
                     const errEl = document.getElementById('err-' + this.id);
@@ -720,12 +1130,12 @@
         // ==========================================
         // 3. FORM SUBMIT VALIDATION
         // ==========================================
-        document.getElementById('productForm').addEventListener('submit', function(e) {
+        document.getElementById('productForm').addEventListener('submit', function (e) {
             const fields = this.querySelectorAll('[data-validate]');
             let allValid = true;
             let firstInvalid = null;
 
-            fields.forEach(function(field) {
+            fields.forEach(function (field) {
                 if (!validateField(field)) {
                     allValid = false;
                     if (!firstInvalid) firstInvalid = field;
@@ -738,7 +1148,7 @@
                 e.preventDefault();
                 summary.classList.add('show');
                 summary.classList.add('shake');
-                setTimeout(function() { summary.classList.remove('shake'); }, 300);
+                setTimeout(function () { summary.classList.remove('shake'); }, 300);
 
                 if (firstInvalid) {
                     firstInvalid.focus();
@@ -780,7 +1190,7 @@
             if (!ALLOWED_TYPES.includes(file.type)) {
                 fileError.classList.add('show');
                 fileErrorMsg.textContent = 'Định dạng không hỗ trợ! Chỉ chấp nhận JPG, PNG, WEBP.';
-                input.value = ''; // Clear file input
+                input.value = '';
                 return;
             }
 
@@ -799,14 +1209,14 @@
 
             // Preview ảnh
             const reader = new FileReader();
-            reader.onload = function(e) {
+            reader.onload = function (e) {
                 previewImg.src = e.target.result;
                 preview.classList.add('has-image');
             };
             reader.readAsDataURL(file);
         }
 
-        document.getElementById('imageFileInput').addEventListener('change', function() {
+        document.getElementById('imageFileInput').addEventListener('change', function () {
             handleFileSelect(this);
         });
 
@@ -814,16 +1224,16 @@
         const dropZone = document.getElementById('dropZone');
         const fileInput = document.getElementById('imageFileInput');
 
-        dropZone.addEventListener('dragover', function(e) {
+        dropZone.addEventListener('dragover', function (e) {
             e.preventDefault();
             dropZone.classList.add('dragging');
         });
 
-        dropZone.addEventListener('dragleave', function() {
+        dropZone.addEventListener('dragleave', function () {
             dropZone.classList.remove('dragging');
         });
 
-        dropZone.addEventListener('drop', function(e) {
+        dropZone.addEventListener('drop', function (e) {
             e.preventDefault();
             dropZone.classList.remove('dragging');
             if (e.dataTransfer.files.length > 0) {
@@ -835,11 +1245,68 @@
         // ==========================================
         // 5. TRIM KHOẢNG TRẮNG THỪA KHI BLUR
         // ==========================================
-        document.querySelectorAll('input[type="text"]').forEach(function(input) {
-            input.addEventListener('blur', function() {
+        document.querySelectorAll('input[type="text"]').forEach(function (input) {
+            input.addEventListener('blur', function () {
                 this.value = this.value.trim();
             });
         });
+
+        // ==========================================
+        // 6. AUTO-HIDE FLASH MESSAGES (sau 5 giây)
+        // ==========================================
+        setTimeout(function () {
+            document.querySelectorAll('.flash-alert').forEach(el => {
+                el.style.transition = 'opacity 0.4s ease, transform 0.4s ease';
+                el.style.opacity = '0';
+                el.style.transform = 'translateY(-10px)';
+                setTimeout(() => el.remove(), 400);
+            });
+        }, 5000);
+        // ==========================================
+        // 7. THÊM PHÂN LOẠI DUNG TÍCH ĐỘNG
+        // ==========================================
+        let variantCount = document.querySelectorAll('#variants-container .variant-row').length;
+
+        function addVariantRow() {
+            const container = document.getElementById('variants-container');
+            const newRow = `
+                <div class="row g-3 mb-3 variant-row align-items-end">
+                    <div class="col-md-4">
+                        <label class="form-label text-white-50">Dung tích</label>
+                        <input type="text" class="form-control form-input" name="variants[${variantCount}].dung_tich" placeholder="VD: 100ml" required>
+                    </div>
+                    <div class="col-md-4">
+                        <label class="form-label text-white-50">Giá bán</label>
+                        <input type="text" class="form-control form-input" name="variants[${variantCount}].gia_ban" placeholder="VD: 3.000.000 đ" required>
+                    </div>
+                    <div class="col-md-3">
+                        <label class="form-label text-white-50">Số lượng kho</label>
+                        <input type="number" class="form-control form-input" name="variants[${variantCount}].so_luong_ton" value="100" required>
+                    </div>
+                    <div class="col-md-1 text-end">
+                        <button type="button" class="btn btn-outline-danger btn-sm w-100" onclick="removeVariantRow(this)" style="height: 46px;" title="Xóa phân loại này">
+                            <i class="bi bi-trash"></i>
+                        </button>
+                    </div>
+                </div>
+            `;
+            container.insertAdjacentHTML('beforeend', newRow);
+            variantCount++;
+        }
+
+        function removeVariantRow(btn) {
+            const row = btn.closest('.variant-row');
+            if (row) {
+                const container = document.getElementById('variants-container');
+                const allRows = container.querySelectorAll('.variant-row');
+                if (allRows.length > 1) {
+                    row.remove();
+                } else {
+                    alert('Sản phẩm phải có ít nhất một phân loại dung tích!');
+                }
+            }
+        }
     </script>
 </body>
+
 </html>

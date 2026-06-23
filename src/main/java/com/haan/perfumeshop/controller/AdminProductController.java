@@ -1,7 +1,9 @@
 package com.haan.perfumeshop.controller;
 
 import com.haan.perfumeshop.model.Perfume;
+import com.haan.perfumeshop.model.PerfumeVariant;
 import com.haan.perfumeshop.repository.PerfumeRepository;
+import com.haan.perfumeshop.repository.PerfumeVariantRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
@@ -23,95 +25,204 @@ public class AdminProductController {
     @Autowired
     private PerfumeRepository perfumeRepository;
 
-    // Đường dẫn thư mục lưu ảnh cục bộ trong dự án
+    @Autowired
+    private PerfumeVariantRepository variantRepository;
+
     private static final String UPLOAD_DIR = "src/main/resources/static/uploads/";
 
     // ==========================================
-    // 1. DANH SÁCH SẢN PHẨM (trang admin/products)
+    // 1. DANH SÁCH SẢN PHẨM
     // ==========================================
     @GetMapping
     public String listProducts(Model model) {
         List<Perfume> perfumes = perfumeRepository.findAll();
-        model.addAttribute("perfumes", perfumes); // Template products.html dùng "perfumes"
+        model.addAttribute("perfumes", perfumes);
         return "admin/products";
     }
 
     // ==========================================
-    // 2. FORM THÊM SẢN PHẨM MỚI (trang admin/add-product)
+    // 2. FORM THÊM SẢN PHẨM MỚI
     // ==========================================
     @GetMapping("/add")
     public String showAddForm(Model model) {
-        model.addAttribute("perfume", new Perfume());
-        return "admin/add-product"; // Dùng template add-product.html có sẵn của đồ án
+        Perfume perfume = new Perfume();
+        // Tạo sẵn 1 dòng biến thể trống để admin nhập liệu
+        perfume.getVariants().add(new PerfumeVariant());
+
+        model.addAttribute("perfume", perfume);
+        model.addAttribute("isEdit", false);
+        model.addAttribute("title", "Thêm Sản Phẩm Mới");
+        return "admin/product-form";
     }
 
     // ==========================================
-    // 3. FORM CHỈNH SỬA SẢN PHẨM (trang admin/edit-product)
+    // 3. FORM CHỈNH SỬA SẢN PHẨM
     // ==========================================
     @GetMapping("/edit/{id}")
     public String showEditForm(@PathVariable("id") Long id, Model model) {
         Perfume perfume = perfumeRepository.findById(id)
                 .orElseThrow(() -> new IllegalArgumentException("ID sản phẩm không hợp lệ: " + id));
+
+        // Nếu sản phẩm chưa có biến thể nào, thêm 1 dòng trống để admin thêm mới
+        if (perfume.getVariants().isEmpty()) {
+            perfume.getVariants().add(new PerfumeVariant());
+        }
+
         model.addAttribute("perfume", perfume);
-        return "admin/edit-product"; // Dùng template edit-product.html có sẵn của đồ án
+        model.addAttribute("isEdit", true);
+        model.addAttribute("title", "Chỉnh Sửa: " + perfume.getTen_sp());
+        return "admin/product-form";
     }
 
     // ==========================================
-    // 4. XỬ LÝ LƯU SẢN PHẨM MỚI (POST từ add-product.html)
+    // 4. LƯU SẢN PHẨM MỚI (POST /save)
     // ==========================================
     @PostMapping("/save")
     public String saveProduct(@ModelAttribute("perfume") Perfume perfume,
                               @RequestParam(value = "imageFile", required = false) MultipartFile imageFile,
                               RedirectAttributes redirectAttributes) {
         try {
-            // Xử lý upload ảnh nếu người dùng có chọn file
+            // Xử lý upload ảnh
             if (imageFile != null && !imageFile.isEmpty()) {
-                String savedPath = uploadImage(imageFile);
-                perfume.setHinh_anh(savedPath);
+                perfume.setHinh_anh(uploadImage(imageFile));
+            }
+
+            // Móc nối biến thể vào sản phẩm cha
+            if (perfume.getVariants() != null) {
+                perfume.getVariants().removeIf(v ->
+                        v == null ||
+                        ((v.getDung_tich() == null || v.getDung_tich().isBlank()) &&
+                        (v.getGia_ban() == null || v.getGia_ban().isBlank()))
+                );
+                for (PerfumeVariant variant : perfume.getVariants()) {
+                    if (variant != null) {
+                        variant.setPerfume(perfume);
+                    }
+                }
             }
 
             perfumeRepository.save(perfume);
             redirectAttributes.addFlashAttribute("successMsg", "Thêm sản phẩm thành công!");
         } catch (IOException e) {
-            redirectAttributes.addFlashAttribute("errorMsg", "Lỗi khi tải ảnh lên: " + e.getMessage());
+            redirectAttributes.addFlashAttribute("errorMsg", "Lỗi khi tải ảnh: " + e.getMessage());
             return "redirect:/admin/products/add";
         }
-
         return "redirect:/admin/products";
     }
 
     // ==========================================
-    // 5. XỬ LÝ CẬP NHẬT SẢN PHẨM (POST từ edit-product.html)
+    // 5. CẬP NHẬT SẢN PHẨM (POST /update)
     // ==========================================
     @PostMapping("/update")
-    public String updateProduct(@ModelAttribute("perfume") Perfume perfume,
+    public String updateProduct(@ModelAttribute("perfume") Perfume formPerfume,
                                 @RequestParam(value = "imageFile", required = false) MultipartFile imageFile,
                                 RedirectAttributes redirectAttributes) {
+        Long id = formPerfume.getId_nuoc_hoa();
+        System.out.println("=== UPDATE PRODUCT DEBUG ===");
+        System.out.println("Product ID: " + id);
+        if (formPerfume.getVariants() != null) {
+            System.out.println("Form Variants Size: " + formPerfume.getVariants().size());
+            for (int i = 0; i < formPerfume.getVariants().size(); i++) {
+                PerfumeVariant v = formPerfume.getVariants().get(i);
+                System.out.println("Variant[" + i + "]: " + (v == null ? "null" : (v.getDung_tich() + " - " + v.getGia_ban() + " - " + v.getSo_luong_ton())));
+            }
+        } else {
+            System.out.println("Form Variants is NULL");
+        }
+
+        if (id == null) {
+            redirectAttributes.addFlashAttribute("errorMsg", "Không tìm thấy ID sản phẩm cần cập nhật.");
+            return "redirect:/admin/products";
+        }
+
         try {
-            // Xử lý upload ảnh mới nếu người dùng có chọn file
+            // Tải sản phẩm gốc từ DB để giữ lại dữ liệu quan trọng
+            Perfume existingPerfume = perfumeRepository.findById(id)
+                    .orElseThrow(() -> new IllegalArgumentException("Sản phẩm không tồn tại: " + id));
+
+            // --- Cập nhật các trường thông tin cơ bản ---
+            existingPerfume.setTen_sp(formPerfume.getTen_sp());
+            existingPerfume.setThuong_hieu(formPerfume.getThuong_hieu());
+            existingPerfume.setNhom_huong(formPerfume.getNhom_huong());
+            existingPerfume.setGioi_tinh(formPerfume.getGioi_tinh());
+            existingPerfume.setXuat_xu(formPerfume.getXuat_xu());
+            existingPerfume.setPhong_cach(formPerfume.getPhong_cach());
+            existingPerfume.setLuu_huong(formPerfume.getLuu_huong());
+            existingPerfume.setToa_huong(formPerfume.getToa_huong());
+            existingPerfume.setMo_ta(formPerfume.getMo_ta());
+
+            // --- Xử lý ảnh: chỉ thay khi admin chọn file mới ---
             if (imageFile != null && !imageFile.isEmpty()) {
-                String savedPath = uploadImage(imageFile);
-                perfume.setHinh_anh(savedPath);
-            } else if (perfume.getId_nuoc_hoa() != null) {
-                // Nếu không chọn ảnh mới → giữ nguyên ảnh cũ từ DB
-                Perfume oldPerfume = perfumeRepository.findById(perfume.getId_nuoc_hoa()).orElse(null);
-                if (oldPerfume != null) {
-                    perfume.setHinh_anh(oldPerfume.getHinh_anh());
+                existingPerfume.setHinh_anh(uploadImage(imageFile));
+            }
+            // Nếu để trống → giữ nguyên ảnh cũ (không làm gì)
+
+            // --- Cập nhật danh sách biến thể ---
+            List<PerfumeVariant> existingVariants = existingPerfume.getVariants();
+            List<PerfumeVariant> updatedVariants = new java.util.ArrayList<>();
+
+            if (formPerfume.getVariants() != null) {
+                for (PerfumeVariant formVariant : formPerfume.getVariants()) {
+                    if (formVariant == null) {
+                        continue;
+                    }
+                    // Bỏ qua dòng trống hoàn toàn
+                    if ((formVariant.getDung_tich() == null || formVariant.getDung_tich().isBlank()) &&
+                        (formVariant.getGia_ban() == null || formVariant.getGia_ban().isBlank())) {
+                        continue;
+                    }
+
+                    if (formVariant.getId_bien_the() != null) {
+                        // Tìm biến thể cũ tương ứng trong DB để cập nhật dữ liệu
+                        PerfumeVariant matchedVariant = existingVariants.stream()
+                                .filter(ev -> ev.getId_bien_the().equals(formVariant.getId_bien_the()))
+                                .findFirst()
+                                .orElse(null);
+
+                        if (matchedVariant != null) {
+                            matchedVariant.setDung_tich(formVariant.getDung_tich());
+                            matchedVariant.setGia_ban(formVariant.getGia_ban());
+                            matchedVariant.setSo_luong_ton(formVariant.getSo_luong_ton());
+                            updatedVariants.add(matchedVariant);
+                        } else {
+                            formVariant.setId_bien_the(null);
+                            formVariant.setPerfume(existingPerfume);
+                            updatedVariants.add(formVariant);
+                        }
+                    } else {
+                        formVariant.setPerfume(existingPerfume);
+                        updatedVariants.add(formVariant);
+                    }
                 }
             }
 
-            perfumeRepository.save(perfume);
-            redirectAttributes.addFlashAttribute("successMsg", "Cập nhật sản phẩm thành công!");
+            // Xóa các biến thể không còn tồn tại trong form
+            existingVariants.removeIf(ev -> !updatedVariants.contains(ev));
+
+            // Thêm các biến thể mới vào list hiện tại
+            for (PerfumeVariant uv : updatedVariants) {
+                if (!existingVariants.contains(uv)) {
+                    existingVariants.add(uv);
+                }
+            }
+
+            perfumeRepository.save(existingPerfume);
+            redirectAttributes.addFlashAttribute("successMsg",
+                    "Cập nhật sản phẩm \"" + existingPerfume.getTen_sp() + "\" thành công!");
+
         } catch (IOException e) {
-            redirectAttributes.addFlashAttribute("errorMsg", "Lỗi khi tải ảnh lên: " + e.getMessage());
-            return "redirect:/admin/products/edit/" + perfume.getId_nuoc_hoa();
+            redirectAttributes.addFlashAttribute("errorMsg", "Lỗi khi tải ảnh: " + e.getMessage());
+            return "redirect:/admin/products/edit/" + id;
+        } catch (Exception e) {
+            redirectAttributes.addFlashAttribute("errorMsg", "Lỗi khi cập nhật: " + e.getMessage());
+            return "redirect:/admin/products/edit/" + id;
         }
 
         return "redirect:/admin/products";
     }
 
     // ==========================================
-    // 6. XỬ LÝ XÓA SẢN PHẨM
+    // 6. XÓA SẢN PHẨM
     // ==========================================
     @GetMapping("/delete/{id}")
     public String deleteProduct(@PathVariable("id") Long id, RedirectAttributes redirectAttributes) {
@@ -126,20 +237,15 @@ public class AdminProductController {
     }
 
     // ==========================================
-    // HÀM TIỆN ÍCH: Upload file ảnh lên thư mục /uploads/
+    // TIỆN ÍCH: Upload ảnh lên /uploads/
     // ==========================================
     private String uploadImage(MultipartFile imageFile) throws IOException {
-        // Tạo thư mục lưu trữ nếu chưa tồn tại
         Path uploadPath = Paths.get(UPLOAD_DIR);
         if (!Files.exists(uploadPath)) {
             Files.createDirectories(uploadPath);
         }
-
-        // Đổi tên file bằng chuỗi UUID ngẫu nhiên để tránh trùng tên file ảnh
         String fileName = UUID.randomUUID().toString() + "_" + imageFile.getOriginalFilename();
         Path filePath = uploadPath.resolve(fileName);
-
-        // Lưu file vật lý vào ổ cứng
         Files.copy(imageFile.getInputStream(), filePath);
 
         // Trả về đường dẫn tương đối để lưu vào database và hiển thị lên giao diện
