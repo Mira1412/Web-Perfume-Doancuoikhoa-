@@ -53,6 +53,14 @@ public class ProductController {
             filtered = perfumeRepository.findAll(PerfumeSpecification.filter(thuongHieu, nhomHuong));
         }
 
+        // DEBUG: Kiểm tra số lượng sản phẩm
+        System.out.println("=== DEBUG HOME PAGE ===");
+        System.out.println("Total perfumes from DB (findAll): " + perfumeRepository.count());
+        System.out.println("Filtered list size: " + filtered.size());
+        for (Perfume p : filtered) {
+            System.out.println("  - ID=" + p.getId_nuoc_hoa() + " | Name=" + p.getTen_sp() + " | Variants=" + (p.getVariants() != null ? p.getVariants().size() : "null"));
+        }
+
         if (giaRange != null && !giaRange.isEmpty()) {
             filtered = filtered.stream().filter(p -> {
 

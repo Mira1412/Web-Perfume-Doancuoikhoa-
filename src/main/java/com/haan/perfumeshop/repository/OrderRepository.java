@@ -1,6 +1,8 @@
 package com.haan.perfumeshop.repository;
 
 import com.haan.perfumeshop.model.Order;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
@@ -16,6 +18,10 @@ public interface OrderRepository extends JpaRepository<Order, Long> {
     // ======================================================
     @Query("SELECT o FROM Order o WHERE o.user.id_user = :idUser")
     List<Order> findByUser_Id_user(@Param("idUser") Long idUser);
+
+    // Phiên bản có phân trang
+    @Query("SELECT o FROM Order o WHERE o.user.id_user = :idUser")
+    Page<Order> findByUser_Id_user(@Param("idUser") Long idUser, Pageable pageable);
 
     // ======================================================
     // CÁC HÀM TÍNH TOÁN CHO DASHBOARD

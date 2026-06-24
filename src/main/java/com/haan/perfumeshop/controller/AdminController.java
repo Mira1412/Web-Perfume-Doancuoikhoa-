@@ -3,10 +3,14 @@ package com.haan.perfumeshop.controller;
 import com.haan.perfumeshop.model.Order;
 import com.haan.perfumeshop.model.Perfume;
 import com.haan.perfumeshop.model.PerfumeVariant;
+import com.haan.perfumeshop.model.User;
 import com.haan.perfumeshop.repository.OrderRepository;
 import com.haan.perfumeshop.repository.PerfumeRepository;
 import com.haan.perfumeshop.repository.PerfumeVariantRepository;
+import com.haan.perfumeshop.repository.UserRepository;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
@@ -27,6 +31,9 @@ public class AdminController {
 
     @Autowired
     private OrderRepository orderRepository; // Đã thêm OrderRepository
+
+    @Autowired
+    private UserRepository userRepository;
 
     // ==========================================
     // 1. DASHBOARD & ĐIỀU HƯỚNG GỐC
@@ -144,12 +151,44 @@ public class AdminController {
     // 4. QUẢN LÝ ĐƠN HÀNG TRANG ADMIN
     // ==========================================
     @GetMapping("/orders")
-    public String listOrders(Model model) {
-        // Lấy tất cả đơn hàng từ Database, sắp xếp theo ID giảm dần (đơn mới nhất lên
-        // đầu)
-        List<Order> orders = orderRepository.findAll(Sort.by(Sort.Direction.DESC, "id"));
-        model.addAttribute("orders", orders);
+    public String listOrders(
+            @RequestParam(value = "page", defaultValue = "0") int page,
+            @RequestParam(value = "size", defaultValue = "10") int size,
+            Model model) {
+        if (size <= 0) size = 10;
+        if (page < 0) page = 0;
+
+        Page<Order> orderPage = orderRepository.findAll(
+                PageRequest.of(page, size, Sort.by(Sort.Direction.DESC, "id")));
+
+        model.addAttribute("orders", orderPage.getContent());
+        model.addAttribute("currentPage", orderPage.getNumber());
+        model.addAttribute("totalPages", orderPage.getTotalPages());
+        model.addAttribute("totalItems", orderPage.getTotalElements());
+        model.addAttribute("pageSize", size);
         return "admin/admin-orders";
+    }
+
+    // ==========================================
+    // 5. QUẢN LÝ NGƯỜI DÙNG
+    // ==========================================
+    @GetMapping("/users")
+    public String listUsers(
+            @RequestParam(value = "page", defaultValue = "0") int page,
+            @RequestParam(value = "size", defaultValue = "10") int size,
+            Model model) {
+        if (size <= 0) size = 10;
+        if (page < 0) page = 0;
+
+        Page<User> userPage = userRepository.findAll(
+                PageRequest.of(page, size, Sort.by(Sort.Direction.ASC, "id_user")));
+
+        model.addAttribute("users", userPage.getContent());
+        model.addAttribute("currentPage", userPage.getNumber());
+        model.addAttribute("totalPages", userPage.getTotalPages());
+        model.addAttribute("totalItems", userPage.getTotalElements());
+        model.addAttribute("pageSize", size);
+        return "admin/users";
     }
 
     @PostMapping("/orders/update-status")

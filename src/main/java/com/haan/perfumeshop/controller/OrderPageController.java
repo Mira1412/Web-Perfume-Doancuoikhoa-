@@ -5,31 +5,45 @@ import com.haan.perfumeshop.model.User;
 import com.haan.perfumeshop.repository.OrderRepository;
 import jakarta.servlet.http.HttpSession;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
-
-import java.util.List;
+import org.springframework.web.bind.annotation.RequestParam;
 
 @Controller
 public class OrderPageController {
 
     @Autowired
-    private OrderRepository orderRepository; // Thêm Repository để gọi Database
+    private OrderRepository orderRepository;
 
     @GetMapping("/orders")
-    public String showCustomerOrders(HttpSession session, Model model) {
+    public String showCustomerOrders(
+            @RequestParam(value = "page", defaultValue = "0") int page,
+            @RequestParam(value = "size", defaultValue = "10") int size,
+            HttpSession session, Model model) {
         // 1. Kiểm tra đăng nhập
         User currentUser = (User) session.getAttribute("loggedInUser");
         if (currentUser == null) {
             return "redirect:/login";
         }
 
-        // 2. Tìm toàn bộ đơn hàng của khách này trong Database
-        List<Order> myOrders = orderRepository.findByUser_Id_user(currentUser.getId_user());
+        if (size <= 0) size = 10;
+        if (page < 0) page = 0;
+
+        // 2. Tìm đơn hàng của khách (có phân trang)
+        Page<Order> orderPage = orderRepository.findByUser_Id_user(
+                currentUser.getId_user(),
+                PageRequest.of(page, size, Sort.by(Sort.Direction.DESC, "id")));
 
         // 3. Gửi danh sách qua file orders.html
-        model.addAttribute("orders", myOrders);
+        model.addAttribute("orders", orderPage.getContent());
+        model.addAttribute("currentPage", orderPage.getNumber());
+        model.addAttribute("totalPages", orderPage.getTotalPages());
+        model.addAttribute("totalItems", orderPage.getTotalElements());
+        model.addAttribute("pageSize", size);
 
         return "orders";
     }

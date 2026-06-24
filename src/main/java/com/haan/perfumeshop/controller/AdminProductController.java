@@ -5,6 +5,9 @@ import com.haan.perfumeshop.model.PerfumeVariant;
 import com.haan.perfumeshop.repository.PerfumeRepository;
 import com.haan.perfumeshop.repository.PerfumeVariantRepository;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
@@ -30,13 +33,27 @@ public class AdminProductController {
 
     private static final String UPLOAD_DIR = "src/main/resources/static/uploads/";
 
+    private static final int DEFAULT_PAGE_SIZE = 10;
+
     // ==========================================
-    // 1. DANH SÁCH SẢN PHẨM
+    // 1. DANH SÁCH SẢN PHẨM (CÓ PHÂN TRANG)
     // ==========================================
     @GetMapping
-    public String listProducts(Model model) {
-        List<Perfume> perfumes = perfumeRepository.findAll();
-        model.addAttribute("perfumes", perfumes);
+    public String listProducts(
+            @RequestParam(value = "page", defaultValue = "0") int page,
+            @RequestParam(value = "size", defaultValue = "10") int size,
+            Model model) {
+        if (size <= 0) size = DEFAULT_PAGE_SIZE;
+        if (page < 0) page = 0;
+
+        Page<Perfume> perfumePage = perfumeRepository.findAll(
+                PageRequest.of(page, size));
+
+        model.addAttribute("perfumes", perfumePage.getContent());
+        model.addAttribute("currentPage", perfumePage.getNumber());
+        model.addAttribute("totalPages", perfumePage.getTotalPages());
+        model.addAttribute("totalItems", perfumePage.getTotalElements());
+        model.addAttribute("pageSize", size);
         return "admin/products";
     }
 
