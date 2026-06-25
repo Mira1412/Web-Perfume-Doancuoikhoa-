@@ -73,9 +73,7 @@ public class CartController {
     public ResponseEntity<String> removeFromCart(@PathVariable Long idGioHang) {
         cartService.removeFromCart(idGioHang);
         return ResponseEntity.ok("Đã xóa sản phẩm khỏi giỏ hàng thành công!");
-    }
-
-    @PutMapping("/update/{idGioHang}")
+    }    @PutMapping("/update/{idGioHang}")
     public ResponseEntity<String> updateQuantity(@PathVariable Long idGioHang, @RequestParam("quantity") int quantity) {
         try {
             Cart updated = cartService.updateQuantity(idGioHang, quantity);
@@ -85,6 +83,17 @@ public class CartController {
             return ResponseEntity.status(400).body("Không thể cập nhật số lượng!");
         } catch (Exception e) {
             return ResponseEntity.status(500).body("Lỗi: " + e.getMessage());
+        }
+    }
+
+    @GetMapping("/count/{idUser}")
+    public ResponseEntity<Integer> getCartCount(@PathVariable Long idUser) {
+        try {
+            List<Cart> items = cartService.getCartByUserId(idUser);
+            int total = items.stream().mapToInt(Cart::getSo_luong).sum();
+            return ResponseEntity.ok(total);
+        } catch (Exception e) {
+            return ResponseEntity.ok(0);
         }
     }
 }

@@ -9,8 +9,7 @@
         content="Khám phá bộ sưu tập nước hoa cao cấp tại Halo. Hàng chính hãng, giá tốt, giao hàng toàn quốc.">
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=family=Inter:wght@300;400;500;600&display=swap"
-        rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=Playfair+Display:ital,wght@0,400..900;1,400..900&display=swap" rel="stylesheet">
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
     <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.0/font/bootstrap-icons.css" rel="stylesheet">
     <style>
@@ -58,24 +57,22 @@
             justify-content: space-between;
             height: 70px;
         }
-
         .brand-name {
-            font-family: 'Inter', sans-serif;
-            font-size: 1.6rem;
-            font-weight: 600;
+            font-family: 'Playfair Display', Georgia, serif;
+            font-size: 1.8rem;
+            font-weight: 700;
             color: var(--gold) !important;
             text-decoration: none;
-            letter-spacing: 1px;
+            letter-spacing: 1.5px;
             display: flex;
             align-items: center;
             gap: 8px;
+            text-shadow: 0 0 10px rgba(201, 169, 110, 0.2);
         }
 
         .brand-name:hover {
             color: var(--gold-light) !important;
-        }
-
-        .nav-links {
+        }        .nav-links {
             display: flex;
             align-items: center;
             gap: 8px;
@@ -245,32 +242,35 @@
         }
 
         .hero-title {
-            font-family: 'Inter', sans-serif;
-            font-size: clamp(2.5rem, 5vw, 3.8rem);
-            font-weight: 600;
+            font-family: 'Playfair Display', Georgia, serif;
+            font-size: clamp(2.8rem, 5.5vw, 4.2rem);
+            font-weight: 700;
             line-height: 1.15;
             color: #ffffff;
-            margin-bottom: 16px;
+            margin-bottom: 20px;
+            letter-spacing: -0.5px;
         }
 
         .hero-title .text-gold {
             color: var(--gold);
             font-style: italic;
+            font-family: 'Playfair Display', Georgia, serif;
+            font-weight: 400;
         }
 
         .hero-desc {
-            font-size: 1rem;
+            font-size: 1.05rem;
             color: var(--text-muted);
-            line-height: 1.7;
-            max-width: 520px;
-            margin-bottom: 32px;
+            line-height: 1.8;
+            max-width: 540px;
+            margin-bottom: 36px;
             font-weight: 300;
         }
 
         .hero-stats {
             display: flex;
-            gap: 40px;
-            margin-top: 16px;
+            gap: 48px;
+            margin-top: 24px;
         }
 
         .stat-item {
@@ -278,17 +278,139 @@
         }
 
         .stat-number {
-            font-family: 'Inter', sans-serif;
-            font-size: 2rem;
-            font-weight: 600;
+            font-family: 'Playfair Display', Georgia, serif;
+            font-size: 2.4rem;
+            font-weight: 700;
             color: var(--gold);
             line-height: 1;
         }
 
         .stat-label {
-            font-size: 0.75rem;
+            font-size: 0.78rem;
             color: var(--text-muted);
-            margin-top: 4px;
+            margin-top: 6px;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+        }
+
+        /* ==================== HERO IMAGE ==================== */
+        .hero-img-container {
+            position: relative;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            padding: 20px;
+        }
+
+        .hero-img-backdrop {
+            position: absolute;
+            width: 320px;
+            height: 320px;
+            background: radial-gradient(circle, rgba(201, 169, 110, 0.2) 0%, transparent 70%);
+            border-radius: 50%;
+            z-index: 1;
+            filter: blur(10px);
+        }
+
+        .hero-img-wrapper-main {
+            position: relative;
+            z-index: 2;
+            animation: float 6s ease-in-out infinite;
+            border-radius: 24px;
+            overflow: hidden;
+            box-shadow: 0 30px 60px rgba(0, 0, 0, 0.6);
+            border: 1px solid rgba(201, 169, 110, 0.2);
+            background: rgba(20, 20, 40, 0.4);
+            backdrop-filter: blur(10px);
+            max-width: 420px;
+            transition: all 0.3s;
+        }
+
+        .hero-img-wrapper-main:hover {
+            border-color: var(--gold);
+            box-shadow: 0 40px 80px rgba(0, 0, 0, 0.8), 0 0 30px rgba(201, 169, 110, 0.2);
+        }
+
+        .hero-img-main {
+            width: 100%;
+            height: auto;
+            display: block;
+            object-fit: cover;
+        }
+
+        @keyframes float {
+            0% { transform: translateY(0px); }
+            50% { transform: translateY(-15px); }
+            100% { transform: translateY(0px); }
+        }
+
+        /* ==================== CAROUSEL CONTROLS ==================== */
+        .carousel-indicators-custom {
+            bottom: -35px;
+            margin: 0;
+            display: flex;
+            justify-content: center;
+            gap: 12px;
+            list-style: none;
+            padding: 0;
+            z-index: 15;
+            position: absolute;
+            left: 0;
+            right: 0;
+        }
+
+        .carousel-indicators-custom button {
+            width: 12px;
+            height: 12px;
+            border-radius: 50%;
+            background: rgba(255, 255, 255, 0.2);
+            border: 2px solid transparent;
+            padding: 0;
+            cursor: pointer;
+            transition: all 0.3s;
+        }
+
+        .carousel-indicators-custom button.active {
+            background: var(--gold);
+            transform: scale(1.2);
+            border-color: rgba(201, 169, 110, 0.4);
+            box-shadow: 0 0 10px rgba(201, 169, 110, 0.8);
+        }
+
+        .carousel-control-prev-custom,
+        .carousel-control-next-custom {
+            position: absolute;
+            top: 50%;
+            transform: translateY(-50%);
+            width: 46px;
+            height: 46px;
+            border-radius: 50%;
+            background: rgba(20, 20, 40, 0.6);
+            border: 1px solid rgba(201, 169, 110, 0.3);
+            color: var(--gold);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            cursor: pointer;
+            transition: all 0.3s;
+            z-index: 10;
+            text-decoration: none;
+        }
+
+        .carousel-control-prev-custom:hover,
+        .carousel-control-next-custom:hover {
+            background: rgba(201, 169, 110, 0.15);
+            border-color: var(--gold);
+            color: var(--gold-light);
+            box-shadow: 0 0 15px rgba(201, 169, 110, 0.3);
+        }
+
+        .carousel-control-prev-custom { left: -50px; }
+        .carousel-control-next-custom { right: -50px; }
+
+        @media (max-width: 1200px) {
+            .carousel-control-prev-custom { left: 10px; }
+            .carousel-control-next-custom { right: 10px; }
         }
 
         /* ==================== SECTION TIÊU ĐỀ ==================== */
@@ -302,16 +424,17 @@
         }
 
         .section-title {
-            font-family: 'Inter', sans-serif;
-            font-size: 2rem;
-            font-weight: 600;
+            font-family: 'Playfair Display', Georgia, serif;
+            font-size: 2.2rem;
+            font-weight: 700;
             color: #ffffff;
         }
 
         .section-title span {
             color: var(--gold);
+            font-style: italic;
+            font-weight: 400;
         }
-
         .section-count {
             font-size: 0.8rem;
             color: var(--text-muted);
@@ -324,37 +447,44 @@
         /* ==================== PRODUCT CARD ==================== */
         .products-grid {
             display: grid;
-            grid-template-columns: repeat(auto-fill, minmax(240px, 1fr));
-            gap: 24px;
+            grid-template-columns: repeat(auto-fill, minmax(260px, 1fr));
+            gap: 28px;
         }
 
         .product-card {
-            background: var(--dark-2);
-            border: 1px solid var(--border);
-            border-radius: 18px;
+            background: rgba(20, 20, 40, 0.4);
+            backdrop-filter: blur(10px);
+            -webkit-backdrop-filter: blur(10px);
+            border: 1px solid rgba(201, 169, 110, 0.12);
+            border-radius: 20px;
             overflow: hidden;
-            transition: all 0.35s cubic-bezier(0.4, 0, 0.2, 1);
+            display: flex;
+            flex-direction: column;
+            height: 100%;
+            transition: all 0.4s cubic-bezier(0.165, 0.84, 0.44, 1);
+            box-shadow: 0 8px 24px rgba(0, 0, 0, 0.2);
             position: relative;
         }
 
         .product-card:hover {
-            transform: translateY(-6px);
-            box-shadow: 0 20px 50px rgba(0, 0, 0, 0.5), 0 0 0 1px rgba(201, 169, 110, 0.3);
-            border-color: rgba(201, 169, 110, 0.4);
+            transform: translateY(-8px);
+            box-shadow: 0 20px 40px rgba(0, 0, 0, 0.5), 0 0 15px rgba(201, 169, 110, 0.25);
+            border-color: var(--gold);
         }
 
         .product-img-wrapper {
             position: relative;
             overflow: hidden;
-            height: 220px;
-            background: linear-gradient(135deg, #1c1c35, #141428);
+            height: 240px;
+            background: #141428;
+            border-bottom: 1px solid rgba(201, 169, 110, 0.08);
         }
 
         .product-img {
             width: 100%;
             height: 100%;
             object-fit: cover;
-            transition: transform 0.5s ease;
+            transition: transform 0.5s cubic-bezier(0.165, 0.84, 0.44, 1);
         }
 
         .product-card:hover .product-img {
@@ -363,27 +493,37 @@
 
         .product-brand-badge {
             position: absolute;
-            top: 12px;
-            left: 12px;
-            background: rgba(13, 13, 26, 0.8);
-            backdrop-filter: blur(8px);
-            border: 1px solid var(--border);
-            border-radius: 8px;
-            padding: 4px 10px;
-            font-size: 0.7rem;
-            color: var(--gold);
-            font-weight: 500;
-            letter-spacing: 0.5px;
+            top: 14px;
+            left: 14px;
+            background: rgba(13, 13, 26, 0.75);
+            backdrop-filter: blur(10px);
+            -webkit-backdrop-filter: blur(10px);
+            border: 1px solid rgba(201, 169, 110, 0.25);
+            border-radius: 20px;
+            padding: 4px 12px;
+            font-size: 0.68rem;
+            color: var(--gold-light);
+            font-weight: 600;
+            text-transform: uppercase;
+            letter-spacing: 0.8px;
+            box-shadow: 0 4px 12px rgba(0,0,0,0.15);
+            z-index: 5;
         }
 
         .product-stock-badge {
             position: absolute;
-            top: 12px;
-            right: 12px;
-            border-radius: 8px;
-            padding: 4px 10px;
-            font-size: 0.7rem;
-            font-weight: 500;
+            top: 14px;
+            right: 14px;
+            border-radius: 20px;
+            padding: 4px 12px;
+            font-size: 0.68rem;
+            font-weight: 600;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+            box-shadow: 0 4px 12px rgba(0,0,0,0.15);
+            backdrop-filter: blur(10px);
+            -webkit-backdrop-filter: blur(10px);
+            z-index: 5;
         }
 
         .badge-in-stock {
@@ -405,20 +545,29 @@
         }
 
         .product-body {
-            padding: 18px 18px 14px;
+            padding: 20px 20px 12px;
+            display: flex;
+            flex-direction: column;
+            flex-grow: 1;
         }
 
         .product-name {
-            font-family: 'Inter', sans-serif;
-            font-size: 1.15rem;
+            font-family: 'Playfair Display', Georgia, serif;
+            font-size: 1.1rem;
             font-weight: 600;
             color: #ffffff;
-            margin-bottom: 4px;
-            line-height: 1.3;
+            margin-bottom: 8px;
+            line-height: 1.4;
             display: -webkit-box;
             -webkit-line-clamp: 2;
             -webkit-box-orient: vertical;
             overflow: hidden;
+            min-height: 3rem;
+            transition: color 0.2s ease;
+        }
+
+        .product-card:hover .product-name {
+            color: var(--gold-light);
         }
 
         .product-meta {
@@ -426,23 +575,29 @@
             align-items: center;
             gap: 8px;
             margin-bottom: 14px;
+            flex-wrap: wrap;
         }
 
         .product-meta-tag {
-            font-size: 0.72rem;
-            color: var(--text-muted);
-            background: rgba(255, 255, 255, 0.04);
-            border: 1px solid rgba(255, 255, 255, 0.08);
+            font-size: 0.7rem;
+            color: var(--gold-light);
+            background: rgba(201, 169, 110, 0.08);
+            border: 1px solid rgba(201, 169, 110, 0.18);
             border-radius: 6px;
-            padding: 3px 8px;
+            padding: 3px 10px;
+            font-weight: 500;
         }
 
         .product-price {
-            font-family: 'Inter', sans-serif;
-            font-size: 1.35rem;
-            font-weight: 600;
+            font-family: 'Playfair Display', Georgia, serif;
+            font-size: 1.45rem;
+            font-weight: 700;
             color: var(--gold);
-            margin-bottom: 0;
+            margin-top: auto;
+            display: flex;
+            align-items: baseline;
+            gap: 2px;
+            letter-spacing: 0.5px;
         }
 
         .product-price-unit {
@@ -469,38 +624,38 @@
 
         .product-stock-info strong {
             color: #6fcf97;
-            /* xanh lá — mặc định còn hàng */
             font-weight: 600;
         }
 
         .product-footer {
-            padding: 0 18px 18px;
+            padding: 0 20px 20px;
         }
 
         .btn-add-cart {
             width: 100%;
-            padding: 11px;
-            background: transparent;
-            border: 1px solid rgba(201, 169, 110, 0.4);
-            border-radius: 10px;
-            color: var(--gold);
-            font-size: 0.875rem;
-            font-weight: 500;
+            padding: 12px;
+            background: rgba(201, 169, 110, 0.05);
+            border: 1px solid rgba(201, 169, 110, 0.3);
+            border-radius: 12px;
+            color: var(--gold-light);
+            font-size: 0.85rem;
+            font-weight: 600;
             cursor: pointer;
-            transition: all 0.3s;
+            transition: all 0.3s cubic-bezier(0.165, 0.84, 0.44, 1);
             display: flex;
             align-items: center;
             justify-content: center;
-            gap: 7px;
+            gap: 8px;
             font-family: 'Inter', sans-serif;
+            letter-spacing: 0.5px;
         }
 
         .btn-add-cart:hover {
             background: linear-gradient(135deg, var(--gold), var(--gold-dark));
             border-color: transparent;
-            color: #1a1a1a;
-            transform: translateY(-1px);
-            box-shadow: 0 6px 20px rgba(201, 169, 110, 0.35);
+            color: #0d0d1a;
+            transform: translateY(-2px);
+            box-shadow: 0 8px 24px rgba(201, 169, 110, 0.3);
         }
 
         .btn-add-cart:disabled {
@@ -615,28 +770,29 @@
         /* ==================== VARIANT BUTTONS ==================== */
         .variant-btn {
             display: inline-block;
-            padding: 3px 10px;
-            font-size: 0.72rem;
-            font-weight: 500;
-            border: 1px solid rgba(201, 169, 110, 0.3);
-            border-radius: 6px;
+            padding: 4px 12px;
+            font-size: 0.7rem;
+            font-weight: 600;
+            border: 1px solid rgba(201, 169, 110, 0.25);
+            border-radius: 20px;
             color: var(--text-muted);
             cursor: pointer;
-            transition: all 0.2s;
+            transition: all 0.25s ease;
             user-select: none;
+            background: rgba(13, 13, 26, 0.3);
         }
 
         .variant-btn:hover {
             border-color: var(--gold);
-            color: var(--gold);
-            background: rgba(201, 169, 110, 0.08);
+            color: var(--gold-light);
+            background: rgba(201, 169, 110, 0.12);
         }
 
         .variant-btn.selected {
             border-color: var(--gold);
-            background: rgba(201, 169, 110, 0.15);
-            color: var(--gold);
-            font-weight: 600;
+            background: linear-gradient(135deg, rgba(201, 169, 110, 0.25), rgba(160, 120, 64, 0.25));
+            color: var(--gold-light);
+            box-shadow: 0 0 10px rgba(201, 169, 110, 0.15);
         }
 
         /* ==================== RESPONSIVE ==================== */
@@ -644,98 +800,162 @@
             .hero-stats { gap: 24px; }
             .products-grid { grid-template-columns: repeat(auto-fill, minmax(180px, 1fr)); gap: 16px; }
             .hero-section { padding: 48px 0 40px; }
-            .filter-bar { flex-direction: column; gap: 10px; }
-            .filter-bar select, .filter-bar .btn-clear-filter { width: 100%; }
         }
 
-        /* ==================== FILTER BAR ==================== */
-        .filter-bar {
-            display: flex;
-            align-items: center;
-            gap: 12px;
-            flex-wrap: wrap;
-            padding: 16px 20px;
-            background: var(--dark-2);
-            border: 1px solid var(--border);
-            border-radius: 14px;
-            margin-bottom: 28px;
+        /* ==================== FILTER FORM (SIDEBAR) ==================== */
+        .filter-form {
+            background: rgba(20, 20, 40, 0.45);
+            backdrop-filter: blur(15px);
+            -webkit-backdrop-filter: blur(15px);
+            border: 1px solid rgba(201, 169, 110, 0.15);
+            border-radius: 18px;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.35);
+            position: sticky;
+            top: 90px;
+            transition: all 0.3s ease;
         }
 
-        .filter-label {
-            font-size: 0.8rem;
-            font-weight: 500;
-            color: var(--text-muted);
-            text-transform: uppercase;
-            letter-spacing: 0.6px;
-            white-space: nowrap;
+        .filter-form:hover {
+            border-color: rgba(201, 169, 110, 0.3);
+            box-shadow: 0 15px 40px rgba(0, 0, 0, 0.5), 0 0 15px rgba(201, 169, 110, 0.05);
         }
 
-        .filter-select {
-            background: var(--dark-3);
-            border: 1px solid rgba(255,255,255,0.08);
-            border-radius: 9px;
+        .filter-form .form-select {
+            background-color: rgba(13, 13, 26, 0.6);
             color: var(--text-primary);
-            font-size: 0.85rem;
-            padding: 8px 14px;
-            cursor: pointer;
-            transition: border-color 0.2s;
-            min-width: 160px;
+            border: 1px solid rgba(255, 255, 255, 0.08);
+            border-radius: 10px;
+            padding: 10px 14px;
+            font-size: 0.875rem;
+            transition: all 0.25s ease;
         }
-
-        .filter-select:focus { outline: none; border-color: var(--gold); }
-        .filter-select option { background: var(--dark-3); }
-
-        .filter-select.active-filter {
+        
+        .filter-form .form-select:focus {
+            background-color: rgba(13, 13, 26, 0.8);
             border-color: var(--gold);
-            background: rgba(201,169,110,0.08);
-            color: var(--gold);
+            color: #fff;
+            box-shadow: 0 0 0 3px rgba(201, 169, 110, 0.15);
+            outline: none;
+        }
+        
+        .filter-form .form-label {
+            color: var(--text-muted);
+            font-weight: 500;
+            font-size: 0.825rem;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+            margin-bottom: 8px;
         }
 
         .btn-filter-submit {
             background: linear-gradient(135deg, var(--gold), var(--gold-dark));
             border: none;
-            border-radius: 9px;
-            color: #1a1a1a;
-            font-size: 0.85rem;
+            border-radius: 10px;
+            color: #0d0d1a;
+            font-size: 0.875rem;
             font-weight: 600;
-            padding: 8px 20px;
+            padding: 10px 20px;
             cursor: pointer;
             transition: all 0.25s;
-            display: flex; align-items: center; gap: 6px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 6px;
         }
 
-        .btn-filter-submit:hover { transform: translateY(-1px); box-shadow: 0 4px 16px rgba(201,169,110,0.35); }
+        .btn-filter-submit:hover {
+            transform: translateY(-1px);
+            box-shadow: 0 4px 16px rgba(201, 169, 110, 0.35);
+        }
 
         .btn-clear-filter {
             background: transparent;
             border: 1px solid rgba(255,255,255,0.12);
-            border-radius: 9px;
+            border-radius: 10px;
             color: var(--text-muted);
-            font-size: 0.82rem;
-            padding: 8px 14px;
+            font-size: 0.875rem;
+            padding: 10px 14px;
             cursor: pointer;
             transition: all 0.2s;
             text-decoration: none;
-            display: flex; align-items: center; gap: 5px;
+            display: flex;
+            align-items: center;
+            gap: 5px;
         }
 
-        .btn-clear-filter:hover { border-color: rgba(255,255,255,0.3); color: #fff; }
+        .btn-clear-filter:hover {
+            border-color: rgba(255,255,255,0.3);
+            color: #fff;
+        }
 
-        .filter-result-info {
-            font-size: 0.8rem;
+        /* ==================== SEARCH BAR ==================== */
+        .search-container {
+            max-width: 550px;
+            margin: 0 auto 36px;
+        }
+
+        .search-form-custom {
+            display: flex;
+            align-items: center;
+            background: rgba(20, 20, 40, 0.45);
+            backdrop-filter: blur(15px);
+            -webkit-backdrop-filter: blur(15px);
+            border: 1px solid rgba(201, 169, 110, 0.15);
+            border-radius: 30px;
+            padding: 4px 6px 4px 20px;
+            box-shadow: 0 8px 32px 0 rgba(0, 0, 0, 0.3);
+            transition: all 0.3s ease;
+        }
+
+        .search-form-custom:focus-within {
+            border-color: var(--gold);
+            box-shadow: 0 8px 32px 0 rgba(0, 0, 0, 0.4), 0 0 15px rgba(201, 169, 110, 0.2);
+            background: rgba(20, 20, 40, 0.65);
+        }
+
+        .search-input-custom {
+            flex-grow: 1;
+            background: transparent;
+            border: none;
+            color: var(--text-primary);
+            font-size: 0.925rem;
+            padding: 10px 0;
+            outline: none;
+        }
+
+        .search-input-custom::placeholder {
             color: var(--text-muted);
-            margin-left: auto;
+            opacity: 0.8;
         }
 
-        .filter-result-info strong { color: var(--gold-light); }
+        .search-btn-custom {
+            background: linear-gradient(135deg, var(--gold), var(--gold-dark));
+            color: #0d0d1a;
+            border: none;
+            border-radius: 25px;
+            padding: 10px 24px;
+            font-weight: 600;
+            font-size: 0.875rem;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .search-btn-custom:hover {
+            transform: scale(1.03);
+            box-shadow: 0 4px 15px rgba(201, 169, 110, 0.4);
+        }
 
         /* ==================== PAGINATION ==================== */
         .pagination-bar {
             display: flex;
             align-items: center;
             justify-content: center;
-            gap: 6px;
-            margin-top: 40px;
+            gap: 8px;
+            margin-top: 50px;
+            margin-bottom: 20px;
             flex-wrap: wrap;
         }
 
@@ -743,31 +963,48 @@
             display: inline-flex;
             align-items: center;
             justify-content: center;
-            width: 40px;
-            height: 40px;
-            border-radius: 10px;
-            border: 1px solid rgba(255,255,255,0.1);
-            background: var(--dark-2);
+            width: 42px;
+            height: 42px;
+            border-radius: 50%;
+            border: 1px solid rgba(201, 169, 110, 0.2);
+            background: rgba(20, 20, 40, 0.4);
             color: var(--text-muted);
             font-size: 0.875rem;
-            font-weight: 500;
+            font-weight: 600;
             text-decoration: none;
-            transition: all 0.2s;
+            transition: all 0.3s cubic-bezier(0.165, 0.84, 0.44, 1);
+            box-shadow: 0 4px 10px rgba(0,0,0,0.1);
         }
 
-        .page-btn:hover { border-color: var(--gold); color: var(--gold); background: rgba(201,169,110,0.08); }
+        .page-btn:hover {
+            border-color: var(--gold);
+            color: var(--gold-light);
+            background: rgba(201, 169, 110, 0.15);
+            transform: translateY(-2px);
+            box-shadow: 0 6px 15px rgba(201, 169, 110, 0.2);
+        }
 
         .page-btn.active {
             background: linear-gradient(135deg, var(--gold), var(--gold-dark));
             border-color: transparent;
-            color: #1a1a1a;
+            color: #0d0d1a;
             font-weight: 700;
             pointer-events: none;
+            box-shadow: 0 4px 12px rgba(201, 169, 110, 0.4);
         }
 
-        .page-btn.disabled { opacity: 0.3; pointer-events: none; }
+        .page-btn.disabled {
+            opacity: 0.25;
+            pointer-events: none;
+            border-color: rgba(255,255,255,0.05);
+        }
 
-        .page-btn-wide { width: auto; padding: 0 14px; gap: 5px; }
+        .page-btn-wide {
+            border-radius: 20px;
+            width: auto;
+            padding: 0 18px;
+            gap: 6px;
+        }
     </style>
 </head>
 
@@ -779,11 +1016,11 @@
 
             <ul class="nav-links">
                 <li>
-                    <a href="/cart" class="nav-link-item btn-cart">
+                    <a href="/cart" class="nav-link-item btn-cart position-relative">
                         <i class="bi bi-bag"></i> Giỏ hàng
+                        <span id="cartCountBadge" class="position-absolute top-0 start-100 translate-middle badge rounded-pill bg-danger" style="display:none; font-size: 0.7rem; padding: 4px 6px;">0</span>
                     </a>
-                </li>
-                <li><a href="/profile" class="nav-link-item"><i class="bi bi-person-circle"></i> Hồ sơ</a></li>
+                </li>                <li><a href="/profile" class="nav-link-item"><i class="bi bi-person-circle"></i> Hồ sơ</a></li>
                 <li>
                     <a href="/orders" class="nav-link-item">
                         <i class="bi bi-receipt"></i> Đơn hàng của tôi
@@ -829,42 +1066,151 @@
     </nav>
 
     <section class="hero-section">
-        <div class="container">
-            <div class="row align-items-center">
-                <div class="col-lg-7">
-                    <div class="hero-badge">
-                        <i class="bi bi-stars"></i> Bộ sưu tập mới nhất 2025
+        <div class="container position-relative">
+            <div id="heroCarousel" class="carousel slide" data-bs-ride="carousel" data-bs-interval="5000">
+                <div class="carousel-inner">
+                    <!-- Slide 1 -->
+                    <div class="carousel-item active">
+                        <div class="row align-items-center">
+                            <div class="col-lg-7">
+                                <div class="hero-badge">
+                                    <i class="bi bi-stars"></i> Bộ sưu tập mới nhất 2025
+                                </div>
+                                <h1 class="hero-title">
+                                    Tinh tế trong<br>
+                                    từng <span class="text-gold">hương thơm</span>
+                                </h1>
+                                <p class="hero-desc">
+                                    Khám phá bộ sưu tập nước hoa cao cấp được tuyển chọn kỹ lưỡng từ các thương hiệu danh tiếng thế
+                                    giới. Mỗi chai nước hoa là một câu chuyện, một ký ức riêng của bạn.
+                                </p>
+                                <div class="hero-stats">
+                                    <div class="stat-item">
+                                        <div class="stat-number">50+</div>
+                                        <div class="stat-label">Sản phẩm</div>
+                                    </div>
+                                    <div class="stat-item">
+                                        <div class="stat-number">20+</div>
+                                        <div class="stat-label">Thương hiệu</div>
+                                    </div>
+                                    <div class="stat-item">
+                                        <div class="stat-number">100%</div>
+                                        <div class="stat-label">Chính hãng</div>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="col-lg-5 mt-5 mt-lg-0">
+                                <div class="hero-img-container">
+                                    <div class="hero-img-backdrop"></div>
+                                    <div class="hero-img-wrapper-main">
+                                        <img src="/uploads/hero_perfume_bottle.png" alt="Halo Luxury Perfume" class="hero-img-main">
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
                     </div>
-                    <h1 class="hero-title">
-                        Tinh tế trong<br>
-                        từng <span class="text-gold">hương thơm</span>
-                    </h1>
-                    <p class="hero-desc">
-                        Khám phá bộ sưu tập nước hoa cao cấp được tuyển chọn kỹ lưỡng từ các thương hiệu danh tiếng thế
-                        giới. Mỗi chai nước hoa là một câu chuyện, một ký ức riêng của bạn.
-                    </p>
-                    <div class="hero-stats">
-                        <div class="stat-item">
-                            <div class="stat-number">50+</div>
-                            <div class="stat-label">Sản phẩm</div>
+
+                    <!-- Slide 2 -->
+                    <div class="carousel-item">
+                        <div class="row align-items-center">
+                            <div class="col-lg-7">
+                                <div class="hero-badge">
+                                    <i class="bi bi-fire"></i> Gợi Cảm & Quyến Rũ
+                                </div>
+                                <h1 class="hero-title">
+                                    Khẳng định<br>
+                                    phong cách <span class="text-gold">độc bản</span>
+                                </h1>
+                                <p class="hero-desc">
+                                    Nhóm hương nồng nàn và say đắm, khơi gợi những xúc cảm thầm kín nhất. Đậm nét cá tính riêng biệt cho những buổi tiệc đêm sang trọng.
+                                </p>
+                                <div class="hero-stats">
+                                    <div class="stat-item">
+                                        <div class="stat-number">12h+</div>
+                                        <div class="stat-label">Lưu hương</div>
+                                    </div>
+                                    <div class="stat-item">
+                                        <div class="stat-number">Pháp</div>
+                                        <div class="stat-label">Nhập khẩu</div>
+                                    </div>
+                                    <div class="stat-item">
+                                        <div class="stat-number">Hot</div>
+                                        <div class="stat-label">Xu hướng</div>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="col-lg-5 mt-5 mt-lg-0">
+                                <div class="hero-img-container">
+                                    <div class="hero-img-backdrop" style="background: radial-gradient(circle, rgba(230, 80, 80, 0.15) 0%, transparent 70%);"></div>
+                                    <div class="hero-img-wrapper-main" style="border-color: rgba(230, 80, 80, 0.2);">
+                                        <img src="/uploads/carousel_perfume_rose.png" alt="Halo Premium Perfume" class="hero-img-main">
+                                    </div>
+                                </div>
+                            </div>
                         </div>
-                        <div class="stat-item">
-                            <div class="stat-number">20+</div>
-                            <div class="stat-label">Thương hiệu</div>
-                        </div>
-                        <div class="stat-item">
-                            <div class="stat-number">100%</div>
-                            <div class="stat-label">Chính hãng</div>
+                    </div>
+
+                    <!-- Slide 3 -->
+                    <div class="carousel-item">
+                        <div class="row align-items-center">
+                            <div class="col-lg-7">
+                                <div class="hero-badge">
+                                    <i class="bi bi-droplet-half"></i> Tươi Mát & Sảng Khoái
+                                </div>
+                                <h1 class="hero-title">
+                                    Đánh thức<br>
+                                    mọi <span class="text-gold">giác quan</span>
+                                </h1>
+                                <p class="hero-desc">
+                                    Mùi hương thanh mát tựa đại dương lộng gió, mang lại năng lượng tràn trề và sự tinh tế nhẹ nhàng suốt ngày dài năng động.
+                                </p>
+                                <div class="hero-stats">
+                                    <div class="stat-item">
+                                        <div class="stat-number">Mùa hè</div>
+                                        <div class="stat-label">Phù hợp</div>
+                                    </div>
+                                    <div class="stat-item">
+                                        <div class="stat-number">Ý</div>
+                                        <div class="stat-label">Xuất xứ</div>
+                                    </div>
+                                    <div class="stat-item">
+                                        <div class="stat-number">New</div>
+                                        <div class="stat-label">Ra mắt</div>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="col-lg-5 mt-5 mt-lg-0">
+                                <div class="hero-img-container">
+                                    <div class="hero-img-backdrop" style="background: radial-gradient(circle, rgba(80, 150, 230, 0.15) 0%, transparent 70%);"></div>
+                                    <div class="hero-img-wrapper-main" style="border-color: rgba(80, 150, 230, 0.2);">
+                                        <img src="/uploads/carousel_perfume_blue.png" alt="Halo Fresh Perfume" class="hero-img-main">
+                                    </div>
+                                </div>
+                            </div>
                         </div>
                     </div>
                 </div>
+
+                <!-- Carousel Indicators (Dots) -->
+                <div class="carousel-indicators-custom">
+                    <button type="button" data-bs-target="#heroCarousel" data-bs-slide-to="0" class="active" aria-current="true" aria-label="Slide 1"></button>
+                    <button type="button" data-bs-target="#heroCarousel" data-bs-slide-to="1" aria-label="Slide 2"></button>
+                    <button type="button" data-bs-target="#heroCarousel" data-bs-slide-to="2" aria-label="Slide 3"></button>
+                </div>
+
+                <!-- Navigation Controls (Prev/Next) -->
+                <button class="carousel-control-prev-custom" type="button" data-bs-target="#heroCarousel" data-bs-slide="prev">
+                    <i class="bi bi-chevron-left"></i>
+                </button>
+                <button class="carousel-control-next-custom" type="button" data-bs-target="#heroCarousel" data-bs-slide="next">
+                    <i class="bi bi-chevron-right"></i>
+                </button>
             </div>
         </div>
     </section>
 
     <section style="padding: 60px 0 60px;">
         <div class="container">
-
             <!-- ====== TIÊU ĐỀ ====== -->
             <div class="section-header">
                 <h2 class="section-title">Bộ Sưu Tập <span>Nước Hoa</span></h2>
@@ -877,16 +1223,16 @@
             <div class="row">
                 <!-- ====== BỘ LỌC (CỘT TRÁI) ====== -->
                 <div class="col-lg-3 col-md-4 mb-4">
-                    <form action="/" method="GET" class="filter-form p-4" style="background: var(--dark-2); border-radius: 16px; border: 1px solid var(--border); position: sticky; top: 90px;">
-                        <h5 style="color: var(--gold); font-weight: 600; margin-bottom: 20px;">
+                    <form action="/" method="GET" class="filter-form p-4">
+                        <h5 style="color: var(--gold); font-weight: 600; margin-bottom: 20px; display: flex; align-items: center; gap: 8px;">
                             <i class="bi bi-funnel"></i> Bộ Lọc Sản Phẩm
                         </h5>
                         
                         <input type="hidden" name="keyword" th:value="${keyword}">
 
                         <div class="mb-4">
-                            <label class="form-label" style="color: var(--text-primary); font-size: 0.9rem;">Thương hiệu</label>
-                            <select name="thuong_hieu" class="form-select" style="background: var(--dark-3); color: var(--text-primary); border-color: rgba(255,255,255,0.1);">
+                            <label class="form-label">Thương hiệu</label>
+                            <select name="thuong_hieu" class="form-select">
                                 <option value="">-- Tất cả --</option>
                                 <option th:each="th : ${thuongHieus}" 
                                         th:value="${th}" 
@@ -896,8 +1242,8 @@
                         </div>
 
                         <div class="mb-4">
-                            <label class="form-label" style="color: var(--text-primary); font-size: 0.9rem;">Nhóm hương</label>
-                            <select name="nhom_huong" class="form-select" style="background: var(--dark-3); color: var(--text-primary); border-color: rgba(255,255,255,0.1);">
+                            <label class="form-label">Nhóm hương</label>
+                            <select name="nhom_huong" class="form-select">
                                 <option value="">-- Tất cả --</option>
                                 <option th:each="nh : ${nhomHuongs}" 
                                         th:value="${nh}" 
@@ -907,8 +1253,8 @@
                         </div>
 
                         <div class="mb-4">
-                            <label class="form-label" style="color: var(--text-primary); font-size: 0.9rem;">Mức giá</label>
-                            <select name="gia_range" class="form-select" style="background: var(--dark-3); color: var(--text-primary); border-color: rgba(255,255,255,0.1);">
+                            <label class="form-label">Mức giá</label>
+                            <select name="gia_range" class="form-select">
                                 <option value="">-- Tất cả --</option>
                                 <option value="duoi1tr" th:selected="${selectedGiaRange == 'duoi1tr'}">Dưới 1.000.000 đ</option>
                                 <option value="1tr_3tr" th:selected="${selectedGiaRange == '1tr_3tr'}">1.000.000 đ - 3.000.000 đ</option>
@@ -917,11 +1263,11 @@
                             </select>
                         </div>
 
-                        <button type="submit" class="btn w-100 mb-2" style="background: linear-gradient(135deg, var(--gold), var(--gold-dark)); color: #1a1a1a; font-weight: 600; border-radius: 10px;">
+                        <button type="submit" class="btn-filter-submit w-100 mb-2">
                             Áp Dụng
                         </button>
                         
-                        <a href="/" class="btn w-100" style="border: 1px solid rgba(255,255,255,0.1); color: var(--text-muted); border-radius: 10px;">
+                        <a href="/" class="btn-clear-filter w-100 justify-content-center">
                             Xóa Lọc
                         </a>
                     </form>
@@ -931,19 +1277,14 @@
                 <div class="col-lg-9 col-md-8">
 
             <!-- ====== TÌM KIẾM ====== -->
-            <div class="mt-4 mb-4">
-                <form action="/" method="GET" class="d-flex" style="max-width: 500px; margin: 0 auto;">
-                    <div class="input-group">
-                        <span class="input-group-text" style="background: var(--dark-3); border-color: var(--border); color: var(--gold);">
-                            <i class="bi bi-search"></i>
-                        </span>
-                        <input type="text" name="keyword" th:value="${keyword}" class="form-control" 
-                               placeholder="Tìm tên nước hoa hoặc thương hiệu..." 
-                               style="background: var(--dark-2); border-color: var(--border); color: var(--text-primary);">
-                        <button type="submit" class="btn" style="background: linear-gradient(135deg, var(--gold), var(--gold-dark)); color: #1a1a1a; font-weight: 600;">
-                            Tìm kiếm
-                        </button>
-                    </div>
+            <div class="search-container">
+                <form action="/" method="GET" class="search-form-custom">
+                    <i class="bi bi-search" style="color: var(--gold); font-size: 1.1rem; margin-right: 12px;"></i>
+                    <input type="text" name="keyword" th:value="${keyword}" class="search-input-custom" 
+                           placeholder="Tìm tên nước hoa hoặc thương hiệu...">
+                    <button type="submit" class="search-btn-custom">
+                        Tìm kiếm
+                    </button>
                 </form>
                 
                 <div th:if="${perfumes.empty and keyword != null}" class="text-center mt-4">
@@ -999,7 +1340,7 @@
                             <!-- Nếu chỉ có 1 biến thể: hiển giá và dung tích thẳng -->
                             <div th:if="${perfume.variants.size() == 1}">
                                 <div class="product-price">
-                                    <span th:text="${perfume.variants[0].gia_ban}">0 đ</span>
+                                    <span th:text="${perfume.variants[0].gia_ban != null ? (perfume.variants[0].gia_ban.contains('đ') ? perfume.variants[0].gia_ban : perfume.variants[0].gia_ban + ' đ') : 'Liên hệ'}">0 đ</span>
                                 </div>
                                 <div style="font-size: 0.75rem; color: var(--text-muted); margin-top: 4px;">
                                     <i class="bi bi-droplet"></i>
@@ -1022,7 +1363,7 @@
                                 </div>
                                 <!-- Giá cập nhật theo biến thể -->
                                 <div class="product-price" th:id="'price-' + ${perfume.id_nuoc_hoa}">
-                                    <span th:text="${perfume.variants[0].gia_ban}">0 đ</span>
+                                    <span th:text="${perfume.variants[0].gia_ban != null ? (perfume.variants[0].gia_ban.contains('đ') ? perfume.variants[0].gia_ban : perfume.variants[0].gia_ban + ' đ') : 'Liên hệ'}">0 đ</span>
                                 </div>
                             </div>
                         </div>
@@ -1115,6 +1456,27 @@
     <script th:inline="javascript">
         const userId = /*[[${session.loggedInUser != null ? session.loggedInUser.id_user : null}]]*/ null;
 
+        function updateCartBadge() {
+            if (userId != null) {
+                fetch('/api/cart/count/' + userId)
+                .then(response => response.json())
+                .then(count => {
+                    const badge = document.getElementById('cartCountBadge');
+                    if (badge) {
+                        if (count > 0) {
+                            badge.textContent = count;
+                            badge.style.display = 'inline-block';
+                        } else {
+                            badge.style.display = 'none';
+                        }
+                    }
+                })
+                .catch(() => {});
+            }
+        }
+
+        // Gọi ngay khi tải trang
+        updateCartBadge();
         // =============================================
         // TOAST NOTIFICATION
         // =============================================
@@ -1146,7 +1508,14 @@
 
             // Cập nhật giá hiển thị
             const priceEl = document.getElementById('price-' + perfumeId);
-            if (priceEl) priceEl.querySelector('span').textContent = gia || '';
+            if (priceEl) {
+                if (gia) {
+                    const formattedGia = new Intl.NumberFormat('vi-VN').format(gia) + ' đ';
+                    priceEl.querySelector('span').textContent = formattedGia;
+                } else {
+                    priceEl.querySelector('span').textContent = 'Liên hệ';
+                }
+            }
 
             // Cập nhật nút giỏ hàng
             const cartBtn = document.getElementById('btn-cart-' + perfumeId);
@@ -1189,12 +1558,12 @@
             .then(response => {
                 if (response.ok) {
                     showToast('Đã thêm vào giỏ hàng của bạn!', 'success');
+                    updateCartBadge();
                     btn.innerHTML = '<i class="bi bi-check-lg"></i> Đã thêm!';
                     setTimeout(() => {
                         btn.disabled = false;
                         btn.innerHTML = '<i class="bi bi-bag-plus"></i> Thêm vào giỏ';
-                    }, 2000);
-                } else {
+                    }, 2000);                } else {
                     showToast('Có lỗi xảy ra, vui lòng thử lại.', 'error');
                     btn.disabled = false;
                     btn.innerHTML = '<i class="bi bi-bag-plus"></i> Thêm vào giỏ';

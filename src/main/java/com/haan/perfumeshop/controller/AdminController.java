@@ -53,15 +53,30 @@ public class AdminController {
         long deliveredOrders = orderRepository.countDeliveredOrders(); // Chỉ đếm đơn "Delivered"
         Double totalRevenue = orderRepository.calculateTotalRevenue(); // Tổng tiền thu được
 
+        // Thống kê doanh thu theo tháng
+        List<Order> orders = orderRepository.findAll();
+        java.util.Map<String, Double> monthlyRevenue = new java.util.TreeMap<>();
+        java.time.format.DateTimeFormatter formatter = java.time.format.DateTimeFormatter.ofPattern("MM/yyyy");
+        for (Order o : orders) {
+            if (!"Cancelled".equalsIgnoreCase(o.getTrang_thai()) && o.getNgay_dat() != null) {
+                String monthKey = "Tháng " + o.getNgay_dat().format(formatter);
+                monthlyRevenue.put(monthKey, monthlyRevenue.getOrDefault(monthKey, 0.0) + o.getTong_tien());
+            }
+        }
+        
+        List<String> months = new java.util.ArrayList<>(monthlyRevenue.keySet());
+        List<Double> revenues = new java.util.ArrayList<>(monthlyRevenue.values());
+
         // 3. Truyền dữ liệu ra màn hình HTML
         model.addAttribute("totalProducts", totalProducts);
         model.addAttribute("totalOrders", totalOrders);
         model.addAttribute("deliveredOrders", deliveredOrders);
         model.addAttribute("totalRevenue", totalRevenue);
+        model.addAttribute("chartMonths", months);
+        model.addAttribute("chartRevenues", revenues);
 
         return "admin/admin-dashboard";
     }
-
     // ==========================================
     // 2. QUẢN LÝ SẢN PHẨM (NƯỚC HOA)
     // ==========================================
@@ -180,8 +195,8 @@ public class AdminController {
         if (size <= 0) size = 10;
         if (page < 0) page = 0;
 
-        Page<User> userPage = userRepository.findAll(
-                PageRequest.of(page, size, Sort.by(Sort.Direction.ASC, "id_user")));
+        Page<User> userPage = userRepository.findAllUsersSorted(
+                PageRequest.of(page, size));
 
         model.addAttribute("users", userPage.getContent());
         model.addAttribute("currentPage", userPage.getNumber());
