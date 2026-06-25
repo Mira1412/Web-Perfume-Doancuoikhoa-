@@ -519,7 +519,10 @@
 
                 <li class="user-dropdown dropdown" th:if="${session.loggedInUser != null}">
                     <a href="#" class="dropdown-toggle" data-bs-toggle="dropdown" id="userDropdown">
-                        <div class="user-avatar"><i class="bi bi-person-fill"></i></div>
+                        <div class="user-avatar" style="overflow: hidden; display: flex; align-items: center; justify-content: center;">
+                            <img th:if="${session.loggedInUser.avatar != null}" th:src="${session.loggedInUser.avatar}" class="rounded-circle" style="width: 100%; height: 100%; object-fit: cover;">
+                            <i th:if="${session.loggedInUser.avatar == null}" class="bi bi-person-fill"></i>
+                        </div>
                         <span th:text="${session.loggedInUser.fullName != null ? session.loggedInUser.fullName : session.loggedInUser.email}">Khách</span>
                         <i class="bi bi-chevron-down" style="font-size: 11px; opacity: 0.6;"></i>
                     </a>

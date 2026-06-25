@@ -33,8 +33,19 @@ public class User {
     // Vai trò: "customer" hoặc "admin"
     private String role;
 
+    // Đường dẫn ảnh đại diện
+    private String avatar;
+
     // Tự viết hàm Get thủ công để sửa lỗi undefined
     public Long getId_user() {
         return this.id_user;
+    }
+
+    public String getAvatar() {
+        return this.avatar;
+    }
+
+    public void setAvatar(String avatar) {
+        this.avatar = avatar;
     }
 }

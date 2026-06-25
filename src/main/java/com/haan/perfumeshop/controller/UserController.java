@@ -10,8 +10,14 @@ import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.multipart.MultipartFile;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 import com.haan.perfumeshop.service.EmailService;
+import java.io.IOException;
+import java.nio.file.Files;
+import java.nio.file.Path;
+import java.nio.file.Paths;
+import java.util.UUID;
 
 @Controller
 public class UserController {
@@ -45,6 +51,7 @@ public class UserController {
             @RequestParam("fullName") String fullName,
             @RequestParam(value = "phone", required = false) String phone,
             @RequestParam(value = "address", required = false) String address,
+            @RequestParam(value = "avatarFile", required = false) MultipartFile avatarFile,
             HttpSession session,
             RedirectAttributes redirectAttributes) {
 
@@ -57,6 +64,25 @@ public class UserController {
             currentUser.setFullName(fullName);
             currentUser.setPhone(phone);
             currentUser.setAddress(address);
+
+            // Xử lý tải ảnh đại diện lên
+            if (avatarFile != null && !avatarFile.isEmpty()) {
+                try {
+                    String uploadDir = "src/main/resources/static/uploads/";
+                    Path uploadPath = Paths.get(uploadDir);
+                    if (!Files.exists(uploadPath)) {
+                        Files.createDirectories(uploadPath);
+                    }
+                    String fileName = UUID.randomUUID().toString() + "_" + avatarFile.getOriginalFilename();
+                    Path filePath = uploadPath.resolve(fileName);
+                    Files.copy(avatarFile.getInputStream(), filePath);
+
+                    currentUser.setAvatar("/uploads/" + fileName);
+                } catch (IOException e) {
+                    redirectAttributes.addFlashAttribute("errorMsg", "Lỗi tải ảnh đại diện: " + e.getMessage());
+                    return "redirect:/profile";
+                }
+            }
 
             userRepository.save(currentUser);
             session.setAttribute("loggedInUser", currentUser); // Cập nhật lại session
