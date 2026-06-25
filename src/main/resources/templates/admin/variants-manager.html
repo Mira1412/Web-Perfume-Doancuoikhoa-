@@ -107,14 +107,94 @@
             transform: translateY(-2px);
             color: #000;
         }
+
+        /* ====== NAVBAR (dùng chung) ====== */
+        .navbar-custom {
+            backdrop-filter: blur(20px);
+            position: sticky;
+            top: 0;
+            z-index: 1000;
+        }
+
+        .navbar-custom .container {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            height: 70px;
+        }
+
+        .brand-name {
+            letter-spacing: 1px;
+        }
+
+        .nav-links {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            list-style: none;
+            margin: 0;
+            padding: 0;
+        }
+
+        .nav-link-item {
+            color: rgba(240, 236, 228, 0.75);
+            text-decoration: none;
+            font-size: 0.875rem;
+            padding: 8px 16px;
+            border-radius: 8px;
+            transition: all 0.2s;
+            display: flex;
+            align-items: center;
+            gap: 6px;
+        }
+
+        .nav-link-item:hover { color: var(--gold); background: rgba(201, 169, 110, 0.1); }
+
+        .btn-home-nav {
+            background: rgba(201, 169, 110, 0.12);
+            border: 1px solid rgba(201, 169, 110, 0.3);
+            color: var(--gold) !important;
+        }
+
+        @media (max-width: 768px) {
+            .nav-links { gap: 4px; }
+            .nav-link-item { padding: 6px 10px; font-size: 0.78rem; }
+        }
     </style>
 </head>
 
 <body>
     <!-- Navbar -->
-    <nav class="navbar-custom py-3">
+    <nav class="navbar-custom">
         <div class="container">
-            <a class="brand-name" href="/admin/dashboard">🌸 Halo Admin</a>
+            <a class="brand-name" href="/">🌸 Halo Admin</a>
+            <ul class="nav-links">
+                <li>
+                    <a href="/" class="nav-link-item btn-home-nav">
+                        <i class="bi bi-shop"></i> Cửa hàng
+                    </a>
+                </li>
+                <li>
+                    <a href="/admin/dashboard" class="nav-link-item">
+                        <i class="bi bi-speedometer2"></i> Dashboard
+                    </a>
+                </li>
+                <li>
+                    <a href="/admin/products" class="nav-link-item" style="color: var(--gold);">
+                        <i class="bi bi-box-seam"></i> Sản phẩm
+                    </a>
+                </li>
+                <li>
+                    <a href="/admin/orders" class="nav-link-item">
+                        <i class="bi bi-receipt"></i> Đơn hàng
+                    </a>
+                </li>
+                <li>
+                    <a href="/admin/users" class="nav-link-item">
+                        <i class="bi bi-people"></i> Người dùng
+                    </a>
+                </li>
+            </ul>
         </div>
     </nav>
 

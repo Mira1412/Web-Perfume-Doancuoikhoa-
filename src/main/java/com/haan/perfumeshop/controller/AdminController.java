@@ -52,6 +52,9 @@ public class AdminController {
         long totalOrders = orderRepository.count(); // Tổng số mọi đơn hàng
         long deliveredOrders = orderRepository.countDeliveredOrders(); // Chỉ đếm đơn "Delivered"
         Double totalRevenue = orderRepository.calculateTotalRevenue(); // Tổng tiền thu được
+        if (totalRevenue == null) {
+            totalRevenue = 0.0;
+        }
 
         // Thống kê doanh thu theo tháng
         List<Order> orders = orderRepository.findAll();
@@ -66,6 +69,16 @@ public class AdminController {
         
         List<String> months = new java.util.ArrayList<>(monthlyRevenue.keySet());
         List<Double> revenues = new java.util.ArrayList<>(monthlyRevenue.values());
+
+        // Nếu chưa có dữ liệu doanh thu, hiển thị 6 tháng gần nhất với giá trị 0
+        if (months.isEmpty()) {
+            java.time.LocalDate now = java.time.LocalDate.now();
+            java.time.format.DateTimeFormatter mFormatter = java.time.format.DateTimeFormatter.ofPattern("MM/yyyy");
+            for (int i = 5; i >= 0; i--) {
+                months.add("Tháng " + now.minusMonths(i).format(mFormatter));
+                revenues.add(0.0);
+            }
+        }
 
         // 3. Truyền dữ liệu ra màn hình HTML
         model.addAttribute("totalProducts", totalProducts);
@@ -217,5 +230,15 @@ public class AdminController {
         }
 
         return "redirect:/admin/orders"; // Quay lại trang quản lý đơn hàng để thấy kết quả
+    }
+
+    @PostMapping("/users/update-role")
+    public String updateUserRole(@RequestParam("id") Long id, @RequestParam("role") String role) {
+        User user = userRepository.findById(id).orElse(null);
+        if (user != null) {
+            user.setRole(role);
+            userRepository.save(user);
+        }
+        return "redirect:/admin/users";
     }
 }
