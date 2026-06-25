@@ -17,11 +17,11 @@ public interface OrderRepository extends JpaRepository<Order, Long> {
     // SỬ DỤNG @Query ĐỂ TRÁNH LỖI TỰ NHẬN DIỆN TÊN BIẾN
     // ======================================================
     @Query("SELECT o FROM Order o WHERE o.user.id_user = :idUser")
-    List<Order> findByUser_Id_user(@Param("idUser") Long idUser);
+    List<Order> findByUser_Id_userList(@Param("idUser") Long idUser);
 
     // Phiên bản có phân trang
     @Query("SELECT o FROM Order o WHERE o.user.id_user = :idUser")
-    Page<Order> findByUser_Id_user(@Param("idUser") Long idUser, Pageable pageable);
+    Page<Order> findByUser_Id_userPageable(@Param("idUser") Long idUser, Pageable pageable);
 
     // ======================================================
     // CÁC HÀM TÍNH TOÁN CHO DASHBOARD

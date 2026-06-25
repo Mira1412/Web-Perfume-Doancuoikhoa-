@@ -34,7 +34,7 @@ public class OrderPageController {
         if (page < 0) page = 0;
 
         // 2. Tìm đơn hàng của khách (có phân trang)
-        Page<Order> orderPage = orderRepository.findByUser_Id_user(
+        Page<Order> orderPage = orderRepository.findByUser_Id_userPageable(
                 currentUser.getId_user(),
                 PageRequest.of(page, size, Sort.by(Sort.Direction.DESC, "id")));
 
