@@ -34,4 +34,12 @@ public interface OrderRepository extends JpaRepository<Order, Long> {
     // 2. Tính tổng doanh thu (Bỏ qua các đơn đã bị Hủy - Cancelled)
     @Query("SELECT COALESCE(SUM(o.tong_tien), 0) FROM Order o WHERE o.trang_thai != 'Cancelled'")
     Double calculateTotalRevenue();
+
+    // 3. Đếm số đơn đang chờ xử lý (Pending)
+    @Query("SELECT COUNT(o) FROM Order o WHERE o.trang_thai = 'Pending'")
+    long countPendingOrders();
+
+    // 4. Lấy 7 đơn hàng mới nhất
+    @Query("SELECT o FROM Order o ORDER BY o.ngay_dat DESC")
+    List<Order> findTop7ByOrderByNgayDatDesc(Pageable pageable);
 }

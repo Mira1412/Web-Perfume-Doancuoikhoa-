@@ -43,7 +43,14 @@ public class ProductController {
             @RequestParam(value = "nhom_huong", required = false) String nhomHuong,
             @RequestParam(value = "gia_range", required = false) String giaRange,
             @RequestParam(value = "page", defaultValue = "0") int page,
+            HttpSession session,
             Model model) {
+
+        // Admin không có quyền vào trang chủ cửa hàng → chuyển thẳng về trang quản trị
+        User sessionUser = (User) session.getAttribute("loggedInUser");
+        if (sessionUser != null && "ADMIN".equals(sessionUser.getRole())) {
+            return "redirect:/admin/dashboard";
+        }
 
         List<Perfume> filtered;
         if (keyword != null && !keyword.trim().isEmpty()) {

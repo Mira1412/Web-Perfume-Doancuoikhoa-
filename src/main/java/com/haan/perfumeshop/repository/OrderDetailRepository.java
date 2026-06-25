@@ -16,4 +16,11 @@ public interface OrderDetailRepository extends JpaRepository<OrderDetail, Long> 
     // Kiểm tra user đã mua sản phẩm này chưa (chỉ tính đơn đã giao thành công)
     @Query("SELECT CASE WHEN COUNT(od) > 0 THEN true ELSE false END FROM OrderDetail od WHERE od.order.user.id_user = :userId AND od.perfume.id_nuoc_hoa = :perfumeId AND od.order.trang_thai = 'Delivered'")
     boolean existsByUserAndPerfumeDelivered(@Param("userId") Long userId, @Param("perfumeId") Long perfumeId);
+
+    // Lấy top 5 sản phẩm bán chạy nhất (theo tổng số lượng)
+    @Query("SELECT od.perfume.ten_sp, SUM(od.so_luong_mua) as totalSold FROM OrderDetail od " +
+           "WHERE od.order.trang_thai != 'Cancelled' " +
+           "GROUP BY od.perfume.id_nuoc_hoa, od.perfume.ten_sp " +
+           "ORDER BY totalSold DESC")
+    List<Object[]> findTopSellingProducts(org.springframework.data.domain.Pageable pageable);
 }

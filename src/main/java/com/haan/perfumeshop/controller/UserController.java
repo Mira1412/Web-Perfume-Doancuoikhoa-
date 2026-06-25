@@ -134,9 +134,13 @@ public class UserController {
     // 1. Hiển thị trang Login
     @GetMapping("/login")
     public String showLoginPage(HttpSession session) {
-        // Nếu khách đã đăng nhập rồi thì không cho vào trang login nữa, đẩy về trang chủ
-        if (session.getAttribute("loggedInUser") != null) {
-            return "redirect:/";
+        User existing = (User) session.getAttribute("loggedInUser");
+        if (existing != null) {
+            // Admin đã đăng nhập → đẩy thẳng vào trang quản trị
+            if ("ADMIN".equals(existing.getRole())) {
+                return "redirect:/admin/dashboard";
+            }
+            return "redirect:/"; // Khách thường → về trang chủ
         }
         return "login"; // Gọi file login.html
     }
@@ -156,9 +160,9 @@ public class UserController {
         if (user != null && passwordEncoder.matches(password, user.getPassword())) {
             // Đăng nhập thành công -> Lưu user vào Session
             session.setAttribute("loggedInUser", user);
-            
-            // Nếu email là admin thì đẩy vào trang admin (bạn có thể đổi email này thành email thật của bạn)
-            if (user.getEmail().equals("admin@gmail.com") || "ADMIN".equals(user.getRole())) {
+
+            // Nếu là tài khoản ADMIN → đẩy thẳng vào trang quản trị, bỏ qua trang chủ
+            if ("ADMIN".equals(user.getRole())) {
                 return "redirect:/admin/dashboard";
             }
             return "redirect:/"; // Khách thường thì về trang chủ
@@ -183,7 +187,11 @@ public class UserController {
     // 4. Hiển thị trang Đăng ký
     @GetMapping("/register")
     public String showRegisterPage(HttpSession session) {
-        if (session.getAttribute("loggedInUser") != null) {
+        User existing = (User) session.getAttribute("loggedInUser");
+        if (existing != null) {
+            if ("ADMIN".equals(existing.getRole())) {
+                return "redirect:/admin/dashboard";
+            }
             return "redirect:/";
         }
         return "register"; // Mở file register.html

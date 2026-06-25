@@ -5,6 +5,7 @@ import com.haan.perfumeshop.model.Perfume;
 import com.haan.perfumeshop.model.PerfumeVariant;
 import com.haan.perfumeshop.model.User;
 import com.haan.perfumeshop.repository.OrderRepository;
+import com.haan.perfumeshop.repository.OrderDetailRepository;
 import com.haan.perfumeshop.repository.PerfumeRepository;
 import com.haan.perfumeshop.repository.PerfumeVariantRepository;
 import com.haan.perfumeshop.repository.UserRepository;
@@ -17,7 +18,12 @@ import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 
+import java.util.ArrayList;
+import java.util.LinkedHashMap;
 import java.util.List;
+import java.util.Map;
+import java.util.TreeMap;
+
 
 @Controller
 @RequestMapping("/admin")
@@ -35,6 +41,10 @@ public class AdminController {
     @Autowired
     private UserRepository userRepository;
 
+    @Autowired
+    private OrderDetailRepository orderDetailRepository;
+
+
     // ==========================================
     // 1. DASHBOARD & ĐIỀU HƯỚNG GỐC
     // ==========================================
@@ -45,48 +55,71 @@ public class AdminController {
 
     @GetMapping("/dashboard")
     public String dashboard(Model model) {
-        // 1. Đếm tổng số lượng sản phẩm thực tế từ Database
+        // 1. Thống kê cơ bản
         long totalProducts = perfumeRepository.count();
-        
-        // 2. Lấy các con số thống kê Đơn hàng từ OrderRepository
-        long totalOrders = orderRepository.count(); // Tổng số mọi đơn hàng
-        long deliveredOrders = orderRepository.countDeliveredOrders(); // Chỉ đếm đơn "Delivered"
-        Double totalRevenue = orderRepository.calculateTotalRevenue(); // Tổng tiền thu được
-        if (totalRevenue == null) {
-            totalRevenue = 0.0;
-        }
+        long totalOrders   = orderRepository.count();
+        long deliveredOrders = orderRepository.countDeliveredOrders();
+        long pendingOrders   = orderRepository.countPendingOrders();
+        long totalUsers      = userRepository.count();
+        Double totalRevenue  = orderRepository.calculateTotalRevenue();
+        if (totalRevenue == null) totalRevenue = 0.0;
 
-        // Thống kê doanh thu theo tháng
-        List<Order> orders = orderRepository.findAll();
-        java.util.Map<String, Double> monthlyRevenue = new java.util.TreeMap<>();
-        java.time.format.DateTimeFormatter formatter = java.time.format.DateTimeFormatter.ofPattern("MM/yyyy");
-        for (Order o : orders) {
-            if (!"Cancelled".equalsIgnoreCase(o.getTrang_thai()) && o.getNgay_dat() != null) {
-                String monthKey = "Tháng " + o.getNgay_dat().format(formatter);
-                monthlyRevenue.put(monthKey, monthlyRevenue.getOrDefault(monthKey, 0.0) + o.getTong_tien());
+        // 2. Doanh thu theo tháng
+        List<Order> allOrders = orderRepository.findAll();
+        java.time.format.DateTimeFormatter fmt = java.time.format.DateTimeFormatter.ofPattern("MM/yyyy");
+        Map<String, Double>  monthlyRevenue = new TreeMap<>();
+        Map<String, Integer> monthlyOrders  = new TreeMap<>();
+        for (Order o : allOrders) {
+            if (o.getNgay_dat() == null) continue;
+            String key = "Tháng " + o.getNgay_dat().format(fmt);
+            if (!"Cancelled".equalsIgnoreCase(o.getTrang_thai())) {
+                monthlyRevenue.put(key, monthlyRevenue.getOrDefault(key, 0.0) + o.getTong_tien());
             }
+            monthlyOrders.put(key, monthlyOrders.getOrDefault(key, 0) + 1);
         }
-        
-        List<String> months = new java.util.ArrayList<>(monthlyRevenue.keySet());
-        List<Double> revenues = new java.util.ArrayList<>(monthlyRevenue.values());
+        List<String> months   = new ArrayList<>(monthlyRevenue.keySet());
+        List<Double> revenues = new ArrayList<>(monthlyRevenue.values());
+        List<Integer> orderCounts = new ArrayList<>();
+        for (String m : months) orderCounts.add(monthlyOrders.getOrDefault(m, 0));
 
-        // Nếu chưa có dữ liệu doanh thu, hiển thị 6 tháng gần nhất với giá trị 0
+        // Nếu chưa có dữ liệu, hiển thị 6 tháng gần nhất với giá trị 0
         if (months.isEmpty()) {
             java.time.LocalDate now = java.time.LocalDate.now();
-            java.time.format.DateTimeFormatter mFormatter = java.time.format.DateTimeFormatter.ofPattern("MM/yyyy");
             for (int i = 5; i >= 0; i--) {
-                months.add("Tháng " + now.minusMonths(i).format(mFormatter));
+                months.add("Tháng " + now.minusMonths(i).format(fmt));
                 revenues.add(0.0);
+                orderCounts.add(0);
             }
         }
 
-        // 3. Truyền dữ liệu ra màn hình HTML
-        model.addAttribute("totalProducts", totalProducts);
-        model.addAttribute("totalOrders", totalOrders);
+        // 3. 7 đơn hàng mới nhất
+        List<Order> recentOrders = orderRepository.findTop7ByOrderByNgayDatDesc(
+                PageRequest.of(0, 7));
+
+        // 4. Top 5 sản phẩm bán chạy
+        List<Object[]> topRaw = orderDetailRepository.findTopSellingProducts(PageRequest.of(0, 5));
+        List<Map<String, Object>> topProducts = new ArrayList<>();
+        long maxSold = topRaw.isEmpty() ? 1 : ((Number) topRaw.get(0)[1]).longValue();
+        for (Object[] row : topRaw) {
+            Map<String, Object> item = new LinkedHashMap<>();
+            item.put("name",     row[0]);
+            item.put("sold",     ((Number) row[1]).longValue());
+            item.put("percent", maxSold > 0 ? (int)(((Number) row[1]).longValue() * 100 / maxSold) : 0);
+            topProducts.add(item);
+        }
+
+        // 5. Truyền tất cả ra View
+        model.addAttribute("totalProducts",   totalProducts);
+        model.addAttribute("totalOrders",     totalOrders);
         model.addAttribute("deliveredOrders", deliveredOrders);
-        model.addAttribute("totalRevenue", totalRevenue);
-        model.addAttribute("chartMonths", months);
-        model.addAttribute("chartRevenues", revenues);
+        model.addAttribute("pendingOrders",   pendingOrders);
+        model.addAttribute("totalUsers",      totalUsers);
+        model.addAttribute("totalRevenue",    totalRevenue);
+        model.addAttribute("chartMonths",     months);
+        model.addAttribute("chartRevenues",   revenues);
+        model.addAttribute("chartOrders",     orderCounts);
+        model.addAttribute("recentOrders",    recentOrders);
+        model.addAttribute("topProducts",     topProducts);
 
         return "admin/admin-dashboard";
     }
