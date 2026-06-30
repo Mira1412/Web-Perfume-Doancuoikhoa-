@@ -33,7 +33,7 @@ public class OrderService {
 
     // Logic Chốt Đơn Hàng từ Giỏ Hàng
     @Transactional(rollbackFor = Exception.class)
-    public Order checkoutOrder(User user) throws Exception {
+    public Order checkoutOrder(User user, String paymentMethod, String maGiaoDich) throws Exception {
         // 0. Lấy thông tin User đầy đủ từ Database
         User fullUser = userRepository.findById(user.getId_user()).orElse(user);
 
@@ -66,6 +66,10 @@ public class OrderService {
         Order order = new Order();
         order.setUser(fullUser);
         order.setTrang_thai("Pending");
+        order.setPhuong_thuc_thanh_toan(paymentMethod != null ? paymentMethod : "COD");
+        if (maGiaoDich != null && !maGiaoDich.isEmpty()) {
+            order.setMa_giao_dich(maGiaoDich);
+        }
         Order savedOrder = orderRepository.save(order);
 
         double tongTien = 0.0;

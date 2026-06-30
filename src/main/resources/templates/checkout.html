@@ -1,0 +1,717 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org" lang="vi">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Xác Nhận Đơn Hàng — Halo</title>
+    <meta name="description" content="Xem lại đơn hàng và chọn phương thức thanh toán tại Halo Perfume.">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=Playfair+Display:ital,wght@0,400..900;1,400..900&display=swap" rel="stylesheet">
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.0/font/bootstrap-icons.css" rel="stylesheet">
+    <style>
+        :root {
+            --gold: #c9a96e;
+            --gold-light: #e8d5b0;
+            --gold-dark: #a07840;
+            --dark: #0d0d1a;
+            --dark-2: #141428;
+            --dark-3: #1c1c35;
+            --dark-4: #22223f;
+            --text-primary: #f0ece4;
+            --text-muted: rgba(240, 236, 228, 0.55);
+            --border: rgba(201, 169, 110, 0.2);
+            --green: #6fcf97;
+            --blue: #6ea5c9;
+        }
+
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+
+        body {
+            background-color: var(--dark);
+            font-family: 'Inter', sans-serif;
+            color: var(--text-primary);
+            min-height: 100vh;
+        }
+
+        /* ====== NAVBAR ====== */
+        .navbar-custom {
+            background: rgba(13, 13, 26, 0.97);
+            backdrop-filter: blur(20px);
+            border-bottom: 1px solid var(--border);
+            position: sticky;
+            top: 0;
+            z-index: 1000;
+        }
+        .navbar-custom .container {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            height: 70px;
+        }
+        .brand-name {
+            font-family: 'Playfair Display', Georgia, serif;
+            font-size: 1.8rem;
+            font-weight: 700;
+            color: var(--gold) !important;
+            text-decoration: none;
+            letter-spacing: 1.5px;
+        }
+        .nav-links {
+            display: flex; align-items: center; gap: 8px; list-style: none;
+        }
+        .nav-link-item {
+            color: rgba(240,236,228,0.75);
+            text-decoration: none; font-size: 0.875rem;
+            padding: 8px 16px; border-radius: 8px;
+            transition: all 0.2s; display: flex; align-items: center; gap: 6px;
+        }
+        .nav-link-item:hover { color: var(--gold); background: rgba(201,169,110,0.1); }
+        .btn-home-nav {
+            background: rgba(201,169,110,0.12);
+            border: 1px solid rgba(201,169,110,0.3);
+            color: var(--gold) !important;
+        }
+
+        /* ====== PROGRESS STEPS ====== */
+        .checkout-progress {
+            background: var(--dark-2);
+            border-bottom: 1px solid var(--border);
+            padding: 20px 0;
+        }
+        .progress-steps {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 0;
+        }
+        .step {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            font-size: 0.85rem;
+            color: var(--text-muted);
+        }
+        .step.active { color: var(--gold); }
+        .step.done { color: var(--green); }
+        .step-num {
+            width: 32px; height: 32px;
+            border-radius: 50%;
+            border: 2px solid var(--border);
+            display: flex; align-items: center; justify-content: center;
+            font-size: 0.8rem; font-weight: 600;
+        }
+        .step.active .step-num {
+            background: var(--gold);
+            border-color: var(--gold);
+            color: #1a1a1a;
+        }
+        .step.done .step-num {
+            background: rgba(111,207,151,0.15);
+            border-color: var(--green);
+            color: var(--green);
+        }
+        .step-line {
+            width: 80px; height: 1px;
+            background: var(--border);
+            margin: 0 12px;
+        }
+
+        /* ====== PAGE HEADER ====== */
+        .page-header {
+            padding: 40px 0 32px;
+            position: relative;
+            overflow: hidden;
+        }
+        .page-header::before {
+            content: '';
+            position: absolute;
+            top: -60px; right: -60px;
+            width: 300px; height: 300px;
+            background: radial-gradient(circle, rgba(201,169,110,0.07) 0%, transparent 70%);
+            border-radius: 50%;
+            pointer-events: none;
+        }
+        .page-header h1 {
+            font-family: 'Playfair Display', Georgia, serif;
+            font-size: 2.2rem;
+            font-weight: 700;
+            color: #fff;
+            margin-bottom: 8px;
+        }
+        .page-header .subtitle {
+            color: var(--text-muted);
+            font-size: 0.9rem;
+        }
+
+        /* ====== MAIN LAYOUT ====== */
+        .checkout-section { padding: 0 0 80px; }
+
+        /* ====== ORDER ITEMS CARD ====== */
+        .card-dark {
+            background: var(--dark-2);
+            border: 1px solid var(--border);
+            border-radius: 20px;
+            overflow: hidden;
+        }
+        .card-header-dark {
+            background: rgba(255,255,255,0.03);
+            border-bottom: 1px solid var(--border);
+            padding: 18px 24px;
+            display: flex; align-items: center; gap: 10px;
+            font-size: 0.95rem; font-weight: 600;
+            color: var(--gold);
+        }
+        .card-body-dark { padding: 20px 24px; }
+
+        /* ====== ORDER ITEM ROW ====== */
+        .order-item {
+            display: flex;
+            align-items: center;
+            gap: 16px;
+            padding: 16px 0;
+            border-bottom: 1px solid rgba(201,169,110,0.08);
+        }
+        .order-item:last-child { border-bottom: none; }
+        .order-item-img {
+            width: 64px; height: 64px;
+            border-radius: 12px;
+            object-fit: cover;
+            border: 1px solid var(--border);
+            background: var(--dark-3);
+            flex-shrink: 0;
+        }
+        .order-item-img-placeholder {
+            width: 64px; height: 64px;
+            border-radius: 12px;
+            border: 1px solid var(--border);
+            background: var(--dark-3);
+            flex-shrink: 0;
+            display: flex; align-items: center; justify-content: center;
+            font-size: 1.5rem;
+        }
+        .order-item-info { flex: 1; min-width: 0; }
+        .order-item-name {
+            font-weight: 600; font-size: 0.95rem;
+            color: #fff; margin-bottom: 4px;
+            white-space: nowrap; overflow: hidden; text-overflow: ellipsis;
+        }
+        .order-item-meta {
+            font-size: 0.78rem; color: var(--text-muted);
+        }
+        .order-item-variant {
+            display: inline-block;
+            background: rgba(201,169,110,0.1);
+            border: 1px solid rgba(201,169,110,0.2);
+            color: var(--gold);
+            padding: 2px 8px; border-radius: 6px;
+            font-size: 0.72rem; margin-top: 4px;
+        }
+        .order-item-qty {
+            font-size: 0.85rem; color: var(--text-muted); white-space: nowrap;
+        }
+        .order-item-price {
+            font-weight: 600; color: var(--gold);
+            font-size: 0.95rem; white-space: nowrap; text-align: right;
+        }
+
+        /* ====== DELIVERY INFO ====== */
+        .info-row {
+            display: flex; align-items: flex-start; gap: 12px;
+            padding: 12px 0;
+            border-bottom: 1px solid rgba(201,169,110,0.08);
+        }
+        .info-row:last-child { border-bottom: none; }
+        .info-icon {
+            width: 36px; height: 36px;
+            border-radius: 10px;
+            background: rgba(201,169,110,0.1);
+            border: 1px solid rgba(201,169,110,0.2);
+            display: flex; align-items: center; justify-content: center;
+            color: var(--gold); font-size: 0.95rem;
+            flex-shrink: 0;
+        }
+        .info-label { font-size: 0.75rem; color: var(--text-muted); margin-bottom: 3px; }
+        .info-value { font-size: 0.9rem; color: var(--text-primary); font-weight: 500; }
+        .info-empty { color: var(--text-muted); font-style: italic; font-size: 0.85rem; }
+
+        /* ====== PAYMENT METHOD SELECTOR ====== */
+        .payment-methods { display: flex; flex-direction: column; gap: 14px; }
+
+        .payment-option {
+            position: relative;
+            cursor: pointer;
+        }
+        .payment-option input[type="radio"] {
+            position: absolute; opacity: 0; width: 0; height: 0;
+        }
+        .payment-label {
+            display: flex;
+            align-items: center;
+            gap: 16px;
+            padding: 20px;
+            border-radius: 16px;
+            border: 2px solid var(--border);
+            background: var(--dark-3);
+            cursor: pointer;
+            transition: all 0.25s ease;
+            position: relative;
+            overflow: hidden;
+        }
+        .payment-option input:checked + .payment-label {
+            border-color: var(--gold);
+            background: rgba(201,169,110,0.06);
+            box-shadow: 0 0 0 1px rgba(201,169,110,0.2),
+                        0 8px 24px rgba(0,0,0,0.3);
+        }
+        .payment-label:hover {
+            border-color: rgba(201,169,110,0.5);
+            background: rgba(201,169,110,0.04);
+        }
+        .payment-radio-circle {
+            width: 22px; height: 22px;
+            border-radius: 50%;
+            border: 2px solid var(--border);
+            display: flex; align-items: center; justify-content: center;
+            flex-shrink: 0;
+            transition: all 0.2s;
+        }
+        .payment-option input:checked + .payment-label .payment-radio-circle {
+            border-color: var(--gold);
+            background: var(--gold);
+        }
+        .payment-option input:checked + .payment-label .payment-radio-circle::after {
+            content: '';
+            width: 8px; height: 8px;
+            background: #1a1a1a;
+            border-radius: 50%;
+        }
+        .payment-icon-wrapper {
+            width: 52px; height: 52px;
+            border-radius: 14px;
+            display: flex; align-items: center; justify-content: center;
+            font-size: 1.5rem;
+            flex-shrink: 0;
+        }
+        .payment-icon-cod { background: rgba(111,207,151,0.1); border: 1px solid rgba(111,207,151,0.25); color: var(--green); }
+        .payment-icon-vnpay { background: rgba(0,100,255,0.1); border: 1px solid rgba(0,100,255,0.25); }
+        .payment-icon-vnpay img { width: 36px; height: auto; }
+        .payment-text-title { font-weight: 600; font-size: 0.95rem; color: #fff; margin-bottom: 4px; }
+        .payment-text-desc { font-size: 0.78rem; color: var(--text-muted); line-height: 1.5; }
+        .payment-badge {
+            position: absolute; top: 12px; right: 14px;
+            font-size: 0.65rem; font-weight: 600;
+            padding: 3px 10px; border-radius: 20px;
+            text-transform: uppercase; letter-spacing: 0.5px;
+        }
+        .badge-popular { background: rgba(201,169,110,0.15); border: 1px solid rgba(201,169,110,0.3); color: var(--gold); }
+        .badge-secure { background: rgba(111,207,151,0.12); border: 1px solid rgba(111,207,151,0.25); color: var(--green); }
+
+        /* ====== ORDER SUMMARY (sticky sidebar) ====== */
+        .order-summary-sticky { position: sticky; top: 88px; }
+
+        .summary-row {
+            display: flex; align-items: center; justify-content: space-between;
+            padding: 12px 0;
+            border-bottom: 1px solid rgba(201,169,110,0.08);
+            font-size: 0.9rem;
+        }
+        .summary-row:last-of-type { border-bottom: none; }
+        .summary-label { color: var(--text-muted); }
+        .summary-value { font-weight: 500; }
+        .summary-value.free { color: var(--green); }
+        .summary-divider {
+            border: none; border-top: 1px solid var(--border);
+            margin: 8px 0;
+        }
+        .summary-total {
+            display: flex; align-items: center; justify-content: space-between;
+            padding: 16px 0 0;
+        }
+        .summary-total .label {
+            font-size: 1rem; font-weight: 600; color: #fff;
+        }
+        .summary-total .value {
+            font-family: 'Playfair Display', Georgia, serif;
+            font-size: 1.5rem; font-weight: 700; color: var(--gold);
+        }
+
+        /* ====== BUTTONS ====== */
+        .btn-place-order {
+            display: flex; align-items: center; justify-content: center;
+            gap: 10px;
+            width: 100%;
+            padding: 16px;
+            border-radius: 14px;
+            border: none;
+            background: linear-gradient(135deg, var(--gold), var(--gold-dark));
+            color: #1a1a1a;
+            font-size: 1rem; font-weight: 700;
+            cursor: pointer;
+            transition: all 0.3s;
+            margin-top: 20px;
+            letter-spacing: 0.5px;
+        }
+        .btn-place-order:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 8px 24px rgba(201,169,110,0.4);
+            background: linear-gradient(135deg, #d4b880, #b8863a);
+        }
+        .btn-place-order:disabled {
+            opacity: 0.6; cursor: not-allowed; transform: none;
+        }
+        .btn-back {
+            display: flex; align-items: center; justify-content: center;
+            gap: 8px;
+            width: 100%;
+            padding: 12px;
+            border-radius: 12px;
+            border: 1px solid var(--border);
+            background: transparent;
+            color: var(--text-muted);
+            font-size: 0.875rem;
+            cursor: pointer;
+            transition: all 0.2s;
+            margin-top: 10px;
+            text-decoration: none;
+        }
+        .btn-back:hover {
+            border-color: rgba(201,169,110,0.4);
+            color: var(--gold);
+        }
+
+        /* ====== SECURITY BADGES ====== */
+        .security-badges {
+            display: flex; align-items: center; justify-content: center;
+            gap: 16px; margin-top: 16px;
+            flex-wrap: wrap;
+        }
+        .sec-badge {
+            display: flex; align-items: center; gap: 5px;
+            font-size: 0.72rem; color: var(--text-muted);
+        }
+        .sec-badge i { color: var(--green); }
+
+        /* ====== LOADING OVERLAY ====== */
+        .loading-overlay {
+            display: none;
+            position: fixed; inset: 0;
+            background: rgba(13,13,26,0.85);
+            backdrop-filter: blur(8px);
+            z-index: 9999;
+            align-items: center; justify-content: center;
+            flex-direction: column; gap: 20px;
+        }
+        .loading-overlay.show { display: flex; }
+        .loading-spinner {
+            width: 56px; height: 56px;
+            border: 3px solid rgba(201,169,110,0.2);
+            border-top-color: var(--gold);
+            border-radius: 50%;
+            animation: spin 0.9s linear infinite;
+        }
+        @keyframes spin { to { transform: rotate(360deg); } }
+        .loading-text { color: var(--gold); font-size: 0.95rem; font-weight: 500; }
+
+        /* ====== RESPONSIVE ====== */
+        @media (max-width: 768px) {
+            .step-line { width: 40px; }
+            .order-summary-sticky { position: static; }
+        }
+    </style>
+</head>
+
+<body>
+    <!-- NAVBAR -->
+    <nav class="navbar-custom">
+        <div class="container">
+            <a href="/" class="brand-name">Halo</a>
+            <ul class="nav-links">
+                <li><a href="/" class="nav-link-item btn-home-nav">
+                    <i class="bi bi-house-fill"></i> Trang chủ
+                </a></li>
+                <li><a href="/cart" class="nav-link-item">
+                    <i class="bi bi-bag"></i> Giỏ hàng
+                </a></li>
+            </ul>
+        </div>
+    </nav>
+
+    <!-- PROGRESS STEPS -->
+    <div class="checkout-progress">
+        <div class="container">
+            <div class="progress-steps">
+                <div class="step done">
+                    <div class="step-num"><i class="bi bi-check-lg"></i></div>
+                    <span>Giỏ hàng</span>
+                </div>
+                <div class="step-line"></div>
+                <div class="step active">
+                    <div class="step-num">2</div>
+                    <span>Xác nhận</span>
+                </div>
+                <div class="step-line"></div>
+                <div class="step">
+                    <div class="step-num">3</div>
+                    <span>Kết quả</span>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- PAGE HEADER -->
+    <div class="page-header">
+        <div class="container">
+            <h1><i class="bi bi-bag-check" style="color: var(--gold); font-size: 1.8rem; margin-right: 12px;"></i>Xác Nhận Đơn Hàng</h1>
+            <p class="subtitle">Kiểm tra lại đơn hàng và chọn phương thức thanh toán phù hợp</p>
+        </div>
+    </div>
+
+    <!-- MAIN CONTENT -->
+    <section class="checkout-section">
+        <div class="container">
+            <div class="row g-4">
+
+                <!-- LEFT: Order Items + Delivery + Payment Method -->
+                <div class="col-lg-7">
+
+                    <!-- Danh sách sản phẩm -->
+                    <div class="card-dark mb-4">
+                        <div class="card-header-dark">
+                            <i class="bi bi-box-seam-fill"></i>
+                            Sản Phẩm Đặt Mua
+                            <span style="margin-left: auto; font-size: 0.78rem; color: var(--text-muted); font-weight: 400;"
+                                  th:text="${#lists.size(cartItems)} + ' sản phẩm'">0 sản phẩm</span>
+                        </div>
+                        <div class="card-body-dark">
+                            <div th:each="item : ${cartItems}" class="order-item">
+                                <!-- Ảnh sản phẩm -->
+                                <div th:if="${item.perfume.hinh_anh != null and !item.perfume.hinh_anh.isEmpty()}">
+                                    <img th:src="${item.perfume.hinh_anh}" alt="Ảnh sản phẩm" class="order-item-img"
+                                         onerror="this.style.display='none'; this.nextElementSibling.style.display='flex';">
+                                    <div class="order-item-img-placeholder" style="display:none;">🌸</div>
+                                </div>
+                                <div th:unless="${item.perfume.hinh_anh != null and !item.perfume.hinh_anh.isEmpty()}"
+                                     class="order-item-img-placeholder">🌸</div>
+
+                                <!-- Thông tin sản phẩm -->
+                                <div class="order-item-info">
+                                    <div class="order-item-name" th:text="${item.perfume.ten_sp}">Tên sản phẩm</div>
+                                    <div class="order-item-meta" th:text="${item.perfume.thuong_hieu}">Thương hiệu</div>
+                                    <span th:if="${item.variant != null}" class="order-item-variant"
+                                          th:text="${item.variant.dung_tich}">50ml</span>
+                                </div>
+
+                                <!-- Số lượng -->
+                                <div class="order-item-qty">x<span th:text="${item.so_luong}">1</span></div>
+
+                                <!-- Giá thành tiền -->
+                                <div class="order-item-price"
+                                     th:text="${#numbers.formatDecimal(item.getPriceNumeric() * item.so_luong, 0, 'COMMA', 0, 'POINT')} + ' đ'">0 đ</div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Thông tin giao hàng -->
+                    <div class="card-dark mb-4">
+                        <div class="card-header-dark">
+                            <i class="bi bi-truck"></i>
+                            Thông Tin Giao Hàng
+                        </div>
+                        <div class="card-body-dark">
+                            <div class="info-row">
+                                <div class="info-icon"><i class="bi bi-person-fill"></i></div>
+                                <div>
+                                    <div class="info-label">Người nhận</div>
+                                    <div class="info-value" th:text="${user.fullName}">Tên người dùng</div>
+                                </div>
+                            </div>
+                            <div class="info-row">
+                                <div class="info-icon"><i class="bi bi-envelope-fill"></i></div>
+                                <div>
+                                    <div class="info-label">Email</div>
+                                    <div class="info-value" th:text="${user.email}">email@example.com</div>
+                                </div>
+                            </div>
+                            <div class="info-row">
+                                <div class="info-icon"><i class="bi bi-telephone-fill"></i></div>
+                                <div>
+                                    <div class="info-label">Số điện thoại</div>
+                                    <div class="info-value" th:if="${user.phone != null and !user.phone.isEmpty()}" th:text="${user.phone}">SĐT</div>
+                                    <div class="info-empty" th:unless="${user.phone != null and !user.phone.isEmpty()}">Chưa cập nhật — <a href="/profile" style="color: var(--gold);">Cập nhật ngay</a></div>
+                                </div>
+                            </div>
+                            <div class="info-row">
+                                <div class="info-icon"><i class="bi bi-geo-alt-fill"></i></div>
+                                <div>
+                                    <div class="info-label">Địa chỉ giao hàng</div>
+                                    <div class="info-value" th:if="${user.address != null and !user.address.isEmpty()}" th:text="${user.address}">Địa chỉ</div>
+                                    <div class="info-empty" th:unless="${user.address != null and !user.address.isEmpty()}">Chưa cập nhật — <a href="/profile" style="color: var(--gold);">Cập nhật ngay</a></div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Phương thức thanh toán -->
+                    <div class="card-dark">
+                        <div class="card-header-dark">
+                            <i class="bi bi-credit-card-2-front-fill"></i>
+                            Phương Thức Thanh Toán
+                        </div>
+                        <div class="card-body-dark">
+                            <div class="payment-methods">
+
+                                <!-- COD -->
+                                <div class="payment-option">
+                                    <input type="radio" name="paymentMethod" id="pm-cod" value="COD" checked>
+                                    <label class="payment-label" for="pm-cod">
+                                        <div class="payment-radio-circle"></div>
+                                        <div class="payment-icon-wrapper payment-icon-cod">
+                                            <i class="bi bi-cash-stack"></i>
+                                        </div>
+                                        <div>
+                                            <div class="payment-text-title">Thanh toán khi nhận hàng (COD)</div>
+                                            <div class="payment-text-desc">Nhận hàng, kiểm tra rồi mới trả tiền. An toàn, không cần thẻ ngân hàng.</div>
+                                        </div>
+                                        <span class="payment-badge badge-popular">Phổ biến</span>
+                                    </label>
+                                </div>
+
+                                <!-- VNPay -->
+                                <div class="payment-option">
+                                    <input type="radio" name="paymentMethod" id="pm-vnpay" value="VNPay">
+                                    <label class="payment-label" for="pm-vnpay">
+                                        <div class="payment-radio-circle"></div>
+                                        <div class="payment-icon-wrapper payment-icon-vnpay">
+                                            <svg viewBox="0 0 200 80" width="44" height="22">
+                                                <rect width="200" height="80" rx="8" fill="#0064FF"/>
+                                                <text x="20" y="52" fill="white" font-size="40" font-weight="bold" font-family="Arial">VN</text>
+                                                <text x="110" y="52" fill="#FFD700" font-size="40" font-weight="bold" font-family="Arial">Pay</text>
+                                            </svg>
+                                        </div>
+                                        <div>
+                                            <div class="payment-text-title">Thanh toán qua VNPay</div>
+                                            <div class="payment-text-desc">ATM, thẻ quốc tế Visa/Mastercard, ví điện tử. Được mã hóa an toàn.</div>
+                                        </div>
+                                        <span class="payment-badge badge-secure"><i class="bi bi-shield-check" style="font-size:0.7rem"></i> Bảo mật</span>
+                                    </label>
+                                </div>
+
+                            </div>
+                        </div>
+                    </div>
+
+                </div>
+
+                <!-- RIGHT: Order Summary -->
+                <div class="col-lg-5">
+                    <div class="order-summary-sticky">
+                        <div class="card-dark">
+                            <div class="card-header-dark">
+                                <i class="bi bi-receipt"></i>
+                                Tóm Tắt Đơn Hàng
+                            </div>
+                            <div class="card-body-dark">
+
+                                <div class="summary-row">
+                                    <span class="summary-label">Tạm tính (<span th:text="${#lists.size(cartItems)}">0</span> sản phẩm)</span>
+                                    <span class="summary-value"
+                                          th:text="${#numbers.formatDecimal(totalPrice, 0, 'COMMA', 0, 'POINT')} + ' đ'">0 đ</span>
+                                </div>
+                                <div class="summary-row">
+                                    <span class="summary-label">Phí vận chuyển</span>
+                                    <span class="summary-value free"><i class="bi bi-check-circle-fill"></i> Miễn phí</span>
+                                </div>
+                                <div class="summary-row">
+                                    <span class="summary-label">Giảm giá</span>
+                                    <span class="summary-value" style="color: var(--text-muted);">—</span>
+                                </div>
+
+                                <hr class="summary-divider">
+
+                                <div class="summary-total">
+                                    <span class="label">Tổng thanh toán</span>
+                                    <span class="value"
+                                          th:text="${#numbers.formatDecimal(totalPrice, 0, 'COMMA', 0, 'POINT')} + ' đ'">0 đ</span>
+                                </div>
+
+                                <!-- Nút đặt hàng -->
+                                <button id="btn-order" class="btn-place-order" onclick="submitOrder()">
+                                    <i class="bi bi-bag-check-fill"></i>
+                                    Đặt Hàng Ngay
+                                </button>
+
+                                <a href="/cart" class="btn-back">
+                                    <i class="bi bi-arrow-left"></i>
+                                    Quay lại giỏ hàng
+                                </a>
+
+                                <!-- Security badges -->
+                                <div class="security-badges">
+                                    <div class="sec-badge"><i class="bi bi-shield-fill-check"></i> Hàng chính hãng</div>
+                                    <div class="sec-badge"><i class="bi bi-lock-fill"></i> Thanh toán bảo mật</div>
+                                    <div class="sec-badge"><i class="bi bi-arrow-return-left"></i> Đổi trả 7 ngày</div>
+                                </div>
+
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+            </div>
+        </div>
+    </section>
+
+    <!-- Loading Overlay -->
+    <div class="loading-overlay" id="loadingOverlay">
+        <div class="loading-spinner"></div>
+        <div class="loading-text" id="loadingText">Đang xử lý đơn hàng...</div>
+    </div>
+
+    <!-- Hidden Forms -->
+    <form id="form-cod" method="POST" action="/payment/cod" style="display:none;"></form>
+    <form id="form-vnpay" method="POST" action="/payment/create-vnpay" style="display:none;"></form>
+
+    <!-- CSRF token if needed (Spring Security disabled but keep for future) -->
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+    <script>
+        function submitOrder() {
+            const selectedMethod = document.querySelector('input[name="paymentMethod"]:checked').value;
+            const btn = document.getElementById('btn-order');
+            const overlay = document.getElementById('loadingOverlay');
+            const loadingText = document.getElementById('loadingText');
+
+            btn.disabled = true;
+
+            if (selectedMethod === 'VNPay') {
+                loadingText.textContent = 'Đang kết nối tới VNPay...';
+                overlay.classList.add('show');
+                setTimeout(() => {
+                    document.getElementById('form-vnpay').submit();
+                }, 600);
+            } else {
+                // COD
+                loadingText.textContent = 'Đang đặt hàng...';
+                overlay.classList.add('show');
+                setTimeout(() => {
+                    document.getElementById('form-cod').submit();
+                }, 400);
+            }
+        }
+
+        // Hiệu ứng chọn phương thức thanh toán
+        document.querySelectorAll('input[name="paymentMethod"]').forEach(radio => {
+            radio.addEventListener('change', function() {
+                const btn = document.getElementById('btn-order');
+                if (this.value === 'VNPay') {
+                    btn.innerHTML = '<i class="bi bi-credit-card-fill"></i> Thanh Toán Qua VNPay';
+                } else {
+                    btn.innerHTML = '<i class="bi bi-bag-check-fill"></i> Đặt Hàng Ngay (COD)';
+                }
+            });
+        });
+    </script>
+</body>
+</html>

@@ -1478,6 +1478,20 @@
 
         // Gọi ngay khi tải trang
         updateCartBadge();
+
+        // =============================================
+        // SERVER FLASH MESSAGES TO TOAST
+        // =============================================
+        const serverSuccessMsg = /*[[${successMsg}]]*/ null;
+        const serverErrorMsg = /*[[${errorMsg}]]*/ null;
+        
+        if (serverSuccessMsg) {
+            setTimeout(() => showToast(serverSuccessMsg, 'success'), 500);
+        }
+        if (serverErrorMsg) {
+            setTimeout(() => showToast(serverErrorMsg, 'error'), 500);
+        }
+
         // =============================================
         // TOAST NOTIFICATION
         // =============================================

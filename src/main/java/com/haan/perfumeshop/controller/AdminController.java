@@ -9,7 +9,11 @@ import com.haan.perfumeshop.repository.OrderDetailRepository;
 import com.haan.perfumeshop.repository.PerfumeRepository;
 import com.haan.perfumeshop.repository.PerfumeVariantRepository;
 import com.haan.perfumeshop.repository.UserRepository;
+import com.haan.perfumeshop.service.ExportService;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpHeaders;
+import org.springframework.http.MediaType;
+import org.springframework.http.ResponseEntity;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Sort;
@@ -44,11 +48,14 @@ public class AdminController {
     @Autowired
     private OrderDetailRepository orderDetailRepository;
 
+    @Autowired
+    private ExportService exportService;
+
 
     // ==========================================
     // 1. DASHBOARD & ĐIỀU HƯỚNG GỐC
     // ==========================================
-    @GetMapping({ "", "/" })
+    @GetMapping({ "", "/", "/dashboarb" })
     public String adminRoot() {
         return "redirect:/admin/dashboard";
     }
@@ -228,6 +235,25 @@ public class AdminController {
         model.addAttribute("totalItems", orderPage.getTotalElements());
         model.addAttribute("pageSize", size);
         return "admin/admin-orders";
+    }
+
+    @GetMapping("/orders/export")
+    public ResponseEntity<byte[]> exportOrders() {
+        try {
+            List<Order> orders = orderRepository.findAll(Sort.by(Sort.Direction.DESC, "id"));
+            byte[] excelData = exportService.exportOrdersToExcel(orders);
+
+            HttpHeaders headers = new HttpHeaders();
+            headers.setContentType(MediaType.parseMediaType("application/vnd.openxmlformats-officedocument.spreadsheetml.sheet"));
+            headers.setContentDispositionFormData("attachment", "Danh_sach_don_hang.xlsx");
+            headers.setCacheControl("must-revalidate, post-check=0, pre-check=0");
+
+            return ResponseEntity.ok()
+                    .headers(headers)
+                    .body(excelData);
+        } catch (Exception e) {
+            return ResponseEntity.internalServerError().build();
+        }
     }
 
     // ==========================================

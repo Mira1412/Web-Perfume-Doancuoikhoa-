@@ -25,6 +25,14 @@ public class Order {
 
     private Double tong_tien = 0.0;
 
+    // Phương thức thanh toán: "COD" hoặc "VNPay"
+    @Column(name = "phuong_thuc_thanh_toan")
+    private String phuong_thuc_thanh_toan = "COD";
+
+    // Mã giao dịch VNPay (chỉ có khi thanh toán qua VNPay)
+    @Column(name = "ma_giao_dich")
+    private String ma_giao_dich;
+
     @PrePersist
     protected void onCreate() {
         this.ngay_dat = LocalDateTime.now();

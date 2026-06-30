@@ -662,10 +662,11 @@
                             <span class="value" th:text="${#numbers.formatDecimal(totalPrice, 0, 'COMMA', 0, 'POINT')} + ' đ'">0 đ</span>
                         </div>
 
-                        <button class="btn-checkout" onclick="checkoutOrder()">
+                        <!-- Đổi sang trang checkout để chọn phương thức thanh toán -->
+                        <a href="/checkout" class="btn-checkout" style="text-decoration: none; justify-content: center;">
                             <i class="bi bi-bag-check-fill"></i>
-                            Đặt Hàng Ngay
-                        </button>
+                            Tiến Hành Đặt Hàng
+                        </a>
 
                         <a href="/" class="btn-continue">
                             <i class="bi bi-arrow-left"></i> Tiếp tục mua sắm
@@ -674,6 +675,17 @@
                         <div class="note-shipping">
                             <i class="bi bi-shield-check-fill"></i>
                             Đơn hàng được bảo đảm chính hãng 100%
+                        </div>
+
+                        <!-- Phương thức thanh toán chấp nhận -->
+                        <div style="display: flex; align-items: center; justify-content: center; gap: 10px; margin-top: 14px; flex-wrap: wrap;">
+                            <span style="font-size: 0.7rem; color: var(--text-muted);">Chấp nhận:</span>
+                            <span style="background: rgba(111,207,151,0.1); border: 1px solid rgba(111,207,151,0.2); color: #6fcf97; padding: 3px 10px; border-radius: 8px; font-size: 0.7rem; font-weight: 600;">
+                                <i class="bi bi-cash-stack"></i> COD
+                            </span>
+                            <span style="background: rgba(0,100,255,0.1); border: 1px solid rgba(0,100,255,0.2); color: #6ea5ff; padding: 3px 10px; border-radius: 8px; font-size: 0.7rem; font-weight: 600;">
+                                <i class="bi bi-credit-card-2-front"></i> VNPay
+                            </span>
                         </div>
                     </div>
                 </div>

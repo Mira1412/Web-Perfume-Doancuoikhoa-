@@ -528,6 +528,11 @@
                                 <span class="filter-pill" data-filter="Cancelled">Đã hủy</span>
                             </div>
                         </div>
+                        <div class="toolbar-right">
+                            <a href="/admin/orders/export" class="btn btn-outline-success" style="border-radius: 8px; font-weight: 500; font-size: 0.85rem; padding: 10px 16px; border-color: rgba(40, 167, 69, 0.5);">
+                                <i class="bi bi-file-earmark-excel"></i> Xuất Excel
+                            </a>
+                        </div>
                     </div>
 
                     <div class="orders-table-wrapper">
@@ -538,6 +543,7 @@
                                     <th>Khách hàng</th>
                                     <th>Ngày đặt</th>
                                     <th>Tổng tiền</th>
+                                    <th>Thanh Toán</th>
                                     <th>Trạng thái</th>
                                     <th>Thao tác</th>
                                 </tr>
@@ -558,6 +564,22 @@
                                     <td data-label="Tổng tiền">
                                         <span class="order-total" th:if="${order.tong_tien != null}" th:text="${#numbers.formatDecimal(order.tong_tien, 0, 'COMMA', 0, 'POINT')} + ' đ'">0 đ</span>
                                         <span class="order-total" th:if="${order.tong_tien == null}">0 đ</span>
+                                    </td>
+                                    <td data-label="Thanh Toán">
+                                        <!-- COD Badge -->
+                                        <span th:if="${order.phuong_thuc_thanh_toan == null or order.phuong_thuc_thanh_toan == 'COD'}"
+                                              style="display:inline-flex; align-items:center; gap:5px; background:rgba(111,207,151,0.1); border:1px solid rgba(111,207,151,0.25); color:#6fcf97; padding:4px 10px; border-radius:8px; font-size:0.72rem; font-weight:600;">
+                                            <i class="bi bi-cash-stack"></i> COD
+                                        </span>
+                                        <!-- VNPay Badge -->
+                                        <div th:if="${order.phuong_thuc_thanh_toan == 'VNPay'}">
+                                            <span style="display:inline-flex; align-items:center; gap:5px; background:rgba(0,100,255,0.1); border:1px solid rgba(0,100,255,0.25); color:#6ea5ff; padding:4px 10px; border-radius:8px; font-size:0.72rem; font-weight:600;">
+                                                <i class="bi bi-credit-card-2-front"></i> VNPay
+                                            </span>
+                                            <div th:if="${order.ma_giao_dich != null}"
+                                                 style="font-size:0.65rem; color:rgba(240,236,228,0.4); margin-top:4px; font-family:monospace;"
+                                                 th:text="${order.ma_giao_dich}"></div>
+                                        </div>
                                     </td>
                                     <td data-label="Trạng thái">
                                         <span class="badge-status badge-pending" th:if="${order.trang_thai == 'Pending'}">
@@ -591,7 +613,7 @@
                                 </tr>
                                 <!-- No results row (shown via JS) -->
                                 <tr class="no-results-row" id="no-results-row">
-                                    <td colspan="6">
+                                    <td colspan="7">
                                         <i class="bi bi-search" style="font-size: 1.5rem; display: block; margin-bottom: 10px; opacity: 0.4;"></i>
                                         Không tìm thấy đơn hàng phù hợp.
                                     </td>

@@ -1,0 +1,454 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org" lang="vi">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Kết Quả Thanh Toán — Halo</title>
+    <meta name="description" content="Kết quả đặt hàng tại Halo Perfume.">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=Playfair+Display:ital,wght@0,400..900;1,400..900&display=swap" rel="stylesheet">
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.0/font/bootstrap-icons.css" rel="stylesheet">
+    <style>
+        :root {
+            --gold: #c9a96e;
+            --gold-light: #e8d5b0;
+            --gold-dark: #a07840;
+            --dark: #0d0d1a;
+            --dark-2: #141428;
+            --dark-3: #1c1c35;
+            --text-primary: #f0ece4;
+            --text-muted: rgba(240, 236, 228, 0.55);
+            --border: rgba(201, 169, 110, 0.2);
+            --green: #6fcf97;
+            --red: #ff6b6b;
+        }
+
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+
+        body {
+            background-color: var(--dark);
+            font-family: 'Inter', sans-serif;
+            color: var(--text-primary);
+            min-height: 100vh;
+            display: flex; flex-direction: column;
+        }
+
+        /* ====== NAVBAR ====== */
+        .navbar-custom {
+            background: rgba(13, 13, 26, 0.97);
+            backdrop-filter: blur(20px);
+            border-bottom: 1px solid var(--border);
+        }
+        .navbar-custom .container {
+            display: flex; align-items: center;
+            justify-content: space-between; height: 70px;
+        }
+        .brand-name {
+            font-family: 'Playfair Display', Georgia, serif;
+            font-size: 1.8rem; font-weight: 700;
+            color: var(--gold) !important;
+            text-decoration: none; letter-spacing: 1.5px;
+        }
+
+        /* ====== RESULT SECTION ====== */
+        .result-section {
+            flex: 1;
+            display: flex; align-items: center;
+            padding: 60px 0 80px;
+            position: relative;
+            overflow: hidden;
+        }
+
+        /* Ambient background glow */
+        .result-section::before {
+            content: '';
+            position: absolute;
+            width: 600px; height: 600px;
+            border-radius: 50%;
+            top: -200px; left: 50%;
+            transform: translateX(-50%);
+            pointer-events: none;
+            z-index: 0;
+        }
+        .result-section.success-bg::before {
+            background: radial-gradient(circle, rgba(111,207,151,0.08) 0%, transparent 65%);
+        }
+        .result-section.error-bg::before {
+            background: radial-gradient(circle, rgba(255,107,107,0.08) 0%, transparent 65%);
+        }
+
+        .result-card {
+            position: relative; z-index: 1;
+            background: var(--dark-2);
+            border: 1px solid var(--border);
+            border-radius: 28px;
+            padding: 56px 48px;
+            text-align: center;
+            max-width: 600px;
+            margin: 0 auto;
+            box-shadow: 0 32px 80px rgba(0,0,0,0.5);
+        }
+
+        /* ====== ICON ANIMATION ====== */
+        .result-icon-wrapper {
+            width: 120px; height: 120px;
+            border-radius: 50%;
+            display: flex; align-items: center; justify-content: center;
+            margin: 0 auto 32px;
+            position: relative;
+        }
+        .result-icon-wrapper.success-icon {
+            background: rgba(111,207,151,0.1);
+            border: 2px solid rgba(111,207,151,0.3);
+            animation: pulse-success 2s ease-in-out infinite;
+        }
+        .result-icon-wrapper.error-icon {
+            background: rgba(255,107,107,0.1);
+            border: 2px solid rgba(255,107,107,0.3);
+            animation: pulse-error 2s ease-in-out infinite;
+        }
+        @keyframes pulse-success {
+            0%, 100% { box-shadow: 0 0 0 0 rgba(111,207,151,0.3); }
+            50% { box-shadow: 0 0 0 20px rgba(111,207,151,0); }
+        }
+        @keyframes pulse-error {
+            0%, 100% { box-shadow: 0 0 0 0 rgba(255,107,107,0.3); }
+            50% { box-shadow: 0 0 0 20px rgba(255,107,107,0); }
+        }
+        .result-icon { font-size: 3rem; }
+        .result-icon.success-icon-color { color: var(--green); }
+        .result-icon.error-icon-color { color: var(--red); }
+
+        /* ====== TITLE & DESC ====== */
+        .result-title {
+            font-family: 'Playfair Display', Georgia, serif;
+            font-size: 2.2rem; font-weight: 700;
+            margin-bottom: 12px;
+        }
+        .result-title.success { color: #fff; }
+        .result-title.error { color: #fff; }
+        .result-subtitle {
+            font-size: 1rem; color: var(--text-muted);
+            line-height: 1.7; margin-bottom: 36px;
+            max-width: 460px; margin-left: auto; margin-right: auto;
+        }
+
+        /* ====== ORDER DETAIL BOX ====== */
+        .order-detail-box {
+            background: var(--dark-3);
+            border: 1px solid rgba(201,169,110,0.15);
+            border-radius: 16px;
+            padding: 24px;
+            margin-bottom: 32px;
+            text-align: left;
+        }
+        .detail-item {
+            display: flex; align-items: center; justify-content: space-between;
+            padding: 10px 0;
+            border-bottom: 1px solid rgba(201,169,110,0.08);
+            font-size: 0.9rem;
+        }
+        .detail-item:last-child { border-bottom: none; }
+        .detail-label { color: var(--text-muted); display: flex; align-items: center; gap: 8px; }
+        .detail-value { font-weight: 600; }
+        .detail-value.total { color: var(--gold); font-size: 1.05rem; }
+        .status-badge {
+            display: inline-flex; align-items: center; gap: 6px;
+            padding: 4px 14px; border-radius: 20px; font-size: 0.78rem; font-weight: 600;
+        }
+        .status-pending {
+            background: rgba(255,152,0,0.12);
+            border: 1px solid rgba(255,152,0,0.3);
+            color: #ffb74d;
+        }
+        .method-badge {
+            display: inline-flex; align-items: center; gap: 6px;
+            padding: 4px 12px; border-radius: 10px; font-size: 0.78rem; font-weight: 600;
+        }
+        .method-cod { background: rgba(111,207,151,0.1); border: 1px solid rgba(111,207,151,0.2); color: var(--green); }
+        .method-vnpay { background: rgba(0,100,255,0.1); border: 1px solid rgba(0,100,255,0.2); color: #6ea5ff; }
+
+        /* ====== BUTTONS ====== */
+        .btn-primary-gold {
+            display: inline-flex; align-items: center; gap: 8px;
+            padding: 14px 32px;
+            border-radius: 12px; border: none;
+            background: linear-gradient(135deg, var(--gold), var(--gold-dark));
+            color: #1a1a1a; font-size: 0.95rem; font-weight: 700;
+            text-decoration: none; cursor: pointer;
+            transition: all 0.3s;
+        }
+        .btn-primary-gold:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 8px 24px rgba(201,169,110,0.4);
+            color: #1a1a1a;
+        }
+        .btn-secondary-outline {
+            display: inline-flex; align-items: center; gap: 8px;
+            padding: 14px 28px;
+            border-radius: 12px;
+            border: 1px solid var(--border);
+            background: transparent;
+            color: var(--text-muted);
+            font-size: 0.95rem; font-weight: 500;
+            text-decoration: none; cursor: pointer;
+            transition: all 0.2s;
+        }
+        .btn-secondary-outline:hover {
+            border-color: rgba(201,169,110,0.4);
+            color: var(--gold);
+        }
+        .action-buttons {
+            display: flex; align-items: center; justify-content: center;
+            gap: 14px; flex-wrap: wrap;
+        }
+
+        /* ====== CONFETTI ====== */
+        .confetti-wrapper {
+            position: fixed; inset: 0;
+            pointer-events: none; z-index: 9999;
+            overflow: hidden;
+        }
+        .confetti-piece {
+            position: absolute;
+            width: 10px; height: 10px;
+            opacity: 0;
+            animation: confetti-fall 3.5s ease-in forwards;
+        }
+        @keyframes confetti-fall {
+            0% { transform: translateY(-100px) rotate(0deg); opacity: 1; }
+            80% { opacity: 0.8; }
+            100% { transform: translateY(110vh) rotate(720deg); opacity: 0; }
+        }
+
+        /* ====== TIPS SECTION (success only) ====== */
+        .tips-section {
+            background: rgba(201,169,110,0.05);
+            border: 1px solid rgba(201,169,110,0.15);
+            border-radius: 14px;
+            padding: 20px 24px;
+            margin-bottom: 28px;
+            text-align: left;
+        }
+        .tips-title {
+            font-size: 0.8rem; font-weight: 600; color: var(--gold);
+            text-transform: uppercase; letter-spacing: 0.8px;
+            margin-bottom: 12px; display: flex; align-items: center; gap: 6px;
+        }
+        .tip-item {
+            display: flex; align-items: flex-start; gap: 10px;
+            font-size: 0.82rem; color: var(--text-muted);
+            margin-bottom: 8px; line-height: 1.5;
+        }
+        .tip-item:last-child { margin-bottom: 0; }
+        .tip-item i { color: var(--green); margin-top: 2px; flex-shrink: 0; }
+    </style>
+</head>
+
+<body>
+    <!-- NAVBAR -->
+    <nav class="navbar-custom">
+        <div class="container">
+            <a href="/" class="brand-name">Halo</a>
+        </div>
+    </nav>
+
+    <!-- RESULT SECTION -->
+    <section class="result-section"
+             th:classappend="${paymentSuccess != null and paymentSuccess} ? 'success-bg' : 'error-bg'">
+        <div class="container">
+
+            <!-- ===== THÀNH CÔNG ===== -->
+            <div th:if="${paymentSuccess != null and paymentSuccess}">
+                <div class="result-card">
+
+                    <!-- Icon thành công -->
+                    <div class="result-icon-wrapper success-icon">
+                        <i class="bi bi-check2 result-icon success-icon-color"></i>
+                    </div>
+
+                    <!-- Tiêu đề -->
+                    <h1 class="result-title success">Đặt Hàng Thành Công! 🎉</h1>
+                    <p class="result-subtitle">
+                        Cảm ơn bạn đã tin tưởng <strong style="color: var(--gold);">Halo Perfume</strong>!
+                        Đơn hàng của bạn đã được ghi nhận và đang được xử lý.
+                        Chúng tôi sẽ liên hệ xác nhận trong thời gian sớm nhất.
+                    </p>
+
+                    <!-- Chi tiết đơn hàng -->
+                    <div class="order-detail-box" th:if="${orderId != null}">
+                        <div class="detail-item">
+                            <span class="detail-label"><i class="bi bi-hash"></i> Mã đơn hàng</span>
+                            <span class="detail-value" style="color: var(--gold-light);"
+                                  th:text="'#' + ${orderId}">—</span>
+                        </div>
+                        <div class="detail-item">
+                            <span class="detail-label"><i class="bi bi-credit-card"></i> Phương thức</span>
+                            <span>
+                                <span class="method-badge method-cod" th:if="${paymentMethod == 'COD'}">
+                                    <i class="bi bi-cash-stack"></i> COD - Thanh toán khi nhận hàng
+                                </span>
+                                <span class="method-badge method-vnpay" th:if="${paymentMethod == 'VNPay'}">
+                                    <i class="bi bi-credit-card-2-front"></i> VNPay
+                                </span>
+                            </span>
+                        </div>
+                        <div class="detail-item" th:if="${transactionNo != null}">
+                            <span class="detail-label"><i class="bi bi-receipt"></i> Mã giao dịch VNPay</span>
+                            <span class="detail-value" style="font-family: monospace; color: var(--blue);"
+                                  th:text="${transactionNo}">—</span>
+                        </div>
+                        <div class="detail-item">
+                            <span class="detail-label"><i class="bi bi-activity"></i> Trạng thái</span>
+                            <span class="status-badge status-pending">
+                                <i class="bi bi-clock-fill"></i> Chờ xác nhận
+                            </span>
+                        </div>
+                        <div class="detail-item">
+                            <span class="detail-label"><i class="bi bi-currency-dollar"></i> Tổng thanh toán</span>
+                            <span class="detail-value total"
+                                  th:text="${#numbers.formatDecimal(orderTotal, 0, 'COMMA', 0, 'POINT')} + ' đ'">0 đ</span>
+                        </div>
+                        <div class="detail-item">
+                            <span class="detail-label"><i class="bi bi-truck"></i> Phí vận chuyển</span>
+                            <span class="detail-value" style="color: var(--green);">Miễn phí</span>
+                        </div>
+                    </div>
+
+                    <!-- Tips -->
+                    <div class="tips-section">
+                        <div class="tips-title"><i class="bi bi-lightbulb-fill"></i> Lưu ý quan trọng</div>
+                        <div class="tip-item">
+                            <i class="bi bi-envelope-fill"></i>
+                            Email xác nhận đơn hàng đã được gửi tới địa chỉ email của bạn.
+                        </div>
+                        <div class="tip-item">
+                            <i class="bi bi-clock-history"></i>
+                            Đơn hàng sẽ được xử lý trong 1–2 ngày làm việc, giao hàng 2–5 ngày.
+                        </div>
+                        <div class="tip-item">
+                            <i class="bi bi-bag-check-fill"></i>
+                            Kiểm tra trạng thái đơn hàng tại mục "Đơn hàng của tôi".
+                        </div>
+                    </div>
+
+                    <!-- Actions -->
+                    <div class="action-buttons">
+                        <a href="/orders" class="btn-primary-gold">
+                            <i class="bi bi-bag-heart-fill"></i>
+                            Xem Đơn Hàng
+                        </a>
+                        <a href="/" class="btn-secondary-outline">
+                            <i class="bi bi-house-fill"></i>
+                            Về Trang Chủ
+                        </a>
+                    </div>
+
+                </div>
+            </div>
+
+            <!-- ===== THẤT BẠI / LỖI ===== -->
+            <div th:unless="${paymentSuccess != null and paymentSuccess}">
+                <div class="result-card">
+
+                    <!-- Icon thất bại -->
+                    <div class="result-icon-wrapper error-icon">
+                        <i class="bi bi-x-lg result-icon error-icon-color"></i>
+                    </div>
+
+                    <!-- Tiêu đề -->
+                    <h1 class="result-title error">Thanh Toán Thất Bại</h1>
+                    <p class="result-subtitle">
+                        Rất tiếc, giao dịch của bạn chưa thể hoàn thành.
+                        <span th:if="${errorMessage != null}">
+                            <br><strong style="color: var(--red);" th:text="${errorMessage}">Lỗi chưa xác định.</strong>
+                        </span>
+                    </p>
+
+                    <!-- Mã lỗi VNPay (nếu có) -->
+                    <div class="order-detail-box" th:if="${responseCode != null}">
+                        <div class="detail-item">
+                            <span class="detail-label"><i class="bi bi-exclamation-triangle"></i> Mã lỗi VNPay</span>
+                            <span class="detail-value" style="font-family: monospace; color: var(--red);"
+                                  th:text="${responseCode}">—</span>
+                        </div>
+                    </div>
+
+                    <!-- Actions -->
+                    <div class="action-buttons">
+                        <a href="/cart" class="btn-primary-gold">
+                            <i class="bi bi-arrow-return-left"></i>
+                            Thử Lại
+                        </a>
+                        <a href="/" class="btn-secondary-outline">
+                            <i class="bi bi-house-fill"></i>
+                            Về Trang Chủ
+                        </a>
+                    </div>
+
+                </div>
+            </div>
+
+            <!-- ===== KHÔNG CÓ KẾT QUẢ (truy cập trực tiếp) ===== -->
+            <div th:if="${paymentSuccess == null}" style="display:none;">
+                <!-- Hidden: redirect xử lý ở controller -->
+            </div>
+
+        </div>
+    </section>
+
+    <!-- Confetti container (only for success) -->
+    <div class="confetti-wrapper" id="confettiWrapper"></div>
+
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+    <script th:inline="javascript">
+        const isSuccess = /*[[${paymentSuccess}]]*/ false;
+
+        // Nếu thành công → tung confetti
+        if (isSuccess === true) {
+            launchConfetti();
+        }
+
+        // Nếu truy cập trực tiếp (không có flash attribute) → redirect về home
+        if (/*[[${paymentSuccess}]]*/ null === null) {
+            window.location.href = '/';
+        }
+
+        function launchConfetti() {
+            const colors = ['#c9a96e', '#e8d5b0', '#6fcf97', '#6ea5c9', '#fff', '#ffb74d', '#c96ea5'];
+            const shapes = ['circle', 'rect', 'triangle'];
+            const wrapper = document.getElementById('confettiWrapper');
+            const count = 80;
+
+            for (let i = 0; i < count; i++) {
+                const piece = document.createElement('div');
+                piece.className = 'confetti-piece';
+
+                const color = colors[Math.floor(Math.random() * colors.length)];
+                const left = Math.random() * 100;
+                const delay = Math.random() * 2;
+                const size = 6 + Math.random() * 10;
+                const duration = 2.5 + Math.random() * 2;
+
+                piece.style.cssText = `
+                    left: ${left}%;
+                    top: -20px;
+                    background: ${color};
+                    width: ${size}px;
+                    height: ${size}px;
+                    border-radius: ${Math.random() > 0.5 ? '50%' : '2px'};
+                    animation-delay: ${delay}s;
+                    animation-duration: ${duration}s;
+                `;
+                wrapper.appendChild(piece);
+            }
+
+            // Xóa confetti sau 6 giây
+            setTimeout(() => wrapper.innerHTML = '', 6000);
+        }
+    </script>
+</body>
+</html>
