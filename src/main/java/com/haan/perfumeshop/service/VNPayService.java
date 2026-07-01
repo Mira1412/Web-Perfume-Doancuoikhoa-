@@ -52,7 +52,7 @@ public class VNPayService {
             String vnp_ExpireDate = formatter.format(cal.getTime());
 
             // 2. Mã giao dịch — chỉ dùng số và chữ, không ký tự đặc biệt
-            String vnp_TxnRef = String.valueOf(System.currentTimeMillis());
+           String vnp_TxnRef = orderId;
 
             // 3. Xây dựng Map tham số (TreeMap để tự sắp xếp alphabet — BẮT BUỘC)
             Map<String, String> vnp_Params = new TreeMap<>();
@@ -66,7 +66,7 @@ public class VNPayService {
             vnp_Params.put("vnp_OrderType", "other");
             vnp_Params.put("vnp_Locale", "vn");
             vnp_Params.put("vnp_ReturnUrl", returnUrl);
-            vnp_Params.put("vnp_IpAddr", ipAddress != null ? ipAddress : "127.0.0.1");
+            vnp_Params.put("vnp_IpAddr", (ipAddress == null || "0:0:0:0:0:0:0:1".equals(ipAddress)) ? "127.0.0.1" : ipAddress);
             vnp_Params.put("vnp_CreateDate", vnp_CreateDate);
             vnp_Params.put("vnp_ExpireDate", vnp_ExpireDate);
 
@@ -74,30 +74,46 @@ public class VNPayService {
             // hashData : key=URLEncode(value, US_ASCII)   ← dùng để tính HMAC
             // query    : URLEncode(key)=URLEncode(value)  ← ghép vào URL cuối
             StringBuilder hashData = new StringBuilder();
-            StringBuilder query = new StringBuilder();
-            Iterator<Map.Entry<String, String>> itr = vnp_Params.entrySet().iterator();
-            while (itr.hasNext()) {
-                Map.Entry<String, String> entry = itr.next();
-                String key = entry.getKey();
-                String value = entry.getValue();
-                if (value == null || value.isEmpty()) continue;
+StringBuilder query = new StringBuilder();
 
-                String encodedValue = URLEncoder.encode(value, StandardCharsets.US_ASCII);
+boolean first = true;
 
-                // Hash: key NOT encoded, value encoded US_ASCII
-                hashData.append(key).append('=').append(encodedValue);
-                // Query: both key and value encoded
-                query.append(URLEncoder.encode(key, StandardCharsets.US_ASCII))
-                     .append('=').append(encodedValue);
+for (Map.Entry<String, String> entry : vnp_Params.entrySet()) {
 
-                if (itr.hasNext()) {
-                    hashData.append('&');
-                    query.append('&');
-                }
-            }
+    String fieldName = entry.getKey();
+    String fieldValue = entry.getValue();
+
+    if (fieldValue != null && !fieldValue.isEmpty()) {
+
+        if (!first) {
+            hashData.append("&");
+            query.append("&");
+        }
+
+        String encodedValue = URLEncoder.encode(fieldValue, StandardCharsets.UTF_8).replace("+", "%20");
+
+        hashData.append(fieldName)
+                .append("=")
+                .append(encodedValue);
+
+        query.append(URLEncoder.encode(fieldName, StandardCharsets.UTF_8).replace("+", "%20"))
+                .append("=")
+                .append(encodedValue);
+
+        first = false;
+    }
+}
+
+            System.out.println("============== VNPAY DEBUG ==============");
+            System.out.println("TMNCode      : " + tmnCode);
+            System.out.println("Hash Secret  : " + hashSecret);
+            System.out.println("Hash Data    : " + hashData);
+            System.out.println("=========================================");
 
             // 5. Ký HMAC SHA512 với chuỗi raw
             String secureHash = hmacSHA512(hashSecret, hashData.toString());
+            System.out.println("Hash Data = " + hashData);
+            System.out.println("Secure Hash = " + secureHash);
             query.append("&vnp_SecureHash=").append(secureHash);
 
             return payUrl + "?" + query;
@@ -125,16 +141,20 @@ public class VNPayService {
             checkParams.remove("vnp_SecureHash");
             checkParams.remove("vnp_SecureHashType");
 
-            // Xây dựng lại chuỗi hash đúng theo VNPay Java SDK chính thức
             StringBuilder hashData = new StringBuilder();
-            Iterator<Map.Entry<String, String>> itr = checkParams.entrySet().iterator();
-            while (itr.hasNext()) {
-                Map.Entry<String, String> entry = itr.next();
-                String value = entry.getValue();
-                if (value == null || value.isEmpty()) continue;
-                hashData.append(entry.getKey()).append('=')
-                        .append(URLEncoder.encode(value, StandardCharsets.US_ASCII));
-                if (itr.hasNext()) hashData.append('&');
+            boolean first = true;
+            for (Map.Entry<String, String> entry : checkParams.entrySet()) {
+                String fieldName = entry.getKey();
+                String fieldValue = entry.getValue();
+                if (fieldValue != null && !fieldValue.isEmpty()) {
+                    if (!first) {
+                        hashData.append("&");
+                    }
+                    hashData.append(fieldName)
+                            .append("=")
+                            .append(URLEncoder.encode(fieldValue, StandardCharsets.UTF_8).replace("+", "%20"));
+                    first = false;
+                }
             }
 
             String computedHash = hmacSHA512(hashSecret, hashData.toString());
