@@ -1,5 +1,7 @@
 package com.haan.perfumeshop.service;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 
@@ -16,6 +18,8 @@ import java.util.*;
  */
 @Service
 public class VNPayService {
+
+    private static final Logger log = LoggerFactory.getLogger(VNPayService.class);
 
     @Value("${vnpay.tmnCode}")
     private String tmnCode;
@@ -39,6 +43,14 @@ public class VNPayService {
      * @return URL redirect sang VNPay
      */
     public String createPaymentUrl(String orderId, long amount, String orderInfo, String ipAddress) {
+        // Validation đầu vào
+        if (orderId == null || orderId.trim().isEmpty()) {
+            throw new IllegalArgumentException("Mã đơn hàng (orderId) không được để trống!");
+        }
+        if (amount <= 0) {
+            throw new IllegalArgumentException("Số tiền thanh toán phải lớn hơn 0! (amount=" + amount + ")");
+        }
+
         try {
             // 1. Thời gian (timezone GMT+7 — Việt Nam)
             TimeZone vnTimeZone = TimeZone.getTimeZone("Asia/Ho_Chi_Minh");
@@ -104,16 +116,9 @@ for (Map.Entry<String, String> entry : vnp_Params.entrySet()) {
     }
 }
 
-            System.out.println("============== VNPAY DEBUG ==============");
-            System.out.println("TMNCode      : " + tmnCode);
-            System.out.println("Hash Secret  : " + hashSecret);
-            System.out.println("Hash Data    : " + hashData);
-            System.out.println("=========================================");
-
             // 5. Ký HMAC SHA512 với chuỗi raw
+            log.debug("VNPay — Tạo URL thanh toán cho đơn: {}", orderId);
             String secureHash = hmacSHA512(hashSecret, hashData.toString());
-            System.out.println("Hash Data = " + hashData);
-            System.out.println("Secure Hash = " + secureHash);
             query.append("&vnp_SecureHash=").append(secureHash);
 
             return payUrl + "?" + query;

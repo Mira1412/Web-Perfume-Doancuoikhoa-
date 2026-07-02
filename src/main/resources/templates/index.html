@@ -7,6 +7,7 @@
     <title>Halo — Nước Hoa Cao Cấp</title>
     <meta name="description"
         content="Khám phá bộ sưu tập nước hoa cao cấp tại Halo. Hàng chính hãng, giá tốt, giao hàng toàn quốc.">
+    <link rel="icon" type="image/png" href="/images/logo-cat.png">
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=Playfair+Display:ital,wght@0,400..900;1,400..900&display=swap" rel="stylesheet">
@@ -451,62 +452,128 @@
             gap: 28px;
         }
 
+        /* Staggered entrance animation cho các card */
+        @keyframes cardEntrance {
+            from { opacity: 0; transform: translateY(35px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
         .product-card {
-            background: rgba(20, 20, 40, 0.4);
-            backdrop-filter: blur(10px);
-            -webkit-backdrop-filter: blur(10px);
-            border: 1px solid rgba(201, 169, 110, 0.12);
-            border-radius: 20px;
+            background: linear-gradient(135deg, rgba(20, 20, 40, 0.6) 0%, rgba(13, 13, 26, 0.8) 100%);
+            backdrop-filter: blur(15px);
+            -webkit-backdrop-filter: blur(15px);
+            border: 1px solid rgba(201, 169, 110, 0.1);
+            border-radius: 24px;
             overflow: hidden;
             display: flex;
             flex-direction: column;
             height: 100%;
-            transition: all 0.4s cubic-bezier(0.165, 0.84, 0.44, 1);
-            box-shadow: 0 8px 24px rgba(0, 0, 0, 0.2);
+            transition: all 0.45s cubic-bezier(0.25, 1, 0.5, 1);
+            box-shadow: 0 12px 32px rgba(0, 0, 0, 0.35);
             position: relative;
+            animation: cardEntrance 0.65s cubic-bezier(0.25, 1, 0.5, 1) both;
         }
 
+        /* Stagger hiệu ứng cho 12 phần tử đầu tiên */
+        .product-card:nth-child(1) { animation-delay: 0.05s; }
+        .product-card:nth-child(2) { animation-delay: 0.1s; }
+        .product-card:nth-child(3) { animation-delay: 0.15s; }
+        .product-card:nth-child(4) { animation-delay: 0.2s; }
+        .product-card:nth-child(5) { animation-delay: 0.25s; }
+        .product-card:nth-child(6) { animation-delay: 0.3s; }
+        .product-card:nth-child(7) { animation-delay: 0.35s; }
+        .product-card:nth-child(8) { animation-delay: 0.4s; }
+
         .product-card:hover {
-            transform: translateY(-8px);
-            box-shadow: 0 20px 40px rgba(0, 0, 0, 0.5), 0 0 15px rgba(201, 169, 110, 0.25);
-            border-color: var(--gold);
+            transform: translateY(-10px);
+            box-shadow: 0 24px 48px rgba(0, 0, 0, 0.65), 0 0 25px rgba(201, 169, 110, 0.35);
+            border-color: rgba(201, 169, 110, 0.7);
         }
 
         .product-img-wrapper {
             position: relative;
             overflow: hidden;
-            height: 240px;
-            background: #141428;
-            border-bottom: 1px solid rgba(201, 169, 110, 0.08);
+            height: 250px;
+            background: #090912;
+            border-bottom: 1px solid rgba(201, 169, 110, 0.06);
         }
 
         .product-img {
             width: 100%;
             height: 100%;
             object-fit: cover;
-            transition: transform 0.5s cubic-bezier(0.165, 0.84, 0.44, 1);
+            transition: transform 0.8s cubic-bezier(0.25, 1, 0.5, 1);
+        }
+
+        /* Thêm overlay cao cấp khi hover */
+        .product-img-overlay {
+            position: absolute;
+            inset: 0;
+            background: rgba(13, 13, 26, 0.45);
+            backdrop-filter: blur(2px);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 12px;
+            opacity: 0;
+            transition: all 0.4s cubic-bezier(0.25, 1, 0.5, 1);
+            z-index: 4;
+        }
+
+        .product-card:hover .product-img-overlay {
+            opacity: 1;
         }
 
         .product-card:hover .product-img {
-            transform: scale(1.07);
+            transform: scale(1.08);
+        }
+
+        .overlay-icon-btn {
+            width: 44px;
+            height: 44px;
+            border-radius: 50%;
+            background: rgba(201, 169, 110, 0.9);
+            color: #0d0d1a;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 1.1rem;
+            border: none;
+            transition: all 0.3s cubic-bezier(0.25, 1, 0.5, 1);
+            transform: translateY(15px);
+        }
+
+        .product-card:hover .overlay-icon-btn {
+            transform: translateY(0);
+        }
+
+        .overlay-icon-btn:hover {
+            background: #ffffff;
+            color: #0d0d1a;
+            transform: scale(1.1) translateY(0);
+            box-shadow: 0 0 15px rgba(255, 255, 255, 0.6);
+        }
+
+        .overlay-icon-btn:nth-child(2) {
+            transition-delay: 0.05s;
         }
 
         .product-brand-badge {
             position: absolute;
             top: 14px;
             left: 14px;
-            background: rgba(13, 13, 26, 0.75);
+            background: rgba(13, 13, 26, 0.85);
             backdrop-filter: blur(10px);
             -webkit-backdrop-filter: blur(10px);
-            border: 1px solid rgba(201, 169, 110, 0.25);
+            border: 1px solid rgba(201, 169, 110, 0.3);
             border-radius: 20px;
             padding: 4px 12px;
-            font-size: 0.68rem;
-            color: var(--gold-light);
+            font-size: 0.65rem;
+            color: var(--gold);
             font-weight: 600;
             text-transform: uppercase;
-            letter-spacing: 0.8px;
-            box-shadow: 0 4px 12px rgba(0,0,0,0.15);
+            letter-spacing: 1px;
+            box-shadow: 0 4px 12px rgba(0,0,0,0.3);
             z-index: 5;
         }
 
@@ -516,11 +583,11 @@
             right: 14px;
             border-radius: 20px;
             padding: 4px 12px;
-            font-size: 0.68rem;
+            font-size: 0.65rem;
             font-weight: 600;
             text-transform: uppercase;
             letter-spacing: 0.5px;
-            box-shadow: 0 4px 12px rgba(0,0,0,0.15);
+            box-shadow: 0 4px 12px rgba(0,0,0,0.3);
             backdrop-filter: blur(10px);
             -webkit-backdrop-filter: blur(10px);
             z-index: 5;
@@ -552,8 +619,8 @@
         }
 
         .product-name {
-            font-family: 'Playfair Display', Georgia, serif;
-            font-size: 1.1rem;
+            font-family: 'Inter', sans-serif;
+            font-size: 0.95rem;
             font-weight: 600;
             color: #ffffff;
             margin-bottom: 8px;
@@ -562,7 +629,7 @@
             -webkit-line-clamp: 2;
             -webkit-box-orient: vertical;
             overflow: hidden;
-            min-height: 3rem;
+            min-height: 2.8rem;
             transition: color 0.2s ease;
         }
 
@@ -662,6 +729,104 @@
             opacity: 0.4;
             cursor: not-allowed;
             transform: none;
+        }
+
+        /* ==================== BỘ LỌC NGANG CAO CẤP ==================== */
+        .filter-form-horizontal {
+            background: rgba(20, 20, 40, 0.55);
+            backdrop-filter: blur(25px);
+            -webkit-backdrop-filter: blur(25px);
+            border: 1px solid rgba(201, 169, 110, 0.18);
+            border-radius: 24px;
+            box-shadow: 0 15px 45px rgba(0, 0, 0, 0.4), inset 0 1px 1px rgba(255, 255, 255, 0.05);
+            padding: 24px 30px !important;
+            transition: all 0.4s ease;
+        }
+
+        .filter-form-horizontal:hover {
+            border-color: rgba(201, 169, 110, 0.35);
+            box-shadow: 0 20px 50px rgba(0, 0, 0, 0.5), 0 0 15px rgba(201, 169, 110, 0.1);
+        }
+
+        .form-label-horizontal {
+            font-size: 0.72rem;
+            text-transform: uppercase;
+            letter-spacing: 1.2px;
+            color: var(--gold-light);
+            margin-bottom: 10px;
+            display: flex;
+            align-items: center;
+            gap: 6px;
+            font-weight: 600;
+            opacity: 0.85;
+        }
+
+        .form-select-dark {
+            background-color: rgba(13, 13, 26, 0.75) !important;
+            border: 1px solid rgba(201, 169, 110, 0.2) !important;
+            color: var(--text-primary) !important;
+            border-radius: 12px !important;
+            padding: 12px 16px !important;
+            font-size: 0.85rem !important;
+            transition: all 0.3s ease !important;
+            cursor: pointer;
+            box-shadow: inset 0 2px 4px rgba(0, 0, 0, 0.2);
+        }
+
+        .form-select-dark:hover {
+            border-color: rgba(201, 169, 110, 0.5) !important;
+            background-color: rgba(13, 13, 26, 0.9) !important;
+        }
+
+        .form-select-dark:focus {
+            border-color: var(--gold) !important;
+            box-shadow: 0 0 0 3px rgba(201, 169, 110, 0.25) !important;
+            background-color: rgba(13, 13, 26, 0.95) !important;
+        }
+
+        .btn-filter-submit-horizontal {
+            background: linear-gradient(135deg, var(--gold), var(--gold-dark));
+            color: #0d0d1a;
+            border: none;
+            border-radius: 12px;
+            font-weight: 600;
+            font-size: 0.875rem;
+            padding: 12px 24px;
+            transition: all 0.35s cubic-bezier(0.25, 1, 0.5, 1);
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            gap: 8px;
+            letter-spacing: 0.5px;
+            box-shadow: 0 4px 15px rgba(201, 169, 110, 0.25);
+            height: 48px;
+        }
+
+        .btn-filter-submit-horizontal:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 8px 25px rgba(201, 169, 110, 0.45);
+            background: linear-gradient(135deg, #e8d5b0, #c9a96e);
+        }
+
+        .btn-clear-filter-horizontal {
+            background: rgba(220, 53, 69, 0.08);
+            border: 1px solid rgba(220, 53, 69, 0.25);
+            color: #ff8a8a;
+            border-radius: 12px;
+            font-weight: 500;
+            font-size: 0.875rem;
+            width: 48px;
+            height: 48px;
+            transition: all 0.3s ease;
+            text-decoration: none;
+        }
+
+        .btn-clear-filter-horizontal:hover {
+            background: rgba(220, 53, 69, 0.25);
+            border-color: rgba(220, 53, 69, 0.45);
+            color: #ffb3b3;
+            transform: translateY(-2px);
+            box-shadow: 0 4px 15px rgba(220, 53, 69, 0.2);
         }
 
         /* ==================== EMPTY STATE ==================== */
@@ -1005,6 +1170,245 @@
             padding: 0 18px;
             gap: 6px;
         }
+
+        /* ==================== BRAND SERVICES SECTION ==================== */
+        .brand-services-section {
+            background: linear-gradient(180deg, rgba(13, 13, 26, 0.8) 0%, rgba(20, 20, 40, 0.4) 100%);
+            border-bottom: 1px solid rgba(201, 169, 110, 0.1);
+        }
+
+        .service-card {
+            background: rgba(20, 20, 40, 0.35);
+            backdrop-filter: blur(10px);
+            border: 1px solid rgba(201, 169, 110, 0.12);
+            border-radius: 20px;
+            transition: all 0.4s ease;
+            height: 100%;
+        }
+
+        .service-card:hover {
+            transform: translateY(-5px);
+            border-color: var(--gold);
+            box-shadow: 0 10px 30px rgba(201, 169, 110, 0.15);
+            background: rgba(20, 20, 40, 0.55);
+        }
+
+        .service-icon {
+            font-size: 2.2rem;
+            color: var(--gold);
+            text-shadow: 0 0 15px rgba(201, 169, 110, 0.3);
+        }
+
+        .service-card h4 {
+            font-family: 'Playfair Display', serif;
+            font-size: 1rem;
+            font-weight: 600;
+            color: #ffffff;
+            margin-bottom: 12px;
+            letter-spacing: 1px;
+        }
+
+        .service-card p {
+            font-size: 0.825rem;
+            color: var(--text-muted);
+            line-height: 1.6;
+            margin: 0;
+        }
+
+        /* ==================== SCENT CATEGORY SECTION ==================== */
+        .fragrance-finder-section {
+            background: transparent;
+        }
+
+        .scent-category-card {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            text-align: center;
+            background: rgba(20, 20, 40, 0.25);
+            border: 1px solid rgba(201, 169, 110, 0.1);
+            border-radius: 24px;
+            padding: 30px 20px;
+            text-decoration: none;
+            transition: all 0.4s cubic-bezier(0.25, 1, 0.5, 1);
+            height: 100%;
+        }
+
+        .scent-category-card:hover {
+            transform: scale(1.03) translateY(-5px);
+            border-color: var(--gold);
+            box-shadow: 0 15px 40px rgba(0, 0, 0, 0.4), 0 0 20px rgba(201, 169, 110, 0.2);
+            background: rgba(20, 20, 40, 0.65);
+        }
+
+        .scent-category-img-wrapper {
+            width: 80px;
+            height: 80px;
+            border-radius: 50%;
+            background: rgba(201, 169, 110, 0.1);
+            border: 1px solid rgba(201, 169, 110, 0.25);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin-bottom: 20px;
+            transition: all 0.3s;
+        }
+
+        .scent-category-card:hover .scent-category-img-wrapper {
+            background: var(--gold);
+            transform: rotate(10deg);
+        }
+
+        .scent-icon {
+            font-size: 2.2rem;
+            transition: transform 0.3s;
+        }
+
+        .scent-category-card h5 {
+            font-family: 'Playfair Display', serif;
+            font-size: 1.1rem;
+            color: #ffffff;
+            margin-bottom: 8px;
+        }
+
+        .scent-category-card p {
+            font-size: 0.8rem;
+            color: var(--text-muted);
+            margin: 0;
+        }
+
+        /* ==================== NICHE SIGNATURE BANNER ==================== */
+        .niche-collection-banner {
+            background: transparent;
+        }
+
+        .niche-banner-card {
+            background: linear-gradient(135deg, #141428 0%, #090912 100%);
+            border: 1px solid rgba(201, 169, 110, 0.25);
+            border-radius: 30px;
+            position: relative;
+            overflow: hidden;
+            box-shadow: 0 20px 50px rgba(0, 0, 0, 0.5);
+        }
+
+        .niche-banner-card::before {
+            content: '';
+            position: absolute;
+            top: -50%;
+            right: -20%;
+            width: 400px;
+            height: 400px;
+            background: radial-gradient(circle, rgba(201, 169, 110, 0.08) 0%, transparent 70%);
+            pointer-events: none;
+        }
+
+        .niche-badge {
+            display: inline-block;
+            background: rgba(201, 169, 110, 0.12);
+            border: 1px solid var(--gold);
+            color: var(--gold);
+            font-size: 0.7rem;
+            font-weight: 700;
+            padding: 4px 12px;
+            border-radius: 20px;
+            letter-spacing: 1.5px;
+        }
+
+        .niche-title {
+            font-family: 'Playfair Display', serif;
+            font-size: 2.2rem;
+            color: #ffffff;
+            font-weight: 700;
+        }
+
+        .niche-text {
+            font-size: 0.95rem;
+            color: var(--text-muted);
+            line-height: 1.7;
+            max-width: 600px;
+        }
+
+        .btn-outline-gold {
+            border: 1px solid var(--gold);
+            color: var(--gold);
+            font-weight: 600;
+            border-radius: 10px;
+            transition: all 0.3s;
+        }
+
+        .btn-outline-gold:hover {
+            background: var(--gold);
+            color: #0d0d1a;
+            box-shadow: 0 0 15px rgba(201, 169, 110, 0.3);
+        }
+
+        .niche-banner-img-wrapper {
+            animation: float 4s ease-in-out infinite;
+        }
+
+        @keyframes float {
+            0% { transform: translateY(0px); }
+            50% { transform: translateY(-15px); }
+            100% { transform: translateY(0px); }
+        }
+
+        /* ==================== TESTIMONIALS SECTION ==================== */
+        .testimonials-section {
+            background: linear-gradient(180deg, rgba(20, 20, 40, 0.2) 0%, rgba(13, 13, 26, 0.8) 100%);
+            padding-bottom: 80px !important;
+        }
+
+        .testimonial-card {
+            background: rgba(20, 20, 40, 0.35);
+            backdrop-filter: blur(10px);
+            border: 1px solid rgba(255, 255, 255, 0.05);
+            border-radius: 24px;
+            height: 100%;
+            transition: all 0.4s ease;
+        }
+
+        .testimonial-card:hover {
+            transform: translateY(-5px);
+            border-color: rgba(201, 169, 110, 0.25);
+            background: rgba(20, 20, 40, 0.55);
+            box-shadow: 0 15px 40px rgba(0, 0, 0, 0.3);
+        }
+
+        .stars i {
+            color: var(--gold);
+            font-size: 0.9rem;
+        }
+
+        .feedback-text {
+            font-size: 0.85rem;
+            color: var(--text-primary);
+            line-height: 1.7;
+            font-style: italic;
+        }
+
+        .customer-avatar-small {
+            width: 40px;
+            height: 40px;
+            border-radius: 50%;
+            background: linear-gradient(135deg, var(--gold), var(--gold-dark));
+            color: #0d0d1a;
+            font-weight: 700;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 0.9rem;
+        }
+
+        .customer-name {
+            font-size: 0.9rem;
+            font-weight: 600;
+            color: #ffffff;
+        }
+
+        .customer-date {
+            font-size: 0.72rem;
+            color: var(--text-muted);
+        }
     </style>
 </head>
 
@@ -1015,6 +1419,7 @@
             <a class="brand-name" href="/">🌸 Halo</a>
 
             <ul class="nav-links">
+                <li><a href="/products" class="nav-link-item"><i class="bi bi-grid"></i> Sản phẩm</a></li>
                 <li>
                     <a href="/cart" class="nav-link-item btn-cart position-relative">
                         <i class="bi bi-bag"></i> Giỏ hàng
@@ -1210,6 +1615,90 @@
         </div>
     </section>
 
+    <!-- ====== SECTION 1: DỊCH VỤ ĐẲNG CẤP HALO PERFUME ====== -->
+    <section class="brand-services-section py-5">
+        <div class="container">
+            <div class="row g-4">
+                <div class="col-md-4">
+                    <div class="service-card p-4 text-center">
+                        <div class="service-icon mb-3">
+                            <i class="bi bi-shield-check"></i>
+                        </div>
+                        <h4>100% CHÍNH HÃNG</h4>
+                        <p>Halo cam kết nhập khẩu chính ngạch. Hoàn tiền 200% nếu phát hiện sản phẩm không chính hãng.</p>
+                    </div>
+                </div>
+                <div class="col-md-4">
+                    <div class="service-card p-4 text-center">
+                        <div class="service-icon mb-3">
+                            <i class="bi bi-gift"></i>
+                        </div>
+                        <h4>QUÀ TẶNG CAO CẤP</h4>
+                        <p>Hộp quà thiết kế riêng, thiệp viết tay chân thành cùng gói mẫu thử nước hoa ngẫu nhiên cho mỗi đơn hàng.</p>
+                    </div>
+                </div>
+                <div class="col-md-4">
+                    <div class="service-card p-4 text-center">
+                        <div class="service-icon mb-3">
+                            <i class="bi bi-truck"></i>
+                        </div>
+                        <h4>GIAO HÀNG HỎA TỐC</h4>
+                        <p>Đóng gói cẩn thận bằng mút chuyên dụng. Giao hàng hỏa tốc trong 2 giờ nội thành Hà Nội & TP. HCM.</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- ====== SECTION 2: KHÁM PHÁ THEO PHONG CÁCH / NHÓM HƯƠNG ====== -->
+    <section class="fragrance-finder-section py-5">
+        <div class="container">
+            <div class="section-header-custom text-center mb-5">
+                <h2 style="font-family: 'Playfair Display', Georgia, serif; font-size: 2.2rem; color: #ffffff;">KHÁM PHÁ <span style="color: var(--gold); font-style: italic;">MÙI HƯƠNG</span></h2>
+                <p style="color: var(--text-muted); font-size: 0.9rem; margin-top: 8px;">Tìm kiếm dấu ấn hương thơm cá nhân của bạn qua các nhóm hương tinh tuyển</p>
+            </div>
+            
+            <div class="row g-4 justify-content-center">
+                <div class="col-lg-3 col-md-6">
+                    <a href="/products?nhom_huong=Hương Gỗ Thơm" class="scent-category-card">
+                        <div class="scent-category-img-wrapper">
+                            <div class="scent-icon">🪵</div>
+                        </div>
+                        <h5>Hương Gỗ Trầm Ấm</h5>
+                        <p>Nam tính, bí ẩn & lịch lãm</p>
+                    </a>
+                </div>
+                <div class="col-lg-3 col-md-6">
+                    <a href="/products?nhom_huong=Hương Phương Đông Ấm Áp" class="scent-category-card">
+                        <div class="scent-category-img-wrapper">
+                            <div class="scent-icon">✨</div>
+                        </div>
+                        <h5>Phương Đông Quyến Rũ</h5>
+                        <p>Ấm áp, nồng nàn & gợi cảm</p>
+                    </a>
+                </div>
+                <div class="col-lg-3 col-md-6">
+                    <a href="/products?nhom_huong=Hương Hoa Cỏ Gỗ" class="scent-category-card">
+                        <div class="scent-category-img-wrapper">
+                            <div class="scent-icon">🌸</div>
+                        </div>
+                        <h5>Hoa Cỏ Kiêu Sa</h5>
+                        <p>Ngọt ngào, nhẹ nhàng & thanh lịch</p>
+                    </a>
+                </div>
+                <div class="col-lg-3 col-md-6">
+                    <a href="/products?nhom_huong=Hương Hoa Cỏ Cam Chanh" class="scent-category-card">
+                        <div class="scent-category-img-wrapper">
+                            <div class="scent-icon">🌊</div>
+                        </div>
+                        <h5>Cam Chanh Tươi Mát</h5>
+                        <p>Năng động, sảng khoái & phóng khoáng</p>
+                    </a>
+                </div>
+            </div>
+        </div>
+    </section>
+
     <section style="padding: 60px 0 60px;">
         <div class="container">
             <!-- ====== TIÊU ĐỀ ====== -->
@@ -1222,77 +1711,10 @@
             </div>
 
             <div class="row">
-                <!-- ====== BỘ LỌC (CỘT TRÁI) ====== -->
-                <div class="col-lg-3 col-md-4 mb-4">
-                    <form action="/" method="GET" class="filter-form p-4">
-                        <h5 style="color: var(--gold); font-weight: 600; margin-bottom: 20px; display: flex; align-items: center; gap: 8px;">
-                            <i class="bi bi-funnel"></i> Bộ Lọc Sản Phẩm
-                        </h5>
-                        
-                        <input type="hidden" name="keyword" th:value="${keyword}">
-
-                        <div class="mb-4">
-                            <label class="form-label">Thương hiệu</label>
-                            <select name="thuong_hieu" class="form-select">
-                                <option value="">-- Tất cả --</option>
-                                <option th:each="th : ${thuongHieus}" 
-                                        th:value="${th}" 
-                                        th:text="${th}" 
-                                        th:selected="${th == selectedThuongHieu}"></option>
-                            </select>
-                        </div>
-
-                        <div class="mb-4">
-                            <label class="form-label">Nhóm hương</label>
-                            <select name="nhom_huong" class="form-select">
-                                <option value="">-- Tất cả --</option>
-                                <option th:each="nh : ${nhomHuongs}" 
-                                        th:value="${nh}" 
-                                        th:text="${nh}" 
-                                        th:selected="${nh == selectedNhomHuong}"></option>
-                            </select>
-                        </div>
-
-                        <div class="mb-4">
-                            <label class="form-label">Mức giá</label>
-                            <select name="gia_range" class="form-select">
-                                <option value="">-- Tất cả --</option>
-                                <option value="duoi1tr" th:selected="${selectedGiaRange == 'duoi1tr'}">Dưới 1.000.000 đ</option>
-                                <option value="1tr_3tr" th:selected="${selectedGiaRange == '1tr_3tr'}">1.000.000 đ - 3.000.000 đ</option>
-                                <option value="3tr_5tr" th:selected="${selectedGiaRange == '3tr_5tr'}">3.000.000 đ - 5.000.000 đ</option>
-                                <option value="tren5tr" th:selected="${selectedGiaRange == 'tren5tr'}">Trên 5.000.000 đ</option>
-                            </select>
-                        </div>
-
-                        <button type="submit" class="btn-filter-submit w-100 mb-2">
-                            Áp Dụng
-                        </button>
-                        
-                        <a href="/" class="btn-clear-filter w-100 justify-content-center">
-                            Xóa Lọc
-                        </a>
-                    </form>
-                </div>
-
-                <!-- ====== DANH SÁCH SẢN PHẨM (CỘT PHẢI) ====== -->
-                <div class="col-lg-9 col-md-8">
-
-            <!-- ====== TÌM KIẾM ====== -->
-            <div class="search-container">
-                <form action="/" method="GET" class="search-form-custom">
-                    <i class="bi bi-search" style="color: var(--gold); font-size: 1.1rem; margin-right: 12px;"></i>
-                    <input type="text" name="keyword" th:value="${keyword}" class="search-input-custom" 
-                           placeholder="Tìm tên nước hoa hoặc thương hiệu...">
-                    <button type="submit" class="search-btn-custom">
-                        Tìm kiếm
-                    </button>
-                </form>
-                
-                <div th:if="${perfumes.empty and keyword != null}" class="text-center mt-4">
-                    <p style="color: var(--text-muted);">Không tìm thấy sản phẩm nào khớp với từ khóa "<span th:text="${keyword}" style="color: var(--gold);"></span>".</p>
-                    <a href="/" class="btn btn-sm btn-outline-secondary mt-2">Xóa tìm kiếm</a>
-                </div>
-            </div>
+                <div class="col-12">
+                    <div class="text-center mb-5">
+                        <p style="color: var(--text-muted);">Khám phá những mùi hương mới nhất và được yêu thích nhất từ bộ sưu tập của chúng tôi.</p>
+                    </div>
 
             <!-- ====== LƯỚI SẢN PHẨM ====== -->
             <div class="products-grid">
@@ -1311,6 +1733,13 @@
                         style="display: block; text-decoration: none;">
                         <img th:src="${perfume.hinh_anh}" class="product-img" th:alt="${perfume.ten_sp}" alt="Nước hoa"
                              onerror="this.src='/images/no-image.png'">
+                        
+                        <!-- Overlay khi di chuột vào -->
+                        <div class="product-img-overlay">
+                            <span class="overlay-icon-btn"><i class="bi bi-eye"></i></span>
+                            <span class="overlay-icon-btn" onclick="event.preventDefault(); showToast('Đã thêm sản phẩm vào danh sách yêu thích!', 'success');"><i class="bi bi-heart"></i></span>
+                        </div>
+
                         <div class="product-brand-badge" th:text="${perfume.thuong_hieu}">Brand</div>
 
                         <!-- Badge tồn kho: dựa vào tổng số lượng các biến thể -->
@@ -1386,51 +1815,109 @@
                         </button>
                     </div>
                 </div>
-            </div>
-
-            <!-- ====== PHÂN TRANG ====== -->
-            <div class="pagination-bar" th:if="${totalPages != null and totalPages > 1}">
-
-                <!-- Nút Trước -->
-                <a class="page-btn page-btn-wide"
-                   th:classappend="${currentPage == 0} ? 'disabled' : ''"
-                   th:href="@{/(page=${currentPage - 1}, thuong_hieu=${selectedThuongHieu}, nhom_huong=${selectedNhomHuong}, gia_range=${selectedGiaRange})}">
-                    <i class="bi bi-chevron-left"></i> Trước
+            </div>            <!-- Nút Khám Phá Thêm sản phẩm sang trang sản phẩm chính -->
+            <div class="text-center mt-5">
+                <a href="/products" class="btn btn-gold btn-lg px-5 py-3" style="border-radius: 12px; font-weight: 600; font-size: 1rem; transition: all 0.3s; letter-spacing: 0.5px; box-shadow: 0 8px 24px rgba(201,169,110,0.25);">
+                    <i class="bi bi-compass"></i> Xem Tất Cả Sản Phẩm
                 </a>
-
-                <!-- Số trang -->
-                <th:block th:each="i : ${#numbers.sequence(0, totalPages - 1)}">
-                    <!-- Hiện tối đa 5 trang xung quanh trang hiện tại -->
-                    <a class="page-btn"
-                       th:if="${i == 0 or i == totalPages - 1 or (i >= currentPage - 2 and i <= currentPage + 2)}"
-                       th:classappend="${i == currentPage} ? 'active' : ''"
-                       th:text="${i + 1}"
-                       th:href="@{/(page=${i}, thuong_hieu=${selectedThuongHieu}, nhom_huong=${selectedNhomHuong}, gia_range=${selectedGiaRange})}">
-                    </a>
-                    <!-- Dấu ... -->
-                    <span th:if="${(i == 1 and currentPage > 3) or (i == totalPages - 2 and currentPage < totalPages - 4)}"
-                          style="color: var(--text-muted); align-self: center;">…</span>
-                </th:block>
-
-                <!-- Nút Sau -->
-                <a class="page-btn page-btn-wide"
-                   th:classappend="${currentPage >= totalPages - 1} ? 'disabled' : ''"
-                   th:href="@{/(page=${currentPage + 1}, thuong_hieu=${selectedThuongHieu}, nhom_huong=${selectedNhomHuong}, gia_range=${selectedGiaRange})}">
-                    Sau <i class="bi bi-chevron-right"></i>
-                </a>
-
             </div>
-            <!-- Thông tin trang -->
-            <p class="text-center" style="color: var(--text-muted); font-size: 0.8rem; margin-top: 12px;"
-               th:if="${totalPages != null and totalPages > 1}">
-                Trang <span th:text="${currentPage + 1}">1</span> / <span th:text="${totalPages}">1</span>
-            </p>
-                </div> <!-- End Cột Phải -->
+                </div> <!-- End col-12 -->
             </div> <!-- End Row -->
-
         </div>
     </section>
 
+    <!-- ====== SECTION 4: SIGNATURE BANNER - BỘ SƯU TẬP NICHE ====== -->
+    <section class="niche-collection-banner py-5 my-5">
+        <div class="container">
+            <div class="niche-banner-card p-5">
+                <div class="row align-items-center">
+                    <div class="col-lg-7">
+                        <span class="niche-badge mb-3">EXCLUSIVE</span>
+                        <h2 class="niche-title mb-3">Signature Niche Collection</h2>
+                        <p class="niche-text mb-4">Dòng nước hoa quý hiếm sản xuất thủ công giới hạn. Nơi nghệ thuật pha chế hương thơm vượt lên mọi giới hạn thông thường, mang đậm bản sắc hoàng gia.</p>
+                        <a href="/products" class="btn btn-outline-gold px-4 py-2">Khám Phá Ngay <i class="bi bi-arrow-right"></i></a>
+                    </div>
+                    <div class="col-lg-5 text-center mt-4 mt-lg-0">
+                        <div class="niche-banner-img-wrapper">
+                            <span style="font-size: 5rem;">👑</span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- ====== SECTION 5: ĐÁNH GIÁ KHÁCH HÀNG (TESTIMONIALS) ====== -->
+    <section class="testimonials-section py-5">
+        <div class="container">
+            <div class="section-header-custom text-center mb-5">
+                <h2 style="font-family: 'Playfair Display', Georgia, serif; font-size: 2.2rem; color: #ffffff;">KHÁCH HÀNG <span style="color: var(--gold); font-style: italic;">NÓI GÌ?</span></h2>
+                <p style="color: var(--text-muted); font-size: 0.9rem; margin-top: 8px;">Cảm nhận thực tế từ những người yêu hương đã đặt trọn niềm tin tại Halo Perfume</p>
+            </div>
+            
+            <div class="row g-4">
+                <div class="col-md-4">
+                    <div class="testimonial-card p-4">
+                        <div class="stars mb-3">
+                            <i class="bi bi-star-fill"></i>
+                            <i class="bi bi-star-fill"></i>
+                            <i class="bi bi-star-fill"></i>
+                            <i class="bi bi-star-fill"></i>
+                            <i class="bi bi-star-fill"></i>
+                        </div>
+                        <p class="feedback-text">"Hương thơm của chai nước hoa mua tại Halo lưu hương cực tốt. Đóng gói hộp quà vô cùng cao cấp và chuyên nghiệp, rất thích hợp mang đi tặng."</p>
+                        <div class="customer-info mt-4 d-flex align-items-center gap-3">
+                            <div class="customer-avatar-small">H</div>
+                            <div>
+                                <div class="customer-name">Hoàng Mai Anh</div>
+                                <div class="customer-date">Đã mua Bleu de Chanel</div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-md-4">
+                    <div class="testimonial-card p-4">
+                        <div class="stars mb-3">
+                            <i class="bi bi-star-fill"></i>
+                            <i class="bi bi-star-fill"></i>
+                            <i class="bi bi-star-fill"></i>
+                            <i class="bi bi-star-fill"></i>
+                            <i class="bi bi-star-fill"></i>
+                        </div>
+                        <p class="feedback-text">"Tôi rất an tâm khi mua hàng ở đây vì cam kết hoàn tiền. Nhân viên tư vấn nhóm hương rất nhiệt tình giúp tôi chọn được mùi hương phù hợp nhất."</p>
+                        <div class="customer-info mt-4 d-flex align-items-center gap-3">
+                            <div class="customer-avatar-small">T</div>
+                            <div>
+                                <div class="customer-name">Trần Tiến Đạt</div>
+                                <div class="customer-date">Đã mua Le Labo 13</div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-md-4">
+                    <div class="testimonial-card p-4">
+                        <div class="stars mb-3">
+                            <i class="bi bi-star-fill"></i>
+                            <i class="bi bi-star-fill"></i>
+                            <i class="bi bi-star-fill"></i>
+                            <i class="bi bi-star-fill"></i>
+                            <i class="bi bi-star-fill"></i>
+                        </div>
+                        <p class="feedback-text">"Giao hàng hỏa tốc siêu nhanh đúng 1 tiếng rưỡi là nhận được ở Hà Nội. Hộp nước hoa còn nguyên seal và có kèm cả thiệp viết tay xinh xắn."</p>
+                        <div class="customer-info mt-4 d-flex align-items-center gap-3">
+                            <div class="customer-avatar-small">L</div>
+                            <div>
+                                <div class="customer-name">Lê Phương Linh</div>
+                                <div class="customer-date">Đã mua Narciso Rodriguez</div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    
     <footer class="footer">
         <div class="container">
             <div class="row">
@@ -1590,6 +2077,18 @@
                 btn.innerHTML = '<i class="bi bi-bag-plus"></i> Thêm vào giỏ';
             });
         }
+
+        // Tự động định dạng giá tiền khi load trang
+        document.addEventListener('DOMContentLoaded', () => {
+            document.querySelectorAll('.product-price span').forEach(el => {
+                const rawText = el.textContent.trim();
+                const numericString = rawText.replace(/[^\d]/g, '');
+                if (numericString) {
+                    const price = parseFloat(numericString);
+                    el.textContent = new Intl.NumberFormat('vi-VN').format(price) + ' đ';
+                }
+            });
+        });
     </script>
 </body>
 

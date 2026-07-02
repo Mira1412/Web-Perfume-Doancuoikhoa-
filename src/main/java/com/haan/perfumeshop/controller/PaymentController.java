@@ -8,13 +8,14 @@ import com.haan.perfumeshop.service.OrderService;
 import com.haan.perfumeshop.service.VNPayService;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpSession;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
-import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
@@ -28,6 +29,8 @@ import java.util.Map;
  */
 @Controller
 public class PaymentController {
+
+    private static final Logger log = LoggerFactory.getLogger(PaymentController.class);
 
     @Autowired
     private CartService cartService;
@@ -121,7 +124,7 @@ public class PaymentController {
 
             // Thông tin đơn hàng cho VNPay
             String orderId = "HALO_" + currentUser.getId_user() + "_" + System.currentTimeMillis() % 10000;
-            String orderInfo = "Thanh toan don hang Halo Perfume - User " + currentUser.getId_user();
+            String orderInfo = "ThanhToanDonHangHaloPerfume";
 
             // Lấy IP của client
             String ipAddress = getClientIpAddress(request);
@@ -167,7 +170,6 @@ public class PaymentController {
             // Thanh toán VNPay thành công → Tạo đơn hàng
             if (currentUser != null) {
                 try {
-                    double amount = amountStr != null ? Double.parseDouble(amountStr) / 100 : 0;
                     Order order = orderService.checkoutOrder(currentUser, "VNPay", transactionNo);
 
                     // Xóa session pendingOrder
@@ -184,6 +186,11 @@ public class PaymentController {
                             "Thanh toán thành công nhưng lỗi khi tạo đơn hàng: " + e.getMessage());
                 }
             } else {
+                // ⚠️ EDGE CASE: Phiên đăng nhập đã hết hạn khi VNPay callback.
+                // Tiền có thể đã bị trừ nhưng đơn hàng KHÔNG được tạo.
+                // Cần xử lý đối soát thủ công hoặc tự động qua VNPay IPN.
+                log.warn("⚠️ VNPay callback nhưng session hết hạn! TransactionNo={}, Amount={}",
+                         transactionNo, amountStr);
                 redirectAttributes.addFlashAttribute("paymentSuccess", false);
                 redirectAttributes.addFlashAttribute("errorMessage", "Phiên đăng nhập đã hết hạn, vui lòng đăng nhập lại.");
             }
@@ -226,20 +233,22 @@ public class PaymentController {
         return request.getRemoteAddr();
     }
 
+    private static final Map<String, String> VNPAY_ERROR_MESSAGES = Map.ofEntries(
+            Map.entry("07", "Trừ tiền thành công. Giao dịch bị nghi ngờ (liên hệ VNPay)."),
+            Map.entry("09", "Thẻ/Tài khoản chưa đăng ký Internet Banking."),
+            Map.entry("10", "Xác thực thẻ/tài khoản sai quá 3 lần."),
+            Map.entry("11", "Đã hết hạn chờ thanh toán. Vui lòng thực hiện lại giao dịch."),
+            Map.entry("12", "Thẻ/Tài khoản bị khóa."),
+            Map.entry("13", "Sai mật khẩu OTP. Vui lòng thực hiện lại giao dịch."),
+            Map.entry("24", "Khách hàng hủy giao dịch."),
+            Map.entry("51", "Tài khoản không đủ số dư để thực hiện giao dịch."),
+            Map.entry("65", "Tài khoản đã vượt quá hạn mức giao dịch trong ngày."),
+            Map.entry("75", "Ngân hàng thanh toán đang bảo trì."),
+            Map.entry("79", "Sai mật khẩu thanh toán quá số lần quy định.")
+    );
+
     private String getVNPayErrorMessage(String responseCode) {
         if (responseCode == null) return "Giao dịch thất bại!";
-        Map<String, String> messages = new HashMap<>();
-        messages.put("07", "Trừ tiền thành công. Giao dịch bị nghi ngờ (liên hệ VNPay).");
-        messages.put("09", "Thẻ/Tài khoản chưa đăng ký Internet Banking.");
-        messages.put("10", "Xác thực thẻ/tài khoản sai quá 3 lần.");
-        messages.put("11", "Đã hết hạn chờ thanh toán. Vui lòng thực hiện lại giao dịch.");
-        messages.put("12", "Thẻ/Tài khoản bị khóa.");
-        messages.put("13", "Sai mật khẩu OTP. Vui lòng thực hiện lại giao dịch.");
-        messages.put("24", "Khách hàng hủy giao dịch.");
-        messages.put("51", "Tài khoản không đủ số dư để thực hiện giao dịch.");
-        messages.put("65", "Tài khoản đã vượt quá hạn mức giao dịch trong ngày.");
-        messages.put("75", "Ngân hàng thanh toán đang bảo trì.");
-        messages.put("79", "Sai mật khẩu thanh toán quá số lần quy định.");
-        return messages.getOrDefault(responseCode, "Giao dịch thất bại! Mã lỗi: " + responseCode);
+        return VNPAY_ERROR_MESSAGES.getOrDefault(responseCode, "Giao dịch thất bại! Mã lỗi: " + responseCode);
     }
 }

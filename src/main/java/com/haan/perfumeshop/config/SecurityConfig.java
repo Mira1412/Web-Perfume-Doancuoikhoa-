@@ -22,10 +22,12 @@ public class SecurityConfig {
     @Bean
     public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
         http
-                .csrf(csrf -> csrf.disable()) // Tắt CSRF để tránh lỗi khi gửi các form POST
+                .csrf(csrf -> csrf.disable()) // Tắt CSRF
                 .authorizeHttpRequests(auth -> auth
-                        .anyRequest().permitAll() // Mở khóa hoàn toàn tất cả các trang
-                );
+                        .anyRequest().permitAll() // Mở khóa tự do tất cả các URL
+                )
+                .formLogin(form -> form.disable()) // Tắt form login mặc định của Spring Security
+                .httpBasic(basic -> basic.disable()); // Tắt Http Basic Authentication
         return http.build();
     }
 }
