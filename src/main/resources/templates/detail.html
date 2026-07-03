@@ -623,10 +623,24 @@
                         <i class="bi bi-bag"></i> Giỏ hàng
                         <span id="cartCountBadge" class="position-absolute top-0 start-100 translate-middle badge rounded-pill bg-danger" style="display:none; font-size: 0.7rem; padding: 4px 6px;">0</span>
                     </a>
-                </li>                <li>
-                    <a href="/profile" class="nav-link-item d-flex align-items-center gap-2">
-                        <img th:if="${session.loggedInUser != null and session.loggedInUser.avatar != null}" th:src="${session.loggedInUser.avatar}" class="rounded-circle" style="width: 20px; height: 20px; object-fit: cover;">
-                        <i th:if="${session.loggedInUser == null or session.loggedInUser.avatar == null}" class="bi bi-person-circle"></i> Hồ sơ
+                </li>                <!-- User Account Section -->
+                <li th:if="${session.loggedInUser != null}" class="dropdown user-dropdown ms-2">
+                    <a class="dropdown-toggle" href="#" role="button" data-bs-toggle="dropdown" aria-expanded="false" style="text-decoration: none; color: var(--gold); display: flex; align-items: center; gap: 6px;">
+                        <div class="user-avatar" style="width: 24px; height: 24px; border-radius: 50%; background: var(--gold); color: #fff; display: flex; align-items: center; justify-content: center; font-size: 12px;">
+                            <span th:text="${session.loggedInUser.fullName != null ? #strings.substring(session.loggedInUser.fullName, 0, 1) : 'U'}">U</span>
+                        </div>
+                        <span th:text="${session.loggedInUser.fullName != null ? session.loggedInUser.fullName : session.loggedInUser.email}">User</span>
+                    </a>
+                    <ul class="dropdown-menu dropdown-menu-end dropdown-menu-custom" style="background-color: var(--dark-light); border: 1px solid var(--gold);">
+                        <li><a class="dropdown-item" href="/profile" style="color: var(--text-light);"><i class="bi bi-person-circle"></i> Hồ sơ cá nhân</a></li>
+                        <li><a class="dropdown-item" href="/orders" style="color: var(--text-light);"><i class="bi bi-receipt-cutoff"></i> Đơn hàng của tôi</a></li>
+                        <li><hr class="dropdown-divider" style="border-color: rgba(201,169,110,0.2);"></li>
+                        <li><a class="dropdown-item" href="/logout" style="color: #ff6b6b;"><i class="bi bi-box-arrow-right"></i> Đăng xuất</a></li>
+                    </ul>
+                </li>
+                <li th:if="${session.loggedInUser == null}">
+                    <a href="/login" class="nav-link-item btn-login-nav">
+                        <i class="bi bi-box-arrow-in-right"></i> Đăng nhập
                     </a>
                 </li>
             </ul>

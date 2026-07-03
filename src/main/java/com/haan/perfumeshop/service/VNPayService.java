@@ -141,31 +141,38 @@ for (Map.Entry<String, String> entry : vnp_Params.entrySet()) {
                 return false;
             }
 
-            // Loại bỏ vnp_SecureHash và vnp_SecureHashType khỏi tham số trước khi ký lại
-            Map<String, String> checkParams = new TreeMap<>(params);
-            checkParams.remove("vnp_SecureHash");
-            checkParams.remove("vnp_SecureHashType");
+            // Chỉ lấy các tham số bắt đầu bằng vnp_ và loại bỏ các hash params, đồng thời sắp xếp
+            Map<String, String> checkParams = new TreeMap<>();
+            for (Map.Entry<String, String> entry : params.entrySet()) {
+                String key = entry.getKey();
+                String val = entry.getValue();
+                if (key.startsWith("vnp_") && !"vnp_SecureHash".equals(key) && !"vnp_SecureHashType".equals(key)) {
+                    if (val != null && !val.isEmpty()) {
+                        checkParams.put(key, val);
+                    }
+                }
+            }
 
             StringBuilder hashData = new StringBuilder();
             boolean first = true;
             for (Map.Entry<String, String> entry : checkParams.entrySet()) {
                 String fieldName = entry.getKey();
                 String fieldValue = entry.getValue();
-                if (fieldValue != null && !fieldValue.isEmpty()) {
-                    if (!first) {
-                        hashData.append("&");
-                    }
-                    hashData.append(fieldName)
-                            .append("=")
-                            .append(URLEncoder.encode(fieldValue, StandardCharsets.UTF_8).replace("+", "%20"));
-                    first = false;
+                if (!first) {
+                    hashData.append("&");
                 }
+                // Dùng US_ASCII theo đúng VNPay SDK chính thức để tránh lệch mã hóa khoảng trắng / tiếng Việt
+                hashData.append(fieldName)
+                        .append("=")
+                        .append(URLEncoder.encode(fieldValue, StandardCharsets.US_ASCII.toString()));
+                first = false;
             }
 
             String computedHash = hmacSHA512(hashSecret, hashData.toString());
             return computedHash.equalsIgnoreCase(vnp_SecureHash);
 
         } catch (Exception e) {
+            log.error("Xác minh chữ ký VNPay thất bại: {}", e.getMessage());
             return false;
         }
     }

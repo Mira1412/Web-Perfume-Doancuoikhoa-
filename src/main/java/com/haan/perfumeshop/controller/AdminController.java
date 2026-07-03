@@ -10,6 +10,7 @@ import com.haan.perfumeshop.repository.PerfumeRepository;
 import com.haan.perfumeshop.repository.PerfumeVariantRepository;
 import com.haan.perfumeshop.repository.UserRepository;
 import com.haan.perfumeshop.service.ExportService;
+import com.haan.perfumeshop.service.EmailService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.MediaType;
@@ -50,6 +51,9 @@ public class AdminController {
 
     @Autowired
     private ExportService exportService;
+
+    @Autowired
+    private EmailService emailService;
 
 
     // ==========================================
@@ -115,7 +119,16 @@ public class AdminController {
             topProducts.add(item);
         }
 
-        // 5. Truyền tất cả ra View
+        // 5. Cảnh báo sản phẩm sắp hết hàng (tồn kho < 5)
+        List<PerfumeVariant> lowStockVariants = variantRepository.findAll();
+        List<PerfumeVariant> lowStockList = new ArrayList<>();
+        for (PerfumeVariant v : lowStockVariants) {
+            if (v.getSo_luong_ton() != null && v.getSo_luong_ton() < 5) {
+                lowStockList.add(v);
+            }
+        }
+
+        // 6. Truyền tất cả ra View
         model.addAttribute("totalProducts",   totalProducts);
         model.addAttribute("totalOrders",     totalOrders);
         model.addAttribute("deliveredOrders", deliveredOrders);
@@ -127,6 +140,7 @@ public class AdminController {
         model.addAttribute("chartOrders",     orderCounts);
         model.addAttribute("recentOrders",    recentOrders);
         model.addAttribute("topProducts",     topProducts);
+        model.addAttribute("lowStockList",    lowStockList);
 
         return "admin/admin-dashboard";
     }
@@ -284,8 +298,19 @@ public class AdminController {
         Order order = orderRepository.findById(id).orElse(null);
 
         if (order != null) {
+            String oldStatus = order.getTrang_thai();
             order.setTrang_thai(status); // Cập nhật trạng thái mới
             orderRepository.save(order); // Lưu vào Database
+
+            // Nếu trạng thái thay đổi thì gửi mail thông báo cập nhật
+            if (!status.equalsIgnoreCase(oldStatus)) {
+                try {
+                    emailService.sendOrderStatusUpdateEmail(order);
+                } catch (Exception e) {
+                    // Không block luồng admin nếu gửi mail lỗi
+                    System.out.println("⚠️ Lỗi gửi email thông báo cập nhật đơn hàng: " + e.getMessage());
+                }
+            }
         }
 
         return "redirect:/admin/orders"; // Quay lại trang quản lý đơn hàng để thấy kết quả

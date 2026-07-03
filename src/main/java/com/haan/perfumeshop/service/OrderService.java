@@ -2,12 +2,16 @@ package com.haan.perfumeshop.service;
 
 import com.haan.perfumeshop.model.*;
 import com.haan.perfumeshop.repository.*;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import java.util.List;
 
 @Service
 public class OrderService {
+
+    private static final Logger log = LoggerFactory.getLogger(OrderService.class);
 
     // 1. SỬA CẢNH BÁO VÀNG: Gom tất cả @Autowired thành Constructor Injection
     private final OrderRepository orderRepository;
@@ -131,7 +135,7 @@ public class OrderService {
             emailService.sendOrderConfirmationEmail(savedOrder);
         } catch (Exception e) {
             // Nếu gửi mail thất bại thì vẫn cho đặt hàng thành công, chỉ in log lỗi
-            System.out.println("⚠️ Gửi email xác nhận thất bại: " + e.getMessage());
+            log.warn("⚠️ Gửi email xác nhận thất bại cho đơn #{}: {}", savedOrder.getId(), e.getMessage());
         }
 
         return savedOrder;

@@ -14,6 +14,7 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestParam;
 
+import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -37,20 +38,33 @@ public class ProductController {
     }
 
     @GetMapping({ "", "/", "/index" })
-    public String showHomePage(
-            @RequestParam(value = "keyword", required = false) String keyword,
-            @RequestParam(value = "thuong_hieu", required = false) String thuongHieu,
-            @RequestParam(value = "nhom_huong", required = false) String nhomHuong,
-            @RequestParam(value = "gia_range", required = false) String giaRange,
-            @RequestParam(value = "page", defaultValue = "0") int page,
-            HttpSession session,
-            Model model) {
-
+    public String showHomePage(HttpSession session, Model model) {
         // Admin không có quyền vào trang chủ cửa hàng → chuyển thẳng về trang quản trị
         User sessionUser = (User) session.getAttribute("loggedInUser");
         if (sessionUser != null && "ADMIN".equals(sessionUser.getRole())) {
             return "redirect:/admin/dashboard";
         }
+
+        // Lấy top 8 sản phẩm mới nhất để hiện trang chủ
+        List<Perfume> allPerfumes = perfumeRepository.findAll();
+        List<Perfume> recentPerfumes = allPerfumes.stream()
+                .limit(8)
+                .collect(Collectors.toList());
+
+        model.addAttribute("perfumes", recentPerfumes);
+        return "index";
+    }
+
+    @GetMapping("/products")
+    public String showProductsPage(
+            @RequestParam(value = "keyword", required = false) String keyword,
+            @RequestParam(value = "thuong_hieu", required = false) String thuongHieu,
+            @RequestParam(value = "nhom_huong", required = false) String nhomHuong,
+            @RequestParam(value = "gia_range", required = false) String giaRange,
+            @RequestParam(value = "gioi_tinh", required = false) String gioiTinh,
+            @RequestParam(value = "page", defaultValue = "0") int page,
+            HttpSession session,
+            Model model) {
 
         List<Perfume> filtered;
         if (keyword != null && !keyword.trim().isEmpty()) {
@@ -60,31 +74,27 @@ public class ProductController {
             filtered = perfumeRepository.findAll(PerfumeSpecification.filter(thuongHieu, nhomHuong));
         }
 
-        // DEBUG: Kiểm tra số lượng sản phẩm
-        System.out.println("=== DEBUG HOME PAGE ===");
-        System.out.println("Total perfumes from DB (findAll): " + perfumeRepository.count());
-        System.out.println("Filtered list size: " + filtered.size());
-        for (Perfume p : filtered) {
-            System.out.println("  - ID=" + p.getId_nuoc_hoa() + " | Name=" + p.getTen_sp() + " | Variants=" + (p.getVariants() != null ? p.getVariants().size() : "null"));
+        // Lọc theo Giới tính
+        if (gioiTinh != null && !gioiTinh.trim().isEmpty()) {
+            filtered = filtered.stream()
+                    .filter(p -> p.getGioi_tinh() != null && p.getGioi_tinh().equalsIgnoreCase(gioiTinh.trim()))
+                    .collect(Collectors.toList());
         }
 
+        // Lọc theo Mức giá
         if (giaRange != null && !giaRange.isEmpty()) {
             filtered = filtered.stream().filter(p -> {
-
-                // 2. Sửa lỗi lấy giá: Tự động tìm mức giá rẻ nhất trong các biến thể để làm mốc
-                // lọc
                 double gia = 0;
                 if (p.getVariants() != null && !p.getVariants().isEmpty()) {
                     gia = p.getVariants().stream()
                             .mapToDouble(v -> {
                                 try {
-                                    // Loại bỏ chữ "đ" và các dấu phẩy, chỉ lấy số nguyên
                                     return Double.parseDouble(v.getGia_ban().replaceAll("[^\\d]", ""));
                                 } catch (Exception e) {
                                     return 0;
                                 }
                             })
-                            .min() // Lấy giá thấp nhất
+                            .min()
                             .orElse(0);
                 }
 
@@ -105,15 +115,13 @@ public class ProductController {
 
         int totalItems = filtered.size();
         int totalPages = (int) Math.ceil((double) totalItems / PAGE_SIZE);
-        if (page < 0)
-            page = 0;
-        if (totalPages > 0 && page >= totalPages)
-            page = totalPages - 1;
+        if (page < 0) page = 0;
+        if (totalPages > 0 && page >= totalPages) page = totalPages - 1;
 
         int fromIndex = page * PAGE_SIZE;
         int toIndex = Math.min(fromIndex + PAGE_SIZE, totalItems);
 
-        model.addAttribute("perfumes", filtered.subList(fromIndex, toIndex));
+        model.addAttribute("perfumes", totalItems > 0 ? filtered.subList(fromIndex, toIndex) : Collections.emptyList());
         model.addAttribute("totalItems", totalItems);
         model.addAttribute("totalPages", totalPages);
         model.addAttribute("currentPage", page);
@@ -122,7 +130,8 @@ public class ProductController {
         model.addAttribute("selectedThuongHieu", thuongHieu);
         model.addAttribute("selectedNhomHuong", nhomHuong);
         model.addAttribute("selectedGiaRange", giaRange);
-        return "index";
+        model.addAttribute("selectedGioiTinh", gioiTinh);
+        return "products";
     }
 
     @GetMapping("/product/{id}")
