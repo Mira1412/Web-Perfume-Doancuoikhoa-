@@ -144,52 +144,7 @@ public class AdminController {
 
         return "admin/admin-dashboard";
     }
-    // ==========================================
-    // 2. QUẢN LÝ SẢN PHẨM (NƯỚC HOA)
-    // ==========================================
-    // === ĐÃ COMMENT LẠI ĐỂ CHUYỂN SANG CONTROLLER MỚI CÓ HỖ TRỢ TÌM KIẾM/LỌC ===
-    // @GetMapping("/products")
-    // public String listProducts(Model model) {
-    //     List<Perfume> perfumes = perfumeRepository.findAll();
-    //     model.addAttribute("perfumes", perfumes);
-    //     return "admin/products";
-    // }
-
-    // === CÁC HÀM BÊN DƯỚI ĐÃ ĐƯỢC CHUYỂN SANG AdminProductController ===
-    // @GetMapping("/products/add")
-    // public String showAddProductForm(Model model) {
-    //     model.addAttribute("perfume", new Perfume());
-    //     return "admin/add-product";
-    // }
-
-    // @PostMapping("/products/save")
-    // public String saveProduct(@ModelAttribute("perfume") Perfume perfume,
-    //         @RequestParam(value = "imageFile", required = false) MultipartFile imageFile) {
-    //     perfumeRepository.save(perfume);
-    //     return "redirect:/admin/products";
-    // }
-
-    // @GetMapping("/products/edit/{id}")
-    // public String showEditProductForm(@PathVariable("id") Long id, Model model) {
-    //     Perfume perfume = perfumeRepository.findById(id)
-    //             .orElseThrow(() -> new IllegalArgumentException("Invalid product Id:" + id));
-    //     model.addAttribute("perfume", perfume);
-    //     return "admin/edit-product";
-    // }
-
-    // @PostMapping("/products/update")
-    // public String updateProduct(@ModelAttribute("perfume") Perfume perfume,
-    //         @RequestParam(value = "imageFile", required = false) MultipartFile imageFile) {
-    //     perfumeRepository.save(perfume);
-    //     return "redirect:/admin/products";
-    // }
-
-    // @GetMapping("/products/delete/{id}")
-    // public String deleteProduct(@PathVariable("id") Long id) {
-    //     perfumeRepository.deleteById(id);
-    //     return "redirect:/admin/products";
-    // }
-
+    
     // ==========================================
     // 3. QUẢN LÝ BIẾN THỂ (DUNG TÍCH & GIÁ)
     // ==========================================

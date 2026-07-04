@@ -141,7 +141,6 @@ for (Map.Entry<String, String> entry : vnp_Params.entrySet()) {
                 return false;
             }
 
-            // Chỉ lấy các tham số bắt đầu bằng vnp_ và loại bỏ các hash params, đồng thời sắp xếp
             Map<String, String> checkParams = new TreeMap<>();
             for (Map.Entry<String, String> entry : params.entrySet()) {
                 String key = entry.getKey();
@@ -161,7 +160,6 @@ for (Map.Entry<String, String> entry : vnp_Params.entrySet()) {
                 if (!first) {
                     hashData.append("&");
                 }
-                // Dùng US_ASCII theo đúng VNPay SDK chính thức để tránh lệch mã hóa khoảng trắng / tiếng Việt
                 hashData.append(fieldName)
                         .append("=")
                         .append(URLEncoder.encode(fieldValue, StandardCharsets.US_ASCII.toString()));
