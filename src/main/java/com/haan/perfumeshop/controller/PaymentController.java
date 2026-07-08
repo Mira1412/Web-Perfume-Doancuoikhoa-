@@ -10,7 +10,6 @@ import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpSession;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
@@ -32,14 +31,15 @@ public class PaymentController {
 
     private static final Logger log = LoggerFactory.getLogger(PaymentController.class);
 
-    @Autowired
-    private CartService cartService;
+    private final CartService cartService;
+    private final OrderService orderService;
+    private final VNPayService vnPayService;
 
-    @Autowired
-    private OrderService orderService;
-
-    @Autowired
-    private VNPayService vnPayService;
+    public PaymentController(CartService cartService, OrderService orderService, VNPayService vnPayService) {
+        this.cartService = cartService;
+        this.orderService = orderService;
+        this.vnPayService = vnPayService;
+    }
 
     // ===================================================
     // 1. TRANG XÁC NHẬN ĐƠN HÀNG — /checkout
@@ -88,11 +88,13 @@ public class PaymentController {
             redirectAttributes.addFlashAttribute("orderTotal", order.getTong_tien());
             return "redirect:/payment/result";
         } catch (Exception e) {
+            log.error("❌ Lỗi khi đặt hàng COD cho user #{}: {}", currentUser.getId_user(), e.getMessage(), e);
             redirectAttributes.addFlashAttribute("paymentSuccess", false);
             redirectAttributes.addFlashAttribute("errorMessage", e.getMessage());
             return "redirect:/payment/result";
         }
     }
+
 
     // ===================================================
     // 3. TẠO LINK VNPAY — POST /payment/create-vnpay
@@ -154,13 +156,23 @@ public class PaymentController {
 
         User currentUser = (User) session.getAttribute("loggedInUser");
 
-        // Xác minh chữ ký từ VNPay
-        boolean validSignature = vnPayService.verifySignature(params);
         String responseCode = params.get("vnp_ResponseCode");
         String transactionNo = params.get("vnp_TransactionNo");
-        String amountStr = params.get("vnp_Amount");
+        String amountStr    = params.get("vnp_Amount");
+
+        // Xác minh chữ ký từ VNPay (bọc try-catch đề phòng params lạ)
+        boolean validSignature;
+        try {
+            validSignature = vnPayService.verifySignature(params);
+        } catch (Exception e) {
+            log.error("❌ Lỗi khi xác minh chữ ký VNPay: {}", e.getMessage(), e);
+            redirectAttributes.addFlashAttribute("paymentSuccess", false);
+            redirectAttributes.addFlashAttribute("errorMessage", "Lỗi xác minh chữ ký thanh toán.");
+            return "redirect:/payment/result";
+        }
 
         if (!validSignature) {
+            log.warn("⚠️ Chữ ký VNPay không hợp lệ! TransactionNo={}, ResponseCode={}", transactionNo, responseCode);
             redirectAttributes.addFlashAttribute("paymentSuccess", false);
             redirectAttributes.addFlashAttribute("errorMessage", "Chữ ký không hợp lệ! Giao dịch có thể bị giả mạo.");
             return "redirect:/payment/result";
@@ -175,12 +187,15 @@ public class PaymentController {
                     // Xóa session pendingOrder
                     session.removeAttribute("pendingVNPayOrderId");
 
+                    log.info("✅ Đơn hàng VNPay #{} tạo thành công cho user #{}", order.getId(), currentUser.getId_user());
                     redirectAttributes.addFlashAttribute("paymentSuccess", true);
                     redirectAttributes.addFlashAttribute("paymentMethod", "VNPay");
                     redirectAttributes.addFlashAttribute("orderId", order.getId());
                     redirectAttributes.addFlashAttribute("orderTotal", order.getTong_tien());
                     redirectAttributes.addFlashAttribute("transactionNo", transactionNo);
                 } catch (Exception e) {
+                    log.error("❌ Thanh toán VNPay thành công nhưng lỗi tạo đơn hàng! TransactionNo={}: {}",
+                            transactionNo, e.getMessage(), e);
                     redirectAttributes.addFlashAttribute("paymentSuccess", false);
                     redirectAttributes.addFlashAttribute("errorMessage",
                             "Thanh toán thành công nhưng lỗi khi tạo đơn hàng: " + e.getMessage());
@@ -197,6 +212,7 @@ public class PaymentController {
         } else {
             // Thanh toán thất bại hoặc bị hủy
             String errorMsg = getVNPayErrorMessage(responseCode);
+            log.info("ℹ️ VNPay thanh toán thất bại. TransactionNo={}, ResponseCode={}", transactionNo, responseCode);
             redirectAttributes.addFlashAttribute("paymentSuccess", false);
             redirectAttributes.addFlashAttribute("errorMessage", errorMsg);
             redirectAttributes.addFlashAttribute("responseCode", responseCode);

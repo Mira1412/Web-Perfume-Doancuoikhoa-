@@ -13,8 +13,8 @@ import java.text.SimpleDateFormat;
 import java.util.*;
 
 /**
- * VNPayService — Dịch vụ tích hợp cổng thanh toán VNPay
- * Hỗ trợ: Tạo URL thanh toán + Xác minh chữ ký callback
+ * VNPayService — Tích hợp cổng thanh toán VNPay
+ * Tài liệu: https://sandbox.vnpayment.vn/apis/docs/thanh-toan-pay/pay.md
  */
 @Service
 public class VNPayService {
@@ -33,170 +33,158 @@ public class VNPayService {
     @Value("${vnpay.returnUrl}")
     private String returnUrl;
 
+    // ===================================================
+    // 1. TẠO URL THANH TOÁN VNPAY
+    // ===================================================
+
     /**
-     * Tạo URL chuyển hướng sang trang thanh toán VNPay
+     * Tạo URL redirect sang cổng VNPay để khách hàng thanh toán.
      *
-     * @param orderId   ID đơn hàng tạm (dùng làm mã giao dịch)
-     * @param amount    Số tiền thanh toán (VND)
-     * @param orderInfo Thông tin đơn hàng (hiển thị trên trang VNPay)
+     * @param orderId   Mã đơn hàng (txnRef)
+     * @param amount    Số tiền (VND, chưa nhân 100)
+     * @param orderInfo Thông tin đơn hàng
      * @param ipAddress IP của khách hàng
-     * @return URL redirect sang VNPay
+     * @return URL đầy đủ để redirect
      */
     public String createPaymentUrl(String orderId, long amount, String orderInfo, String ipAddress) {
-        // Validation đầu vào
-        if (orderId == null || orderId.trim().isEmpty()) {
-            throw new IllegalArgumentException("Mã đơn hàng (orderId) không được để trống!");
-        }
-        if (amount <= 0) {
-            throw new IllegalArgumentException("Số tiền thanh toán phải lớn hơn 0! (amount=" + amount + ")");
-        }
+        // VNPay yêu cầu amount * 100
+        long vnpAmount = amount * 100;
 
-        try {
-            // 1. Thời gian (timezone GMT+7 — Việt Nam)
-            TimeZone vnTimeZone = TimeZone.getTimeZone("Asia/Ho_Chi_Minh");
-            SimpleDateFormat formatter = new SimpleDateFormat("yyyyMMddHHmmss");
-            formatter.setTimeZone(vnTimeZone);
+        // Thời gian tạo và hết hạn (15 phút)
+        Calendar cal = Calendar.getInstance(TimeZone.getTimeZone("Etc/GMT+7"));
+        SimpleDateFormat formatter = new SimpleDateFormat("yyyyMMddHHmmss");
+        String createDate = formatter.format(cal.getTime());
 
-            String vnp_CreateDate = formatter.format(new Date());
+        cal.add(Calendar.MINUTE, 15);
+        String expireDate = formatter.format(cal.getTime());
 
-            Calendar cal = Calendar.getInstance(vnTimeZone);
-            cal.add(Calendar.MINUTE, 15);
-            String vnp_ExpireDate = formatter.format(cal.getTime());
+        // Sắp xếp params theo thứ tự alphabet (TreeMap) — bắt buộc theo spec VNPay
+        Map<String, String> vnpParams = new TreeMap<>();
+        vnpParams.put("vnp_Version",    "2.1.0");
+        vnpParams.put("vnp_Command",    "pay");
+        vnpParams.put("vnp_TmnCode",    tmnCode);
+        vnpParams.put("vnp_Amount",     String.valueOf(vnpAmount));
+        vnpParams.put("vnp_CurrCode",   "VND");
+        vnpParams.put("vnp_TxnRef",     orderId);
+        vnpParams.put("vnp_OrderInfo",  orderInfo);
+        vnpParams.put("vnp_OrderType",  "other");
+        vnpParams.put("vnp_Locale",     "vn");
+        vnpParams.put("vnp_ReturnUrl",  returnUrl);
+        vnpParams.put("vnp_IpAddr",     ipAddress);
+        vnpParams.put("vnp_CreateDate", createDate);
+        vnpParams.put("vnp_ExpireDate", expireDate);
 
-            // 2. Mã giao dịch — chỉ dùng số và chữ, không ký tự đặc biệt
-           String vnp_TxnRef = orderId;
+        // Tạo chuỗi hash data và query string
+        StringBuilder hashData  = new StringBuilder();
+        StringBuilder queryData = new StringBuilder();
 
-            // 3. Xây dựng Map tham số (TreeMap để tự sắp xếp alphabet — BẮT BUỘC)
-            Map<String, String> vnp_Params = new TreeMap<>();
-            vnp_Params.put("vnp_Version", "2.1.0");
-            vnp_Params.put("vnp_Command", "pay");
-            vnp_Params.put("vnp_TmnCode", tmnCode);
-            vnp_Params.put("vnp_Amount", String.valueOf(amount * 100)); // VNPay yêu cầu nhân 100
-            vnp_Params.put("vnp_CurrCode", "VND");
-            vnp_Params.put("vnp_TxnRef", vnp_TxnRef);
-            vnp_Params.put("vnp_OrderInfo", orderInfo);
-            vnp_Params.put("vnp_OrderType", "other");
-            vnp_Params.put("vnp_Locale", "vn");
-            vnp_Params.put("vnp_ReturnUrl", returnUrl);
-            vnp_Params.put("vnp_IpAddr", (ipAddress == null || "0:0:0:0:0:0:0:1".equals(ipAddress)) ? "127.0.0.1" : ipAddress);
-            vnp_Params.put("vnp_CreateDate", vnp_CreateDate);
-            vnp_Params.put("vnp_ExpireDate", vnp_ExpireDate);
-
-            // 4. Xây dựng hashData và query (theo chính xác VNPay Java SDK chính thức)
-            // hashData : key=URLEncode(value, US_ASCII)   ← dùng để tính HMAC
-            // query    : URLEncode(key)=URLEncode(value)  ← ghép vào URL cuối
-            StringBuilder hashData = new StringBuilder();
-StringBuilder query = new StringBuilder();
-
-boolean first = true;
-
-for (Map.Entry<String, String> entry : vnp_Params.entrySet()) {
-
-    String fieldName = entry.getKey();
-    String fieldValue = entry.getValue();
-
-    if (fieldValue != null && !fieldValue.isEmpty()) {
-
-        if (!first) {
-            hashData.append("&");
-            query.append("&");
+        for (Map.Entry<String, String> entry : vnpParams.entrySet()) {
+            String key   = entry.getKey();
+            String value = entry.getValue();
+            if (value != null && !value.isEmpty()) {
+                String encodedValue = URLEncoder.encode(value, StandardCharsets.UTF_8)
+                                                .replace("+", "%20");
+                hashData.append(key).append('=').append(encodedValue).append('&');
+                queryData.append(key).append('=').append(encodedValue).append('&');
+            }
         }
 
-        String encodedValue = URLEncoder.encode(fieldValue, StandardCharsets.UTF_8).replace("+", "%20");
+        // Xóa dấu & cuối cùng
+        if (hashData.length() > 0) hashData.deleteCharAt(hashData.length() - 1);
+        if (queryData.length() > 0) queryData.deleteCharAt(queryData.length() - 1);
 
-        hashData.append(fieldName)
-                .append("=")
-                .append(encodedValue);
+        // Tạo chữ ký HMAC-SHA512
+        String secureHash = hmacSHA512(hashSecret, hashData.toString());
 
-        query.append(URLEncoder.encode(fieldName, StandardCharsets.UTF_8).replace("+", "%20"))
-                .append("=")
-                .append(encodedValue);
-
-        first = false;
+        String paymentUrl = payUrl + "?" + queryData + "&vnp_SecureHash=" + secureHash;
+        log.info("✅ VNPay payment URL tạo thành công cho orderId={}", orderId);
+        return paymentUrl;
     }
-}
 
-            // 5. Ký HMAC SHA512 với chuỗi raw
-            log.debug("VNPay — Tạo URL thanh toán cho đơn: {}", orderId);
-            String secureHash = hmacSHA512(hashSecret, hashData.toString());
-            query.append("&vnp_SecureHash=").append(secureHash);
-
-            return payUrl + "?" + query;
-
-        } catch (Exception e) {
-            throw new RuntimeException("Không thể tạo URL thanh toán VNPay: " + e.getMessage(), e);
-        }
-    }
+    // ===================================================
+    // 2. XÁC MINH CHỮ KÝ CALLBACK
+    // ===================================================
 
     /**
-     * Xác minh chữ ký callback từ VNPay (tránh giả mạo)
+     * Xác minh chữ ký HMAC-SHA512 từ VNPay gửi về qua return URL.
+     * QUAN TRỌNG: Loại bỏ vnp_SecureHash và vnp_SecureHashType trước khi tính hash.
      *
-     * @param params Tất cả tham số VNPay trả về (trong query string)
+     * @param params Toàn bộ query params từ VNPay callback
      * @return true nếu chữ ký hợp lệ
      */
     public boolean verifySignature(Map<String, String> params) {
-        try {
-            String vnp_SecureHash = params.get("vnp_SecureHash");
-            if (vnp_SecureHash == null || vnp_SecureHash.isEmpty()) {
-                return false;
-            }
-
-            Map<String, String> checkParams = new TreeMap<>();
-            for (Map.Entry<String, String> entry : params.entrySet()) {
-                String key = entry.getKey();
-                String val = entry.getValue();
-                if (key.startsWith("vnp_") && !"vnp_SecureHash".equals(key) && !"vnp_SecureHashType".equals(key)) {
-                    if (val != null && !val.isEmpty()) {
-                        checkParams.put(key, val);
-                    }
-                }
-            }
-
-            StringBuilder hashData = new StringBuilder();
-            boolean first = true;
-            for (Map.Entry<String, String> entry : checkParams.entrySet()) {
-                String fieldName = entry.getKey();
-                String fieldValue = entry.getValue();
-                if (!first) {
-                    hashData.append("&");
-                }
-                hashData.append(fieldName)
-                        .append("=")
-                        .append(URLEncoder.encode(fieldValue, StandardCharsets.US_ASCII.toString()));
-                first = false;
-            }
-
-            String computedHash = hmacSHA512(hashSecret, hashData.toString());
-            return computedHash.equalsIgnoreCase(vnp_SecureHash);
-
-        } catch (Exception e) {
-            log.error("Xác minh chữ ký VNPay thất bại: {}", e.getMessage());
+        String receivedHash = params.get("vnp_SecureHash");
+        if (receivedHash == null || receivedHash.isEmpty()) {
+            log.warn("⚠️ VNPay callback thiếu vnp_SecureHash");
             return false;
         }
+
+        // Sắp xếp theo alphabet, loại bỏ các field hash
+        Map<String, String> signParams = new TreeMap<>();
+        for (Map.Entry<String, String> entry : params.entrySet()) {
+            String key = entry.getKey();
+            if (!"vnp_SecureHash".equals(key) && !"vnp_SecureHashType".equals(key)) {
+                signParams.put(key, entry.getValue());
+            }
+        }
+
+        // Tạo chuỗi hashData từ params đã sắp xếp
+        StringBuilder hashData = new StringBuilder();
+        for (Map.Entry<String, String> entry : signParams.entrySet()) {
+            String value = entry.getValue();
+            if (value != null && !value.isEmpty()) {
+                String encodedValue = URLEncoder.encode(value, StandardCharsets.UTF_8)
+                                                .replace("+", "%20");
+                hashData.append(entry.getKey()).append('=').append(encodedValue).append('&');
+            }
+        }
+        if (hashData.length() > 0) hashData.deleteCharAt(hashData.length() - 1);
+
+        // So sánh chữ ký tính lại với chữ ký nhận được
+        String computedHash = hmacSHA512(hashSecret, hashData.toString());
+        boolean valid = computedHash.equalsIgnoreCase(receivedHash);
+
+        if (!valid) {
+            log.warn("⚠️ Chữ ký VNPay không khớp. Expected={}, Received={}", computedHash, receivedHash);
+        }
+        return valid;
     }
 
+    // ===================================================
+    // 3. KIỂM TRA KẾT QUẢ THANH TOÁN
+    // ===================================================
+
     /**
-     * Kiểm tra giao dịch thành công hay không
+     * VNPay trả về mã "00" khi thanh toán thành công.
      *
-     * @param responseCode vnp_ResponseCode từ VNPay (00 = thành công)
+     * @param responseCode vnp_ResponseCode từ callback
      * @return true nếu thanh toán thành công
      */
     public boolean isPaymentSuccess(String responseCode) {
         return "00".equals(responseCode);
     }
 
-    // ===================================
-    // HMAC SHA512 Helper
-    // ===================================
-    private String hmacSHA512(String key, String data) throws Exception {
-        Mac hmac = Mac.getInstance("HmacSHA512");
-        SecretKeySpec secretKey = new SecretKeySpec(key.getBytes(StandardCharsets.UTF_8), "HmacSHA512");
-        hmac.init(secretKey);
-        byte[] bytes = hmac.doFinal(data.getBytes(StandardCharsets.UTF_8));
-        StringBuilder result = new StringBuilder();
-        for (byte b : bytes) {
-            result.append(String.format("%02x", b));
+    // ===================================================
+    // HELPER — HMAC-SHA512
+    // ===================================================
+
+    private String hmacSHA512(String key, String data) {
+        try {
+            Mac mac = Mac.getInstance("HmacSHA512");
+            SecretKeySpec secretKey = new SecretKeySpec(key.getBytes(StandardCharsets.UTF_8), "HmacSHA512");
+            mac.init(secretKey);
+            byte[] hash = mac.doFinal(data.getBytes(StandardCharsets.UTF_8));
+
+            StringBuilder hexString = new StringBuilder();
+            for (byte b : hash) {
+                String hex = Integer.toHexString(0xff & b);
+                if (hex.length() == 1) hexString.append('0');
+                hexString.append(hex);
+            }
+            return hexString.toString();
+        } catch (Exception e) {
+            log.error("❌ Lỗi khi tính HMAC-SHA512: {}", e.getMessage(), e);
+            throw new RuntimeException("Không thể tạo chữ ký HMAC-SHA512", e);
         }
-        return result.toString();
     }
 }

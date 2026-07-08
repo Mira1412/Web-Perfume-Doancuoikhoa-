@@ -132,7 +132,7 @@ class PaymentControllerTest {
     @Test
     void testProcessCOD_Success() throws Exception {
         session.setAttribute("loggedInUser", mockUser);
-        when(orderService.checkoutOrder(any(User.class), eq("COD"), isNull())).thenReturn(mockOrder);
+        when(orderService.checkoutOrder(any(User.class), eq("COD"), nullable(String.class))).thenReturn(mockOrder);
 
         mockMvc.perform(post("/payment/cod").session(session))
                 .andExpect(status().is3xxRedirection())
