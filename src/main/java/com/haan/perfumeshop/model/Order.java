@@ -33,6 +33,10 @@ public class Order {
     @Column(name = "ma_giao_dich")
     private String ma_giao_dich;
 
+    // Địa chỉ nhận hàng thực tế tại thời điểm đặt hàng
+    @Column(name = "dia_chi_giao_hang")
+    private String diaChiGiaoHang;
+
     @PrePersist
     protected void onCreate() {
         this.ngay_dat = LocalDateTime.now();

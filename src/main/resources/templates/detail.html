@@ -322,6 +322,33 @@
             transform: translateY(-2px);
         }
 
+        .btn-wishlist-detail {
+            width: 50px;
+            background: rgba(255, 255, 255, 0.05);
+            border: 1px solid var(--border);
+            border-radius: 12px;
+            color: var(--text-primary);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 1.3rem;
+            cursor: pointer;
+            transition: all 0.3s;
+        }
+
+        .btn-wishlist-detail:hover {
+            background: rgba(235, 87, 87, 0.1);
+            border-color: #eb5757;
+            color: #eb5757;
+            transform: translateY(-2px);
+        }
+
+        .btn-wishlist-detail.active {
+            background: rgba(235, 87, 87, 0.2);
+            border-color: #eb5757;
+            color: #eb5757;
+        }
+
         .toast-container-custom {
             position: fixed;
             bottom: 30px;
@@ -713,6 +740,9 @@
                                 style="background: linear-gradient(135deg, var(--gold), var(--gold-dark)); color: #1a1a1a;">
                             <i class="bi bi-bag-plus-fill"></i> THÊM VÀO GIỎ HÀNG
                         </button>
+                        <button type="button" id="btnWishlist" class="btn-wishlist-detail" th:classappend="${isWishlisted} ? 'active' : ''" onclick="toggleWishlistDetail()" title="Yêu thích">
+                            <i class="bi" th:classappend="${isWishlisted} ? 'bi-heart-fill' : 'bi-heart'"></i>
+                        </button>
                     </div>
                 </div>
             </div>
@@ -955,6 +985,49 @@
                     showToast('Không thể kết nối đến máy chủ.', 'error');
                     console.error("Lỗi:", error);
                 });
+        }
+
+        function toggleWishlistDetail() {
+            if (currentUserId === null) {
+                showToast('Vui lòng đăng nhập để lưu sản phẩm yêu thích!', 'error');
+                setTimeout(() => window.location.href = '/login', 1500);
+                return;
+            }
+
+            const formData = new FormData();
+            formData.append('perfumeId', currentPerfumeId);
+
+            fetch('/wishlist/toggle', {
+                method: 'POST',
+                body: formData
+            })
+            .then(response => {
+                if (response.status === 401) {
+                    showToast('Vui lòng đăng nhập để lưu sản phẩm yêu thích!', 'error');
+                    setTimeout(() => window.location.href = '/login', 1500);
+                    return;
+                }
+                return response.json();
+            })
+            .then(data => {
+                if (data) {
+                    const btn = document.getElementById('btnWishlist');
+                    const icon = btn.querySelector('i');
+                    if (data.added) {
+                        btn.classList.add('active');
+                        icon.className = 'bi bi-heart-fill';
+                        showToast(data.message, 'success');
+                    } else {
+                        btn.classList.remove('active');
+                        icon.className = 'bi bi-heart';
+                        showToast(data.message, 'success');
+                    }
+                }
+            })
+            .catch(error => {
+                showToast('Không thể kết nối hệ thống.', 'error');
+                console.error("Lỗi:", error);
+            });
         }
     </script>
 </body>

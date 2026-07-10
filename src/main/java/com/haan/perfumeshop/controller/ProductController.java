@@ -29,12 +29,14 @@ public class ProductController {
     private final PerfumeRepository perfumeRepository;
     private final ReviewRepository reviewRepository;
     private final OrderDetailRepository orderDetailRepository;
+    private final com.haan.perfumeshop.service.WishlistService wishlistService;
 
     public ProductController(PerfumeRepository perfumeRepository, ReviewRepository reviewRepository,
-            OrderDetailRepository orderDetailRepository) {
+            OrderDetailRepository orderDetailRepository, com.haan.perfumeshop.service.WishlistService wishlistService) {
         this.perfumeRepository = perfumeRepository;
         this.reviewRepository = reviewRepository;
         this.orderDetailRepository = orderDetailRepository;
+        this.wishlistService = wishlistService;
     }
 
     @GetMapping({ "", "/", "/index" })
@@ -176,9 +178,15 @@ public class ProductController {
             canReview = hasBought && !alreadyRated;
         }
 
+        boolean isWishlisted = false;
+        if (currentUser != null) {
+            isWishlisted = wishlistService.isWishlisted(currentUser, id);
+        }
+
         model.addAttribute("canReview", canReview);
         model.addAttribute("alreadyRated", alreadyRated);
         model.addAttribute("isLoggedIn", currentUser != null);
+        model.addAttribute("isWishlisted", isWishlisted);
 
         return "detail";
     }

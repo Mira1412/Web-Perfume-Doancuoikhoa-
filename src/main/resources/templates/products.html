@@ -792,6 +792,11 @@
                         <span class="badge bg-danger" id="cartCountBadge" style="display: none; border-radius: 50%;">0</span>
                     </a>
                 </li>
+                <li th:if="${session.loggedInUser != null}">
+                    <a href="/wishlist" class="nav-link-item">
+                        <i class="bi bi-heart"></i> Yêu thích
+                    </a>
+                </li>
 
                 <!-- User Account Section -->
                 <li th:if="${session.loggedInUser != null}" class="dropdown user-dropdown ms-2">
@@ -928,7 +933,9 @@
 
                                 <div class="product-img-overlay">
                                     <span class="overlay-icon-btn"><i class="bi bi-eye"></i></span>
-                                    <span class="overlay-icon-btn" onclick="event.preventDefault(); showToast('Đã thêm sản phẩm vào danh sách yêu thích!', 'success');"><i class="bi bi-heart"></i></span>
+                                    <span class="overlay-icon-btn" th:onclick="'event.preventDefault(); toggleWishlistFromList(this, ' + ${perfume.id_nuoc_hoa} + ')'" title="Yêu thích">
+                                        <i class="bi bi-heart"></i>
+                                    </span>
                                 </div>
                                 <div class="product-brand-badge" th:text="${perfume.thuong_hieu}">Brand</div>
 
@@ -1160,6 +1167,46 @@
                 }
             });
         });
+
+        function toggleWishlistFromList(element, perfumeId) {
+            if (userId == null) {
+                showToast('Vui lòng đăng nhập để lưu sản phẩm yêu thích!', 'error');
+                setTimeout(() => window.location.href = '/login', 1500);
+                return;
+            }
+
+            const formData = new FormData();
+            formData.append('perfumeId', perfumeId);
+
+            fetch('/wishlist/toggle', {
+                method: 'POST',
+                body: formData
+            })
+            .then(response => {
+                if (response.status === 401) {
+                    showToast('Vui lòng đăng nhập để lưu sản phẩm yêu thích!', 'error');
+                    setTimeout(() => window.location.href = '/login', 1500);
+                    return;
+                }
+                return response.json();
+            })
+            .then(data => {
+                if (data) {
+                    const icon = element.querySelector('i');
+                    if (data.added) {
+                        icon.className = 'bi bi-heart-fill text-danger';
+                        showToast(data.message, 'success');
+                    } else {
+                        icon.className = 'bi bi-heart';
+                        showToast(data.message, 'success');
+                    }
+                }
+            })
+            .catch(error => {
+                showToast('Không thể kết nối hệ thống.', 'error');
+                console.error("Lỗi:", error);
+            });
+        }
     </script>
 </body>
 </html>

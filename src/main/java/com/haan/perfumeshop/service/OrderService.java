@@ -71,6 +71,7 @@ public class OrderService {
         order.setUser(fullUser);
         order.setTrang_thai("Pending");
         order.setPhuong_thuc_thanh_toan(paymentMethod != null ? paymentMethod : "COD");
+        order.setDiaChiGiaoHang(fullUser.getAddress()); // Lưu địa chỉ lúc đặt mua
         if (maGiaoDich != null && !maGiaoDich.isEmpty()) {
             order.setMa_giao_dich(maGiaoDich);
         }
