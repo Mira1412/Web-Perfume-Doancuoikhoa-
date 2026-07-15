@@ -963,7 +963,7 @@
                                                 placeholder="VD: 100" required>
                                         </div>
                                         <div class="col-md-1 text-end">
-                                            <button type="button" class="btn btn-outline-danger btn-sm w-100" onclick="removeVariantRow(this)" style="height: 46px;" title="Xóa phân loại này">
+                                            <button type="button" class="btn btn-outline-danger btn-sm w-100" onclick="window.removeVariantRow(this)" style="height: 46px;" title="Xóa phân loại này">
                                                 <i class="bi bi-trash"></i>
                                             </button>
                                         </div>
@@ -973,7 +973,7 @@
                                 <div class="mb-4 mt-2">
                                     <button type="button" class="btn btn-sm btn-outline-light"
                                         style="border-color: var(--gold); color: var(--gold);"
-                                        onclick="addVariantRow()">
+                                        onclick="window.addVariantRow()">
                                         <i class="bi bi-plus"></i> Thêm phân loại dung tích
                                     </button>
                                 </div>
@@ -1221,31 +1221,34 @@
             reader.readAsDataURL(file);
         }
 
-        document.getElementById('imageFileInput').addEventListener('change', function () {
-            handleFileSelect(this);
-        });
+        const fileInput = document.getElementById('imageFileInput');
+        if (fileInput) {
+            fileInput.addEventListener('change', function () {
+                handleFileSelect(this);
+            });
+        }
 
         // Drag & Drop
         const dropZone = document.getElementById('dropZone');
-        const fileInput = document.getElementById('imageFileInput');
+        if (dropZone && fileInput) {
+            dropZone.addEventListener('dragover', function (e) {
+                e.preventDefault();
+                dropZone.classList.add('dragging');
+            });
 
-        dropZone.addEventListener('dragover', function (e) {
-            e.preventDefault();
-            dropZone.classList.add('dragging');
-        });
+            dropZone.addEventListener('dragleave', function () {
+                dropZone.classList.remove('dragging');
+            });
 
-        dropZone.addEventListener('dragleave', function () {
-            dropZone.classList.remove('dragging');
-        });
-
-        dropZone.addEventListener('drop', function (e) {
-            e.preventDefault();
-            dropZone.classList.remove('dragging');
-            if (e.dataTransfer.files.length > 0) {
-                fileInput.files = e.dataTransfer.files;
-                handleFileSelect(fileInput);
-            }
-        });
+            dropZone.addEventListener('drop', function (e) {
+                e.preventDefault();
+                dropZone.classList.remove('dragging');
+                if (e.dataTransfer.files.length > 0) {
+                    fileInput.files = e.dataTransfer.files;
+                    handleFileSelect(fileInput);
+                }
+            });
+        }
 
         // ==========================================
         // 5. TRIM KHOẢNG TRẮNG THỪA KHI BLUR
@@ -1270,46 +1273,75 @@
         // ==========================================
         // 7. THÊM PHÂN LOẠI DUNG TÍCH ĐỘNG
         // ==========================================
-        let variantCount = document.querySelectorAll('#variants-container .variant-row').length;
-
-        function addVariantRow() {
+        // Đảm bảo các hàm nằm ở phạm vi global rõ ràng
+        window.addVariantRow = function() {
             const container = document.getElementById('variants-container');
+            if (!container) return;
+            
+            const variantRows = container.querySelectorAll('.variant-row');
+            const nextIndex = variantRows.length; // Lấy index tiếp theo dựa trên số lượng hàng thực tế
+
             const newRow = `
                 <div class="row g-3 mb-3 variant-row align-items-end">
                     <div class="col-md-4">
                         <label class="form-label text-white-50">Dung tích</label>
-                        <input type="text" class="form-control form-input" name="variants[${variantCount}].dung_tich" placeholder="VD: 100ml" required>
+                        <input type="text" class="form-input" name="variants[${nextIndex}].dung_tich" placeholder="VD: 100ml" required>
                     </div>
                     <div class="col-md-4">
-                        <label class="form-label text-white-50">Giá bán</label>
-                        <input type="text" class="form-control form-input" name="variants[${variantCount}].gia_ban" placeholder="VD: 3.000.000 đ" required>
+                        <label class="form-label text-white-50">Giá bán (Nhập số hoặc chữ)</label>
+                        <input type="text" class="form-input" name="variants[${nextIndex}].gia_ban" placeholder="VD: 3.000.000 đ" required>
                     </div>
                     <div class="col-md-3">
                         <label class="form-label text-white-50">Số lượng kho</label>
-                        <input type="number" class="form-control form-input" name="variants[${variantCount}].so_luong_ton" value="100" required>
+                        <input type="number" class="form-input" name="variants[${nextIndex}].so_luong_ton" placeholder="VD: 100" value="100" required>
                     </div>
                     <div class="col-md-1 text-end">
-                        <button type="button" class="btn btn-outline-danger btn-sm w-100" onclick="removeVariantRow(this)" style="height: 46px;" title="Xóa phân loại này">
+                        <button type="button" class="btn btn-outline-danger btn-sm w-100" onclick="window.removeVariantRow(this)" style="height: 46px;" title="Xóa phân loại này">
                             <i class="bi bi-trash"></i>
                         </button>
                     </div>
                 </div>
             `;
             container.insertAdjacentHTML('beforeend', newRow);
-            variantCount++;
-        }
+        };
 
-        function removeVariantRow(btn) {
+        window.removeVariantRow = function(btn) {
             const row = btn.closest('.variant-row');
             if (row) {
                 const container = document.getElementById('variants-container');
                 const allRows = container.querySelectorAll('.variant-row');
                 if (allRows.length > 1) {
                     row.remove();
+                    // Cập nhật lại các index của name để Spring MVC bind chính xác khi gửi form
+                    reindexVariants();
                 } else {
                     alert('Sản phẩm phải có ít nhất một phân loại dung tích!');
                 }
             }
+        };
+
+        function reindexVariants() {
+            const container = document.getElementById('variants-container');
+            const rows = container.querySelectorAll('.variant-row');
+            rows.forEach((row, idx) => {
+                // Update hidden inputs if exist
+                const hiddenInput = row.querySelector('input[type="hidden"]');
+                if (hiddenInput) {
+                    hiddenInput.name = `variants[${idx}].id_bien_the`;
+                }
+                
+                // Update text inputs
+                const inputs = row.querySelectorAll('input:not([type="hidden"])');
+                inputs.forEach(input => {
+                    if (input.name.includes('.dung_tich')) {
+                        input.name = `variants[${idx}].dung_tich`;
+                    } else if (input.name.includes('.gia_ban')) {
+                        input.name = `variants[${idx}].gia_ban`;
+                    } else if (input.name.includes('.so_luong_ton')) {
+                        input.name = `variants[${idx}].so_luong_ton`;
+                    }
+                });
+            });
         }
     </script>
 </body>

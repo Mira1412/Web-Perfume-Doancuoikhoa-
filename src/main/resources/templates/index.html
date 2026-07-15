@@ -60,19 +60,21 @@
         }
         .brand-name {
             font-family: 'Playfair Display', Georgia, serif;
-            font-size: 1.8rem;
-            font-weight: 700;
-            color: var(--gold) !important;
+            font-size: 1.9rem;
+            font-weight: 800;
+            color: #f3f4f6 !important; /* Silver/White text */
             text-decoration: none;
-            letter-spacing: 1.5px;
+            letter-spacing: 2px;
             display: flex;
             align-items: center;
             gap: 8px;
-            text-shadow: 0 0 10px rgba(201, 169, 110, 0.2);
+            text-shadow: 0 0 8px rgba(255, 255, 255, 0.4), 0 0 20px rgba(180, 200, 245, 0.2);
+            text-transform: uppercase;
         }
 
         .brand-name:hover {
-            color: var(--gold-light) !important;
+            color: #ffffff !important;
+            text-shadow: 0 0 12px rgba(255, 255, 255, 0.6), 0 0 30px rgba(200, 220, 255, 0.4);
         }        .nav-links {
             display: flex;
             align-items: center;
@@ -225,6 +227,82 @@
             left: -100px;
             border-radius: 50%;
             pointer-events: none;
+        }
+
+        /* ==================== HERO DECORATIVE MOTIFS ==================== */
+        .hero-deco {
+            position: absolute;
+            pointer-events: none;
+            z-index: 0;
+        }
+
+        /* Stylized perfume bottle silhouette — left side */
+        .hero-deco-bottle {
+            left: -10px;
+            bottom: -20px;
+            width: 320px;
+            height: 420px;
+            opacity: 0.35;
+            animation: gentleFloat 8s ease-in-out infinite;
+        }
+
+        /* Flowing floral vine — right side */
+        .hero-deco-floral {
+            right: 0px;
+            top: -10px;
+            width: 380px;
+            height: 450px;
+            opacity: 0.3;
+            animation: gentleFloat 10s ease-in-out infinite reverse;
+        }
+
+        /* Scattered flower petals */
+        .hero-deco-petals {
+            left: 15%;
+            top: 10px;
+            width: 250px;
+            height: 250px;
+            opacity: 0.3;
+            animation: gentleFloat 12s ease-in-out infinite 2s;
+        }
+
+        /* Aroma wave lines from bottle */
+        .hero-deco-aroma {
+            left: 80px;
+            bottom: 80px;
+            width: 220px;
+            height: 280px;
+            opacity: 0.25;
+            animation: aromaRise 6s ease-in-out infinite;
+        }
+
+        /* Bottom floral border */
+        .hero-deco-border {
+            bottom: 0;
+            left: 0;
+            width: 100%;
+            height: 60px;
+            opacity: 0.2;
+        }
+
+        /* Small rose accent — center-right */
+        .hero-deco-rose {
+            right: 30%;
+            bottom: 30px;
+            width: 150px;
+            height: 150px;
+            opacity: 0.3;
+            animation: gentleFloat 9s ease-in-out infinite 1s;
+        }
+
+        @keyframes gentleFloat {
+            0%, 100% { transform: translateY(0) rotate(0deg); }
+            50% { transform: translateY(-12px) rotate(1.5deg); }
+        }
+
+        @keyframes aromaRise {
+            0%, 100% { transform: translateY(0); opacity: 0.25; }
+            50% { transform: translateY(-8px); opacity: 0.4; }
         }
 
         .hero-badge {
@@ -486,8 +564,8 @@
 
         .product-card:hover {
             transform: translateY(-10px);
-            box-shadow: 0 24px 48px rgba(0, 0, 0, 0.65), 0 0 25px rgba(201, 169, 110, 0.35);
-            border-color: rgba(201, 169, 110, 0.7);
+            box-shadow: 0 24px 48px rgba(0, 0, 0, 0.65), 0 0 25px rgba(220, 230, 255, 0.35);
+            border-color: rgba(220, 230, 255, 0.6);
         }
 
         .product-img-wrapper {
@@ -1409,14 +1487,269 @@
             font-size: 0.72rem;
             color: var(--text-muted);
         }
+
+        /* ==================== LUXURY FLOATING BACKGROUND ==================== */
+        .floating-bg {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            pointer-events: none;
+            z-index: 999;
+            overflow: hidden;
+        }
+
+        .floating-particle {
+            position: absolute;
+            bottom: -60px;
+            pointer-events: none;
+            opacity: 0;
+            will-change: transform, opacity;
+        }
+
+        /* Silver bokeh orbs — bright shimmering */
+        .floating-particle.bokeh {
+            border-radius: 50%;
+            background: radial-gradient(circle at 35% 35%, 
+                rgba(220, 230, 255, 0.45) 0%, 
+                rgba(200, 215, 240, 0.2) 35%, 
+                rgba(180, 200, 230, 0.05) 65%,
+                transparent 80%);
+            box-shadow: 
+                inset 0 0 20px rgba(220, 230, 255, 0.2),
+                0 0 30px rgba(200, 220, 255, 0.15),
+                0 0 60px rgba(180, 200, 245, 0.06);
+        }
+
+        /* Elegant petals — visible silver shimmer */
+        .floating-particle.petal {
+            border-radius: 80% 0 55% 50% / 55% 0 80% 50%;
+            background: linear-gradient(135deg, 
+                rgba(210, 220, 245, 0.5) 0%, 
+                rgba(190, 205, 235, 0.25) 50%, 
+                rgba(175, 190, 225, 0.08) 100%);
+            border: 1px solid rgba(220, 230, 255, 0.15);
+            box-shadow: 0 0 12px rgba(200, 215, 250, 0.1);
+        }
+
+        /* Diamond sparkle — brilliant white-silver glints */
+        .floating-particle.sparkle {
+            background: rgba(240, 245, 255, 1);
+            border-radius: 50%;
+            box-shadow: 
+                0 0 6px rgba(220, 230, 255, 0.9),
+                0 0 15px rgba(200, 215, 250, 0.6),
+                0 0 30px rgba(180, 200, 245, 0.3),
+                0 0 45px rgba(160, 185, 240, 0.1);
+        }
+
+        /* Ambient mist — visible cool silver glow */
+        .floating-particle.mist {
+            border-radius: 50%;
+            background: radial-gradient(ellipse at center,
+                rgba(160, 180, 230, 0.1) 0%,
+                rgba(180, 200, 240, 0.05) 45%,
+                transparent 70%);
+            filter: blur(25px);
+        }
+
+        /* Silver thread — visible shimmering lines */
+        .floating-particle.thread {
+            width: 1px;
+            background: linear-gradient(to bottom,
+                transparent 0%,
+                rgba(210, 220, 250, 0.3) 25%,
+                rgba(230, 240, 255, 0.5) 50%,
+                rgba(210, 220, 250, 0.3) 75%,
+                transparent 100%);
+            border-radius: 1px;
+            box-shadow: 0 0 6px rgba(200, 215, 250, 0.2);
+        }
+
+        @keyframes floatUpLuxury {
+            0% {
+                transform: translateY(0) translateX(0) rotate(0deg);
+                opacity: 0;
+            }
+            8% {
+                opacity: var(--max-opacity, 0.7);
+            }
+            25% {
+                transform: translateY(-25vh) translateX(var(--sway-1, 20px)) rotate(45deg);
+            }
+            50% {
+                opacity: var(--mid-opacity, 0.5);
+                transform: translateY(-50vh) translateX(var(--sway-2, -15px)) rotate(120deg);
+            }
+            75% {
+                transform: translateY(-75vh) translateX(var(--sway-3, 10px)) rotate(200deg);
+                opacity: var(--fade-opacity, 0.25);
+            }
+            100% {
+                transform: translateY(-110vh) translateX(var(--sway-4, -5px)) rotate(300deg);
+                opacity: 0;
+            }
+        }
+
+        @keyframes driftSlow {
+            0%, 100% { transform: translateX(0) rotate(0deg); }
+            33% { transform: translateX(var(--drift-x, 15px)) rotate(var(--drift-r, 3deg)); }
+            66% { transform: translateX(calc(var(--drift-x, 15px) * -0.7)) rotate(calc(var(--drift-r, 3deg) * -1)); }
+        }
+
+        @keyframes pulseSparkle {
+            0%, 100% { opacity: 0.3; transform: scale(0.8); }
+            50% { opacity: 1; transform: scale(1.5); }
+        }
+
+        @keyframes mistDrift {
+            0% { transform: translate(0, 0) scale(1); opacity: 0; }
+            20% { opacity: var(--mist-opacity, 0.08); }
+            50% { transform: translate(var(--mist-x, 50px), -30vh) scale(1.2); }
+            80% { opacity: var(--mist-opacity, 0.08); }
+            100% { transform: translate(var(--mist-x2, -30px), -60vh) scale(0.8); opacity: 0; }
+        }
     </style>
 </head>
 
 <body>
 
+    <!-- ==================== FLOATING BACKGROUND ==================== -->
+    <div class="floating-bg" id="floatingBg"></div>
+
+    <script>
+    (function() {
+        const container = document.getElementById('floatingBg');
+
+        function rand(min, max) { return min + Math.random() * (max - min); }
+        function randSign() { return Math.random() > 0.5 ? 1 : -1; }
+
+        // --- GOLDEN BOKEH ORBS ---
+        for (let i = 0; i < 8; i++) {
+            const el = document.createElement('div');
+            el.classList.add('floating-particle', 'bokeh');
+            const size = rand(30, 80);
+            el.style.width = size + 'px';
+            el.style.height = size + 'px';
+            el.style.left = rand(0, 100) + '%';
+            el.style.setProperty('--max-opacity', rand(0.3, 0.6).toFixed(2));
+            el.style.setProperty('--mid-opacity', rand(0.15, 0.4).toFixed(2));
+            el.style.setProperty('--fade-opacity', rand(0.08, 0.2).toFixed(2));
+            el.style.setProperty('--sway-1', (rand(15, 40) * randSign()) + 'px');
+            el.style.setProperty('--sway-2', (rand(10, 30) * randSign()) + 'px');
+            el.style.setProperty('--sway-3', (rand(10, 25) * randSign()) + 'px');
+            el.style.setProperty('--sway-4', (rand(5, 15) * randSign()) + 'px');
+            const dur = rand(18, 35);
+            const delay = rand(0, 20);
+            el.style.animation = `floatUpLuxury ${dur}s ${delay}s linear infinite`;
+            container.appendChild(el);
+        }
+
+        // --- ELEGANT ROSE PETALS ---
+        const petalColors = [
+            // Icy silver
+            [190, 200, 220],
+            [180, 195, 215],
+            // Cool platinum
+            [200, 210, 230],
+            [175, 190, 210],
+            // Lavender silver
+            [185, 180, 210],
+        ];
+        for (let i = 0; i < 12; i++) {
+            const el = document.createElement('div');
+            el.classList.add('floating-particle', 'petal');
+            const size = rand(10, 22);
+            el.style.width = size + 'px';
+            el.style.height = (size * rand(0.7, 1.3)) + 'px';
+            el.style.left = rand(0, 100) + '%';
+            // Random petal color
+            const c = petalColors[Math.floor(Math.random() * petalColors.length)];
+            el.style.background = `linear-gradient(${rand(90, 200)}deg,
+                rgba(${c[0]}, ${c[1]}, ${c[2]}, ${rand(0.2, 0.4).toFixed(2)}) 0%,
+                rgba(${c[0]}, ${c[1]}, ${c[2]}, ${rand(0.05, 0.15).toFixed(2)}) 100%)`;
+            el.style.setProperty('--max-opacity', rand(0.6, 0.9).toFixed(2));
+            el.style.setProperty('--mid-opacity', rand(0.35, 0.6).toFixed(2));
+            el.style.setProperty('--fade-opacity', rand(0.1, 0.25).toFixed(2));
+            el.style.setProperty('--sway-1', (rand(20, 50) * randSign()) + 'px');
+            el.style.setProperty('--sway-2', (rand(15, 40) * randSign()) + 'px');
+            el.style.setProperty('--sway-3', (rand(10, 35) * randSign()) + 'px');
+            el.style.setProperty('--sway-4', (rand(5, 20) * randSign()) + 'px');
+            el.style.setProperty('--drift-x', (rand(10, 30) * randSign()) + 'px');
+            el.style.setProperty('--drift-r', (rand(5, 15) * randSign()) + 'deg');
+            const dur = rand(14, 28);
+            const delay = rand(0, 18);
+            const driftDur = rand(8, 16);
+            el.style.animation = `floatUpLuxury ${dur}s ${delay}s linear infinite, driftSlow ${driftDur}s ${delay}s ease-in-out infinite`;
+            container.appendChild(el);
+        }
+
+        // --- DIAMOND SPARKLES ---
+        for (let i = 0; i < 18; i++) {
+            const el = document.createElement('div');
+            el.classList.add('floating-particle', 'sparkle');
+            const size = rand(3, 6);
+            el.style.width = size + 'px';
+            el.style.height = size + 'px';
+            el.style.left = rand(0, 100) + '%';
+            el.style.setProperty('--max-opacity', rand(0.7, 1).toFixed(2));
+            el.style.setProperty('--mid-opacity', rand(0.4, 0.7).toFixed(2));
+            el.style.setProperty('--fade-opacity', rand(0.15, 0.35).toFixed(2));
+            el.style.setProperty('--sway-1', (rand(5, 20) * randSign()) + 'px');
+            el.style.setProperty('--sway-2', (rand(5, 15) * randSign()) + 'px');
+            el.style.setProperty('--sway-3', (rand(3, 12) * randSign()) + 'px');
+            el.style.setProperty('--sway-4', (rand(2, 8) * randSign()) + 'px');
+            const dur = rand(10, 25);
+            const delay = rand(0, 22);
+            const pulseDur = rand(2, 5);
+            el.style.animation = `floatUpLuxury ${dur}s ${delay}s linear infinite, pulseSparkle ${pulseDur}s ${delay}s ease-in-out infinite`;
+            container.appendChild(el);
+        }
+
+        // --- AMBIENT MIST ---
+        for (let i = 0; i < 4; i++) {
+            const el = document.createElement('div');
+            el.classList.add('floating-particle', 'mist');
+            const size = rand(200, 400);
+            el.style.width = size + 'px';
+            el.style.height = size + 'px';
+            el.style.left = rand(-10, 90) + '%';
+            el.style.bottom = rand(-100, 100) + 'px';
+            el.style.setProperty('--mist-opacity', rand(0.02, 0.06).toFixed(3));
+            el.style.setProperty('--mist-x', (rand(30, 80) * randSign()) + 'px');
+            el.style.setProperty('--mist-x2', (rand(20, 50) * randSign()) + 'px');
+            const dur = rand(30, 55);
+            const delay = rand(0, 15);
+            el.style.animation = `mistDrift ${dur}s ${delay}s ease-in-out infinite`;
+            container.appendChild(el);
+        }
+
+        // --- GOLDEN THREADS ---
+        for (let i = 0; i < 5; i++) {
+            const el = document.createElement('div');
+            el.classList.add('floating-particle', 'thread');
+            el.style.height = rand(40, 100) + 'px';
+            el.style.left = rand(5, 95) + '%';
+            el.style.setProperty('--max-opacity', rand(0.15, 0.3).toFixed(2));
+            el.style.setProperty('--mid-opacity', rand(0.08, 0.18).toFixed(2));
+            el.style.setProperty('--fade-opacity', rand(0.02, 0.08).toFixed(2));
+            el.style.setProperty('--sway-1', (rand(3, 10) * randSign()) + 'px');
+            el.style.setProperty('--sway-2', (rand(3, 8) * randSign()) + 'px');
+            el.style.setProperty('--sway-3', (rand(2, 6) * randSign()) + 'px');
+            el.style.setProperty('--sway-4', (rand(1, 4) * randSign()) + 'px');
+            const dur = rand(20, 40);
+            const delay = rand(0, 25);
+            el.style.animation = `floatUpLuxury ${dur}s ${delay}s linear infinite`;
+            container.appendChild(el);
+        }
+    })();
+    </script>
+
+
     <nav class="navbar-custom">
         <div class="container">
-            <a class="brand-name" href="/">🌸 Halo</a>
+            <a class="brand-name" href="/">🌸 HALO</a>
 
             <ul class="nav-links">
                 <li><a href="/products" class="nav-link-item"><i class="bi bi-grid"></i> Sản phẩm</a></li>
@@ -1482,13 +1815,135 @@
     </nav>
 
     <section class="hero-section">
+
+        <!-- ===== DECORATIVE MOTIFS ===== -->
+
+        <!-- Stylized perfume bottle silhouette -->
+        <svg class="hero-deco hero-deco-bottle" viewBox="0 0 280 380" fill="none" xmlns="http://www.w3.org/2000/svg">
+            <!-- Bottle cap -->
+            <rect x="105" y="10" width="70" height="35" rx="6" stroke="rgba(201,169,110,0.9)" stroke-width="2" fill="rgba(201,169,110,0.05)"/>
+            <rect x="115" y="0" width="50" height="15" rx="4" stroke="rgba(201,169,110,0.8)" stroke-width="1.5" fill="none"/>
+            <!-- Bottle neck -->
+            <path d="M120 45 L120 75 Q120 85 110 90 L110 90" stroke="rgba(201,169,110,0.8)" stroke-width="1.5" fill="none"/>
+            <path d="M160 45 L160 75 Q160 85 170 90 L170 90" stroke="rgba(201,169,110,0.8)" stroke-width="1.5" fill="none"/>
+            <!-- Bottle body -->
+            <path d="M85 90 Q75 95 70 120 L65 280 Q65 310 90 320 L190 320 Q215 310 215 280 L210 120 Q205 95 195 90 Z" stroke="rgba(201,169,110,0.9)" stroke-width="2" fill="none"/>
+            <!-- Inner liquid level -->
+            <path d="M80 160 Q140 150 200 160 L200 280 Q200 305 185 310 L95 310 Q80 305 80 280 Z" stroke="rgba(201,169,110,0.5)" stroke-width="1" fill="rgba(201,169,110,0.06)"/>
+            <!-- Label on bottle -->
+            <rect x="100" y="200" width="80" height="50" rx="4" stroke="rgba(201,169,110,0.6)" stroke-width="1.2" fill="none"/>
+            <line x1="112" y1="215" x2="168" y2="215" stroke="rgba(201,169,110,0.5)" stroke-width="0.8"/>
+            <line x1="120" y1="225" x2="160" y2="225" stroke="rgba(201,169,110,0.4)" stroke-width="0.7"/>
+            <line x1="125" y1="235" x2="155" y2="235" stroke="rgba(201,169,110,0.3)" stroke-width="0.6"/>
+            <!-- Decorative diamond on bottle -->
+            <path d="M140 170 L150 180 L140 190 L130 180 Z" stroke="rgba(201,169,110,0.7)" stroke-width="1.2" fill="rgba(201,169,110,0.04)"/>
+            <!-- Light reflection -->
+            <path d="M90 110 Q90 200 92 270" stroke="rgba(255,255,255,0.15)" stroke-width="2.5" fill="none" stroke-linecap="round"/>
+            <!-- Spray mist from top -->
+            <circle cx="140" cy="5" r="3" fill="rgba(201,169,110,0.3)"/>
+            <circle cx="130" cy="-8" r="2" fill="rgba(201,169,110,0.2)"/>
+            <circle cx="152" cy="-12" r="1.5" fill="rgba(201,169,110,0.15)"/>
+            <circle cx="138" cy="-18" r="1" fill="rgba(201,169,110,0.1)"/>
+        </svg>
+
+        <!-- Flowing floral vine -->
+        <svg class="hero-deco hero-deco-floral" viewBox="0 0 320 400" fill="none" xmlns="http://www.w3.org/2000/svg">
+            <!-- Main vine stem -->
+            <path d="M280 400 Q260 350 270 300 Q280 250 250 200 Q220 150 240 100 Q260 50 230 0" stroke="rgba(201,169,110,0.8)" stroke-width="2" fill="none" stroke-linecap="round"/>
+            <!-- Branch 1 -->
+            <path d="M270 300 Q230 280 200 290 Q180 300 160 280" stroke="rgba(201,169,110,0.6)" stroke-width="1.5" fill="none" stroke-linecap="round"/>
+            <!-- Branch 2 -->
+            <path d="M250 200 Q290 180 310 150 Q320 130 300 110" stroke="rgba(201,169,110,0.6)" stroke-width="1.5" fill="none" stroke-linecap="round"/>
+            <!-- Branch 3 -->
+            <path d="M240 100 Q200 90 180 110 Q165 130 140 120" stroke="rgba(201,169,110,0.5)" stroke-width="1.2" fill="none" stroke-linecap="round"/>
+            <!-- Flower 1 (5-petal rose) -->
+            <g transform="translate(155,275) scale(1.2)">
+                <path d="M0 -15 Q8 -20 12 -12 Q15 -5 8 0 Q0 5 0 -15" stroke="rgba(201,169,110,0.8)" stroke-width="1" fill="rgba(201,169,110,0.08)"/>
+                <path d="M0 -15 Q-8 -20 -12 -12 Q-15 -5 -8 0 Q0 5 0 -15" stroke="rgba(201,169,110,0.8)" stroke-width="1" fill="rgba(201,169,110,0.08)"/>
+                <path d="M12 -12 Q18 -5 15 5 Q10 12 3 8 Q-3 3 12 -12" stroke="rgba(201,169,110,0.7)" stroke-width="1" fill="rgba(201,169,110,0.06)"/>
+                <path d="M-12 -12 Q-18 -5 -15 5 Q-10 12 -3 8 Q3 3 -12 -12" stroke="rgba(201,169,110,0.7)" stroke-width="1" fill="rgba(201,169,110,0.06)"/>
+                <path d="M-8 0 Q-10 10 0 15 Q10 10 8 0 Q5 5 0 8 Q-5 5 -8 0" stroke="rgba(201,169,110,0.6)" stroke-width="1" fill="rgba(201,169,110,0.05)"/>
+                <circle cx="0" cy="0" r="4" fill="rgba(201,169,110,0.2)"/>
+            </g>
+            <!-- Flower 2 -->
+            <g transform="translate(305,145) scale(1)">
+                <path d="M0 -15 Q8 -20 12 -12 Q15 -5 8 0 Q0 5 0 -15" stroke="rgba(201,169,110,0.7)" stroke-width="1" fill="rgba(201,169,110,0.06)"/>
+                <path d="M0 -15 Q-8 -20 -12 -12 Q-15 -5 -8 0 Q0 5 0 -15" stroke="rgba(201,169,110,0.7)" stroke-width="1" fill="rgba(201,169,110,0.06)"/>
+                <path d="M12 -12 Q18 -5 15 5 Q10 12 3 8 Q-3 3 12 -12" stroke="rgba(201,169,110,0.6)" stroke-width="1" fill="rgba(201,169,110,0.05)"/>
+                <path d="M-12 -12 Q-18 -5 -15 5 Q-10 12 -3 8 Q3 3 -12 -12" stroke="rgba(201,169,110,0.6)" stroke-width="1" fill="rgba(201,169,110,0.05)"/>
+                <path d="M-8 0 Q-10 10 0 15 Q10 10 8 0" stroke="rgba(201,169,110,0.5)" stroke-width="1" fill="rgba(201,169,110,0.04)"/>
+                <circle cx="0" cy="0" r="4" fill="rgba(201,169,110,0.15)"/>
+            </g>
+            <!-- Flower 3 (bud) -->
+            <g transform="translate(135,115) scale(0.9)">
+                <path d="M0 0 Q-5 -15 0 -25 Q5 -15 0 0" stroke="rgba(201,169,110,0.6)" stroke-width="1" fill="rgba(201,169,110,0.06)"/>
+                <path d="M0 0 Q-10 -10 -5 -22" stroke="rgba(201,169,110,0.5)" stroke-width="0.8" fill="none"/>
+                <path d="M0 0 Q10 -10 5 -22" stroke="rgba(201,169,110,0.5)" stroke-width="0.8" fill="none"/>
+            </g>
+            <!-- Leaves -->
+            <path d="M200 290 Q190 285 185 275 Q195 278 200 290" stroke="rgba(201,169,110,0.5)" stroke-width="1" fill="rgba(201,169,110,0.06)"/>
+            <path d="M310 150 Q315 140 310 130 Q305 138 310 150" stroke="rgba(201,169,110,0.5)" stroke-width="1" fill="rgba(201,169,110,0.06)"/>
+            <path d="M250 200 Q240 190 245 178 Q250 188 250 200" stroke="rgba(201,169,110,0.4)" stroke-width="0.8" fill="rgba(201,169,110,0.05)"/>
+            <path d="M270 300 Q278 290 275 278 Q268 288 270 300" stroke="rgba(201,169,110,0.4)" stroke-width="0.8" fill="rgba(201,169,110,0.05)"/>
+            <!-- Small dots (pollen) -->
+            <circle cx="170" cy="270" r="2.5" fill="rgba(201,169,110,0.25)"/>
+            <circle cx="190" cy="285" r="2" fill="rgba(201,169,110,0.2)"/>
+            <circle cx="295" cy="135" r="2" fill="rgba(201,169,110,0.2)"/>
+            <circle cx="145" cy="125" r="1.5" fill="rgba(201,169,110,0.15)"/>
+        </svg>
+
+        <!-- Scattered petals -->
+        <svg class="hero-deco hero-deco-petals" viewBox="0 0 200 200" fill="none" xmlns="http://www.w3.org/2000/svg">
+            <path d="M30 50 Q35 35 50 30 Q40 42 30 50" stroke="rgba(201,169,110,0.7)" stroke-width="1" fill="rgba(201,169,110,0.1)" transform="rotate(15 40 40)"/>
+            <path d="M100 20 Q108 10 120 15 Q112 22 100 20" stroke="rgba(201,169,110,0.6)" stroke-width="1" fill="rgba(201,169,110,0.08)" transform="rotate(-20 110 15)"/>
+            <path d="M150 70 Q158 55 170 60 Q162 68 150 70" stroke="rgba(201,169,110,0.5)" stroke-width="1" fill="rgba(201,169,110,0.07)" transform="rotate(45 160 65)"/>
+            <path d="M60 130 Q68 118 80 122 Q72 130 60 130" stroke="rgba(201,169,110,0.6)" stroke-width="1" fill="rgba(201,169,110,0.08)" transform="rotate(-30 70 125)"/>
+            <path d="M170 150 Q175 138 185 142 Q180 150 170 150" stroke="rgba(201,169,110,0.5)" stroke-width="0.8" fill="rgba(201,169,110,0.06)" transform="rotate(60 177 145)"/>
+            <path d="M20 170 Q28 160 38 165 Q30 172 20 170" stroke="rgba(201,169,110,0.5)" stroke-width="0.8" fill="rgba(201,169,110,0.06)" transform="rotate(25 29 165)"/>
+        </svg>
+
+        <!-- Aroma waves from perfume -->
+        <svg class="hero-deco hero-deco-aroma" viewBox="0 0 200 250" fill="none" xmlns="http://www.w3.org/2000/svg">
+            <path d="M100 250 Q80 220 90 190 Q100 160 85 130 Q70 100 80 70 Q90 40 75 10" stroke="rgba(201,169,110,0.5)" stroke-width="1.2" fill="none" stroke-linecap="round" stroke-dasharray="4 6"/>
+            <path d="M120 250 Q140 215 130 180 Q120 145 135 110 Q150 75 140 40" stroke="rgba(201,169,110,0.4)" stroke-width="1.2" fill="none" stroke-linecap="round" stroke-dasharray="3 8"/>
+            <path d="M80 240 Q60 200 70 165 Q80 130 65 95 Q50 60 60 30" stroke="rgba(201,169,110,0.3)" stroke-width="1" fill="none" stroke-linecap="round" stroke-dasharray="5 7"/>
+            <!-- Tiny aroma particles -->
+            <circle cx="85" cy="60" r="3" fill="rgba(201,169,110,0.2)"/>
+            <circle cx="140" cy="35" r="2.5" fill="rgba(201,169,110,0.15)"/>
+            <circle cx="60" cy="25" r="2" fill="rgba(201,169,110,0.15)"/>
+            <circle cx="75" cy="90" r="1.5" fill="rgba(201,169,110,0.12)"/>
+            <circle cx="130" cy="80" r="2" fill="rgba(201,169,110,0.12)"/>
+        </svg>
+
+        <!-- Small rose accent -->
+        <svg class="hero-deco hero-deco-rose" viewBox="0 0 120 120" fill="none" xmlns="http://www.w3.org/2000/svg">
+            <!-- Rose petals (spiral) -->
+            <path d="M60 45 Q70 35 75 45 Q78 55 68 58 Q58 60 60 45" stroke="rgba(201,169,110,0.7)" stroke-width="1" fill="rgba(201,169,110,0.08)"/>
+            <path d="M60 45 Q50 35 45 45 Q42 55 52 58 Q62 60 60 45" stroke="rgba(201,169,110,0.7)" stroke-width="1" fill="rgba(201,169,110,0.08)"/>
+            <path d="M68 58 Q80 60 82 72 Q78 82 68 78 Q58 74 68 58" stroke="rgba(201,169,110,0.6)" stroke-width="1" fill="rgba(201,169,110,0.06)"/>
+            <path d="M52 58 Q40 60 38 72 Q42 82 52 78 Q62 74 52 58" stroke="rgba(201,169,110,0.6)" stroke-width="1" fill="rgba(201,169,110,0.06)"/>
+            <path d="M52 78 Q50 90 60 95 Q70 90 68 78 Q65 85 60 88 Q55 85 52 78" stroke="rgba(201,169,110,0.5)" stroke-width="0.8" fill="rgba(201,169,110,0.05)"/>
+            <circle cx="60" cy="58" r="5" fill="rgba(201,169,110,0.12)"/>
+            <!-- Stem -->
+            <path d="M60 95 Q58 105 60 120" stroke="rgba(201,169,110,0.4)" stroke-width="1" fill="none"/>
+            <!-- Leaves -->
+            <path d="M58 105 Q45 98 40 105 Q48 108 58 105" stroke="rgba(201,169,110,0.4)" stroke-width="0.8" fill="rgba(201,169,110,0.06)"/>
+            <path d="M60 110 Q73 103 78 110 Q70 113 60 110" stroke="rgba(201,169,110,0.4)" stroke-width="0.8" fill="rgba(201,169,110,0.06)"/>
+        </svg>
+
+        <!-- Bottom floral border -->
+        <svg class="hero-deco hero-deco-border" viewBox="0 0 1200 60" preserveAspectRatio="none" xmlns="http://www.w3.org/2000/svg">
+            <path d="M0 55 Q100 40 200 50 Q300 60 400 45 Q500 30 600 45 Q700 60 800 50 Q900 40 1000 50 Q1100 60 1200 50" stroke="rgba(201,169,110,0.6)" stroke-width="1.2" fill="none"/>
+            <path d="M0 58 Q150 45 300 55 Q450 65 600 50 Q750 35 900 50 Q1050 65 1200 55" stroke="rgba(201,169,110,0.3)" stroke-width="0.8" fill="none"/>
+        </svg>
+
         <div class="container position-relative">
             <div id="heroCarousel" class="carousel slide" data-bs-ride="carousel" data-bs-interval="5000">
                 <div class="carousel-inner">
                     <!-- Slide 1 -->
                     <div class="carousel-item active">
                         <div class="row align-items-center">
-                            <div class="col-lg-7">
+                            <div class="col-lg-10 mx-auto text-center">
                                 <div class="hero-badge">
                                     <i class="bi bi-stars"></i> Bộ sưu tập mới nhất 2025
                                 </div>
@@ -1496,11 +1951,11 @@
                                     Tinh tế trong<br>
                                     từng <span class="text-gold">hương thơm</span>
                                 </h1>
-                                <p class="hero-desc">
+                                <p class="hero-desc mx-auto">
                                     Khám phá bộ sưu tập nước hoa cao cấp được tuyển chọn kỹ lưỡng từ các thương hiệu danh tiếng thế
                                     giới. Mỗi chai nước hoa là một câu chuyện, một ký ức riêng của bạn.
                                 </p>
-                                <div class="hero-stats">
+                                <div class="hero-stats justify-content-center">
                                     <div class="stat-item">
                                         <div class="stat-number">50+</div>
                                         <div class="stat-label">Sản phẩm</div>
@@ -1515,21 +1970,13 @@
                                     </div>
                                 </div>
                             </div>
-                            <div class="col-lg-5 mt-5 mt-lg-0">
-                                <div class="hero-img-container">
-                                    <div class="hero-img-backdrop"></div>
-                                    <div class="hero-img-wrapper-main">
-                                        <img src="/uploads/hero_perfume_bottle.png" alt="Halo Luxury Perfume" class="hero-img-main">
-                                    </div>
-                                </div>
-                            </div>
                         </div>
                     </div>
 
                     <!-- Slide 2 -->
                     <div class="carousel-item">
                         <div class="row align-items-center">
-                            <div class="col-lg-7">
+                            <div class="col-lg-10 mx-auto text-center">
                                 <div class="hero-badge">
                                     <i class="bi bi-fire"></i> Gợi Cảm & Quyến Rũ
                                 </div>
@@ -1537,10 +1984,10 @@
                                     Khẳng định<br>
                                     phong cách <span class="text-gold">độc bản</span>
                                 </h1>
-                                <p class="hero-desc">
+                                <p class="hero-desc mx-auto">
                                     Nhóm hương nồng nàn và say đắm, khơi gợi những xúc cảm thầm kín nhất. Đậm nét cá tính riêng biệt cho những buổi tiệc đêm sang trọng.
                                 </p>
-                                <div class="hero-stats">
+                                <div class="hero-stats justify-content-center">
                                     <div class="stat-item">
                                         <div class="stat-number">12h+</div>
                                         <div class="stat-label">Lưu hương</div>
@@ -1555,21 +2002,13 @@
                                     </div>
                                 </div>
                             </div>
-                            <div class="col-lg-5 mt-5 mt-lg-0">
-                                <div class="hero-img-container">
-                                    <div class="hero-img-backdrop" style="background: radial-gradient(circle, rgba(230, 80, 80, 0.15) 0%, transparent 70%);"></div>
-                                    <div class="hero-img-wrapper-main" style="border-color: rgba(230, 80, 80, 0.2);">
-                                        <img src="/uploads/carousel_perfume_rose.png" alt="Halo Premium Perfume" class="hero-img-main">
-                                    </div>
-                                </div>
-                            </div>
                         </div>
                     </div>
 
                     <!-- Slide 3 -->
                     <div class="carousel-item">
                         <div class="row align-items-center">
-                            <div class="col-lg-7">
+                            <div class="col-lg-10 mx-auto text-center">
                                 <div class="hero-badge">
                                     <i class="bi bi-droplet-half"></i> Tươi Mát & Sảng Khoái
                                 </div>
@@ -1577,10 +2016,10 @@
                                     Đánh thức<br>
                                     mọi <span class="text-gold">giác quan</span>
                                 </h1>
-                                <p class="hero-desc">
+                                <p class="hero-desc mx-auto">
                                     Mùi hương thanh mát tựa đại dương lộng gió, mang lại năng lượng tràn trề và sự tinh tế nhẹ nhàng suốt ngày dài năng động.
                                 </p>
-                                <div class="hero-stats">
+                                <div class="hero-stats justify-content-center">
                                     <div class="stat-item">
                                         <div class="stat-number">Mùa hè</div>
                                         <div class="stat-label">Phù hợp</div>
@@ -1592,14 +2031,6 @@
                                     <div class="stat-item">
                                         <div class="stat-number">New</div>
                                         <div class="stat-label">Ra mắt</div>
-                                    </div>
-                                </div>
-                            </div>
-                            <div class="col-lg-5 mt-5 mt-lg-0">
-                                <div class="hero-img-container">
-                                    <div class="hero-img-backdrop" style="background: radial-gradient(circle, rgba(80, 150, 230, 0.15) 0%, transparent 70%);"></div>
-                                    <div class="hero-img-wrapper-main" style="border-color: rgba(80, 150, 230, 0.2);">
-                                        <img src="/uploads/carousel_perfume_blue.png" alt="Halo Fresh Perfume" class="hero-img-main">
                                     </div>
                                 </div>
                             </div>
