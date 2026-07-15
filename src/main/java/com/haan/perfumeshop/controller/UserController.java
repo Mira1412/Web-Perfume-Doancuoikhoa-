@@ -219,13 +219,21 @@ public class UserController {
         }
 
         // Nếu mọi thứ ok -> Tạo tài khoản mới
-        User newUser = new User();
-        newUser.setFullName(fullName);
-        newUser.setEmail(email);
-        newUser.setPassword(passwordEncoder.encode(password)); // Mã hóa mật khẩu bằng BCrypt trước khi lưu
-        newUser.setRole("user"); 
+        try {
+            User newUser = new User();
+            newUser.setFullName(fullName);
+            newUser.setEmail(email);
+            newUser.setPassword(passwordEncoder.encode(password)); // Mã hóa mật khẩu bằng BCrypt trước khi lưu
+            newUser.setRole("USER");
 
-        userRepository.save(newUser);
+            userRepository.save(newUser);
+            System.out.println("✅ ĐÃ LƯU USER THÀNH CÔNG: " + newUser.getEmail() + " | ID: " + newUser.getId_user());
+        } catch (Exception e) {
+            System.out.println("❌ LỖI KHI LƯU USER: " + e.getMessage());
+            e.printStackTrace();
+            redirectAttributes.addFlashAttribute("errorMsg", "Lỗi hệ thống khi đăng ký: " + e.getMessage());
+            return "redirect:/register";
+        }
 
         // Đăng ký xong thì đá về trang Login kèm thông báo
         redirectAttributes.addFlashAttribute("successMsg", "Đăng ký thành công! Vui lòng đăng nhập.");

@@ -241,13 +241,22 @@ public class PaymentController {
             "HTTP_X_FORWARDED_FOR", "HTTP_X_FORWARDED", "HTTP_FORWARDED_FOR",
             "HTTP_FORWARDED", "HTTP_CLIENT_IP", "HTTP_VIA", "REMOTE_ADDR"
         };
+        String ip = null;
         for (String header : headers) {
-            String ip = request.getHeader(header);
+            ip = request.getHeader(header);
             if (ip != null && !ip.isEmpty() && !"unknown".equalsIgnoreCase(ip)) {
-                return ip.split(",")[0].trim();
+                ip = ip.split(",")[0].trim();
+                break;
             }
         }
-        return request.getRemoteAddr();
+        if (ip == null || ip.isEmpty() || "unknown".equalsIgnoreCase(ip)) {
+            ip = request.getRemoteAddr();
+        }
+        // VNPay yêu cầu IPv4 — chuyển IPv6 loopback sang 127.0.0.1
+        if ("0:0:0:0:0:0:0:1".equals(ip) || "::1".equals(ip)) {
+            ip = "127.0.0.1";
+        }
+        return ip;
     }
 
     private static final Map<String, String> VNPAY_ERROR_MESSAGES = Map.ofEntries(
