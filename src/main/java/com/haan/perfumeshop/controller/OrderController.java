@@ -50,17 +50,22 @@ public class OrderController {
 
     // GET Endpoint test cấu hình SMTP đồng bộ
     @GetMapping("/test-email")
-    public ResponseEntity<String> testEmail(HttpSession session) {
-        User currentUser = (User) session.getAttribute("loggedInUser");
-        if (currentUser == null) {
-            return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body("Vui lòng đăng nhập trước khi kiểm tra!");
+    public ResponseEntity<String> testEmail(
+            @RequestParam(value = "to", required = false) String to,
+            HttpSession session) {
+        String targetEmail = to;
+        if (targetEmail == null || targetEmail.trim().isEmpty()) {
+            User currentUser = (User) session.getAttribute("loggedInUser");
+            if (currentUser != null) {
+                targetEmail = currentUser.getEmail();
+            }
         }
-        if (currentUser.getEmail() == null || currentUser.getEmail().trim().isEmpty()) {
-            return ResponseEntity.badRequest().body("Tài khoản đăng nhập của bạn hiện không có email hợp lệ!");
+        if (targetEmail == null || targetEmail.trim().isEmpty()) {
+            return ResponseEntity.badRequest().body("Vui lòng truyền email cần nhận test qua tham số ?to=email_cua_ban (Ví dụ: /api/orders/test-email?to=lucy139200556@gmail.com)");
         }
         try {
-            emailService.sendTestEmailSync(currentUser.getEmail());
-            return ResponseEntity.ok("✅ Gửi email kiểm tra thành công tới địa chỉ: " + currentUser.getEmail());
+            emailService.sendTestEmailSync(targetEmail.trim());
+            return ResponseEntity.ok("✅ Gửi email kiểm tra thành công tới địa chỉ: " + targetEmail);
         } catch (Exception e) {
             java.io.StringWriter sw = new java.io.StringWriter();
             e.printStackTrace(new java.io.PrintWriter(sw));
