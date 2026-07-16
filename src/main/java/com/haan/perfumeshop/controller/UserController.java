@@ -212,6 +212,10 @@ public class UserController {
             return "redirect:/register";
         }
 
+        if (email != null) {
+            email = email.trim();
+        }
+
         // Kiểm tra xem Email này đã có ai dùng trong Database chưa
         if (userRepository.findByEmail(email).isPresent()) {
             redirectAttributes.addFlashAttribute("errorMsg", "Email này đã được sử dụng! Vui lòng dùng email khác.");
@@ -258,6 +262,10 @@ public class UserController {
     public String processForgotPassword(
             @RequestParam("email") String email,
             RedirectAttributes redirectAttributes) {
+
+        if (email != null) {
+            email = email.trim();
+        }
 
         // Tìm xem email khách nhập có tồn tại trong hệ thống không
         User user = userRepository.findByEmail(email).orElse(null);
