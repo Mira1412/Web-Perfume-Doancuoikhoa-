@@ -3,8 +3,6 @@ package com.haan.perfumeshop.controller;
 import com.haan.perfumeshop.model.User;
 import com.haan.perfumeshop.repository.UserRepository;
 import jakarta.servlet.http.HttpSession;
-
-import org.apache.xmlbeans.impl.xb.xsdschema.ListDocument.List;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Controller;
@@ -20,6 +18,7 @@ import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.util.UUID;
+import java.util.List;
 
 @Controller
 public class UserController {
