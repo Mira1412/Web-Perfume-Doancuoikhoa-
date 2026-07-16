@@ -20,19 +20,22 @@ public class OrderService {
     private final CartService cartService;
     private final EmailService emailService;
     private final UserRepository userRepository;
+    private final PerfumeVariantRepository perfumeVariantRepository;
 
     public OrderService(OrderRepository orderRepository,
             OrderDetailRepository orderDetailRepository,
             PerfumeRepository perfumeRepository,
             CartService cartService,
             EmailService emailService,
-            UserRepository userRepository) {
+            UserRepository userRepository,
+            PerfumeVariantRepository perfumeVariantRepository) {
         this.orderRepository = orderRepository;
         this.orderDetailRepository = orderDetailRepository;
         this.perfumeRepository = perfumeRepository;
         this.cartService = cartService;
         this.emailService = emailService;
         this.userRepository = userRepository;
+        this.perfumeVariantRepository = perfumeVariantRepository;
     }
 
     // Logic Chốt Đơn Hàng từ Giỏ Hàng
@@ -106,6 +109,7 @@ public class OrderService {
             OrderDetail detail = new OrderDetail();
             detail.setOrder(savedOrder);
             detail.setPerfume(perfume);
+            detail.setVariant(item.getVariant());
             detail.setSo_luong_mua(item.getSo_luong());
             detail.setGia_luc_mua(giaBanSo);
             orderDetailRepository.save(detail);
@@ -117,11 +121,12 @@ public class OrderService {
                 PerfumeVariant variant = item.getVariant();
                 int currentStock = variant.getSo_luong_ton() != null ? variant.getSo_luong_ton() : 0;
                 variant.setSo_luong_ton(currentStock - item.getSo_luong());
+                perfumeVariantRepository.save(variant);
             } else {
                 int currentStock = perfume.getTon_kho() != null ? perfume.getTon_kho() : 0;
                 perfume.setTon_kho(currentStock - item.getSo_luong());
+                perfumeRepository.save(perfume);
             }
-            perfumeRepository.save(perfume);
         }
 
         // Cập nhật tổng tiền cho hóa đơn
@@ -137,6 +142,69 @@ public class OrderService {
         } catch (Exception e) {
             // Nếu gửi mail thất bại thì vẫn cho đặt hàng thành công, chỉ in log lỗi
             log.warn("⚠️ Gửi email xác nhận thất bại cho đơn #{}: {}", savedOrder.getId(), e.getMessage());
+        }
+
+        return savedOrder;
+    }
+
+    // Hủy đơn hàng dành cho khách (chỉ được hủy đơn Pending)
+    @Transactional(rollbackFor = Exception.class)
+    public Order cancelOrder(Long id, User currentUser) throws Exception {
+        Order order = orderRepository.findById(id)
+                .orElseThrow(() -> new Exception("Không tìm thấy đơn hàng!"));
+
+        // Kiểm tra quyền
+        if (!order.getUser().getId_user().equals(currentUser.getId_user()) && !"ADMIN".equalsIgnoreCase(currentUser.getRole())) {
+            throw new Exception("Bạn không có quyền hủy đơn hàng này!");
+        }
+
+        if (!"Pending".equalsIgnoreCase(order.getTrang_thai())) {
+            throw new Exception("Chỉ có thể hủy đơn hàng khi trạng thái là Chờ xử lý!");
+        }
+
+        return updateOrderStatus(id, "Cancelled");
+    }
+
+    // Cập nhật trạng thái đơn hàng (chung cho cả admin)
+    @Transactional(rollbackFor = Exception.class)
+    public Order updateOrderStatus(Long id, String status) throws Exception {
+        Order order = orderRepository.findById(id)
+                .orElseThrow(() -> new Exception("Không tìm thấy đơn hàng!"));
+
+        String oldStatus = order.getTrang_thai();
+        if (status.equalsIgnoreCase(oldStatus)) {
+            return order;
+        }
+
+        order.setTrang_thai(status);
+        Order savedOrder = orderRepository.save(order);
+
+        // Nếu hủy đơn hàng, hoàn lại tồn kho
+        if ("Cancelled".equalsIgnoreCase(status) && !"Cancelled".equalsIgnoreCase(oldStatus)) {
+            List<OrderDetail> details = orderDetailRepository.findByOrder_Id(order.getId());
+            if (details != null) {
+                for (OrderDetail detail : details) {
+                    int quantity = detail.getSo_luong_mua();
+                    if (detail.getVariant() != null) {
+                        PerfumeVariant variant = detail.getVariant();
+                        int currentStock = variant.getSo_luong_ton() != null ? variant.getSo_luong_ton() : 0;
+                        variant.setSo_luong_ton(currentStock + quantity);
+                        perfumeVariantRepository.save(variant);
+                    } else {
+                        Perfume perfume = detail.getPerfume();
+                        int currentStock = perfume.getTon_kho() != null ? perfume.getTon_kho() : 0;
+                        perfume.setTon_kho(currentStock + quantity);
+                        perfumeRepository.save(perfume);
+                    }
+                }
+            }
+        }
+
+        // Gửi email thông báo cập nhật trạng thái đơn hàng
+        try {
+            emailService.sendOrderStatusUpdateEmail(savedOrder);
+        } catch (Exception e) {
+            log.warn("⚠️ Gửi email trạng thái thất bại cho đơn #{}: {}", savedOrder.getId(), e.getMessage());
         }
 
         return savedOrder;

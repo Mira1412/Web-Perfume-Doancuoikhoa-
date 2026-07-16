@@ -3,7 +3,9 @@ package com.haan.perfumeshop.controller;
 import com.haan.perfumeshop.model.Order;
 import com.haan.perfumeshop.model.User;
 import com.haan.perfumeshop.service.OrderService;
+import jakarta.servlet.http.HttpSession;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
@@ -23,6 +25,21 @@ public class OrderController {
             return ResponseEntity.ok(placedOrder);
         } catch (Exception e) {
             // Trả về thông báo lỗi trực tiếp nếu kho không đủ hàng hoặc giỏ trống
+            return ResponseEntity.badRequest().body(e.getMessage());
+        }
+    }
+
+    // API Hủy đơn hàng dành cho khách: POST http://localhost:8081/api/orders/{id}/cancel
+    @PostMapping("/{id}/cancel")
+    public ResponseEntity<?> cancelOrder(@PathVariable Long id, HttpSession session) {
+        User currentUser = (User) session.getAttribute("loggedInUser");
+        if (currentUser == null) {
+            return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body("Vui lòng đăng nhập!");
+        }
+        try {
+            Order cancelledOrder = orderService.cancelOrder(id, currentUser);
+            return ResponseEntity.ok(cancelledOrder);
+        } catch (Exception e) {
             return ResponseEntity.badRequest().body(e.getMessage());
         }
     }

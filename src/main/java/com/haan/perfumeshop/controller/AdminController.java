@@ -11,6 +11,7 @@ import com.haan.perfumeshop.repository.PerfumeVariantRepository;
 import com.haan.perfumeshop.repository.UserRepository;
 import com.haan.perfumeshop.service.ExportService;
 import com.haan.perfumeshop.service.EmailService;
+import com.haan.perfumeshop.service.OrderService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.MediaType;
@@ -54,6 +55,9 @@ public class AdminController {
 
     @Autowired
     private EmailService emailService;
+
+    @Autowired
+    private OrderService orderService;
 
 
     // ==========================================
@@ -249,25 +253,11 @@ public class AdminController {
 
     @PostMapping("/orders/update-status")
     public String updateOrderStatus(@RequestParam("id") Long id, @RequestParam("status") String status) {
-        // Tìm đơn hàng theo ID
-        Order order = orderRepository.findById(id).orElse(null);
-
-        if (order != null) {
-            String oldStatus = order.getTrang_thai();
-            order.setTrang_thai(status); // Cập nhật trạng thái mới
-            orderRepository.save(order); // Lưu vào Database
-
-            // Nếu trạng thái thay đổi thì gửi mail thông báo cập nhật
-            if (!status.equalsIgnoreCase(oldStatus)) {
-                try {
-                    emailService.sendOrderStatusUpdateEmail(order);
-                } catch (Exception e) {
-                    // Không block luồng admin nếu gửi mail lỗi
-                    System.out.println("⚠️ Lỗi gửi email thông báo cập nhật đơn hàng: " + e.getMessage());
-                }
-            }
+        try {
+            orderService.updateOrderStatus(id, status);
+        } catch (Exception e) {
+            System.out.println("⚠️ Lỗi khi admin cập nhật trạng thái đơn hàng #" + id + ": " + e.getMessage());
         }
-
         return "redirect:/admin/orders"; // Quay lại trang quản lý đơn hàng để thấy kết quả
     }
 

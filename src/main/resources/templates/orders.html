@@ -31,7 +31,7 @@
         }
 
         body {
-            background-color: var(--text-primary) ;
+            background-color: var(--cream);
             font-family: 'Inter', sans-serif;
             color: var(--text-primary);
             min-height: 100vh;
@@ -733,6 +733,7 @@
                                     <th>Ngày đặt</th>
                                     <th>Tổng tiền</th>
                                     <th>Trạng thái</th>
+                                    <th>Thao tác</th>
                                 </tr>
                             </thead>
                             <tbody>
@@ -764,6 +765,15 @@
                                         <span class="badge-status badge-completed" th:if="${order.trang_thai != 'Pending' and order.trang_thai != 'Cancelled'}">
                                             <i class="bi bi-check-circle" style="margin-right: 5px;"></i> <span th:text="${order.trang_thai}">Hoàn tất</span>
                                         </span>
+                                    </td>
+                                    <td data-label="Thao tác">
+                                        <button th:if="${order.trang_thai == 'Pending'}" 
+                                                th:onclick="'confirmCancelOrder(' + ${order.id} + ')'" 
+                                                class="btn btn-sm btn-outline-danger" 
+                                                style="border-radius: 8px; font-weight: 500; font-size: 0.8rem; padding: 5px 12px;">
+                                            Hủy đơn
+                                        </button>
+                                        <span th:unless="${order.trang_thai == 'Pending'}" style="color: var(--text-muted); font-size: 0.8rem;">-</span>
                                     </td>
                                 </tr>
                             </tbody>
@@ -829,6 +839,28 @@
             }
         }
         updateCartBadge();
+
+        function confirmCancelOrder(orderId) {
+            if (confirm("Bạn có chắc chắn muốn hủy đơn hàng #" + orderId + " không?")) {
+                fetch('/api/orders/' + orderId + '/cancel', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json'
+                    }
+                })
+                .then(response => {
+                    if (response.ok) {
+                        alert("Hủy đơn hàng thành công!");
+                        window.location.reload();
+                    } else {
+                        response.text().then(text => alert("Lỗi khi hủy đơn hàng: " + text));
+                    }
+                })
+                .catch(error => {
+                    alert("Lỗi kết nối mạng: " + error.message);
+                });
+            }
+        }
     </script>
 </body>
 </html>

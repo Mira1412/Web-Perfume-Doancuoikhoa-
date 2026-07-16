@@ -40,6 +40,9 @@ class OrderServiceTest {
     @Mock
     private UserRepository userRepository;
 
+    @Mock
+    private PerfumeVariantRepository perfumeVariantRepository;
+
     @InjectMocks
     private OrderService orderService;
 
