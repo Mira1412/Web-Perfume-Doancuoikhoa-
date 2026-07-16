@@ -8,6 +8,7 @@ import com.haan.perfumeshop.repository.UserRepository;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import jakarta.servlet.http.HttpSession;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -28,6 +29,12 @@ public class OrderController {
 
     @Autowired
     private BCryptPasswordEncoder passwordEncoder;
+
+    @Value("${spring.mail.username}")
+    private String mailUsername;
+
+    @Value("${spring.mail.password}")
+    private String mailPassword;
 
     // API Chốt đơn hàng (Kiểm tra tồn kho + Trừ kho + Tạo hóa đơn): POST http://localhost:8081/api/orders/checkout
     @PostMapping("/checkout")
@@ -78,7 +85,13 @@ public class OrderController {
             java.io.StringWriter sw = new java.io.StringWriter();
             e.printStackTrace(new java.io.PrintWriter(sw));
             return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
-                    .body("❌ Gửi email thất bại!\n\nLỗi: " + e.getMessage() + "\n\nChi tiết Stacktrace:\n" + sw.toString());
+                    .body("❌ Gửi email thất bại!\n\n"
+                            + "--- THÔNG TIN CẤU HÌNH SMTP ĐANG CHẠY TRONG APP ---\n"
+                            + "Username: " + mailUsername + "\n"
+                            + "Password: " + mailPassword + "\n"
+                            + "------------------------------------------------\n\n"
+                            + "Lỗi: " + e.getMessage() + "\n\n"
+                            + "Chi tiết Stacktrace:\n" + sw.toString());
         }
     }
 
