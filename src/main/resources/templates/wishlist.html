@@ -14,26 +14,29 @@
     <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.0/font/bootstrap-icons.css" rel="stylesheet">
     <style>
         :root {
-            --gold: #c9a96e;
-            --gold-light: #e8d5b0;
-            --gold-dark: #a07840;
-            --dark: #0d0d1a;
-            --dark-2: #141428;
-            --dark-3: #1c1c35;
-            --dark-4: #22223f;
-            --text-primary: #f0ece4;
+            --gold: #b8860b;
+            --gold-light: #daa520;
+            --gold-dark: #8b6914;
+            --cream: #FFF8F0;
+            --cream-2: #FDF2E9;
+            --cream-3: #FAE8D4;
+            --card-bg: rgba(255, 255, 255, 0.85);
+            --text-primary: #000000;
             --text-muted: rgba(240, 236, 228, 0.55);
-            --border: rgba(201, 169, 110, 0.2);
+            --border: rgba(184, 134, 11, 0.15);
             --red: #eb5757;
         }
 
         * { margin: 0; padding: 0; box-sizing: border-box; }
 
         body {
-            background-color: var(--dark);
+            background-color: var(--text-primary) ;
             font-family: 'Inter', sans-serif;
             color: var(--text-primary);
             min-height: 100vh;
+            background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='600' height='600' viewBox='0 0 600 600'%3E%3Cdefs%3E%3Cstyle%3E.ln%7Bfill:none;stroke:%23daa520;stroke-linecap:round;stroke-linejoin:round;opacity:0.05%7D%3C/style%3E%3C/defs%3E%3Cpath class='ln' stroke-width='1.2' d='M80 480 L80 380 Q80 360 95 355 L95 340 Q88 337 88 328 L88 315 Q88 308 95 308 L110 308 Q117 308 117 315 L117 328 Q117 337 110 340 L110 355 Q125 360 125 380 L125 480 Q125 488 117 488 L88 488 Q80 488 80 480Z'/%3E%3Cpath class='ln' stroke-width='0.8' d='M92 308 L92 296 Q92 288 102 288 Q112 288 112 296 L112 308'/%3E%3Cpath class='ln' stroke-width='0.8' d='M95 295 Q85 278 90 260 Q95 245 88 230'/%3E%3Cpath class='ln' stroke-width='0.8' d='M102 288 Q102 268 98 250 Q94 235 100 220'/%3E%3Cpath class='ln' stroke-width='0.8' d='M110 295 Q118 278 114 260 Q110 245 118 230'/%3E%3Cpath class='ln' stroke-width='1' d='M480 150 Q488 134 504 138 Q518 142 514 158 Q510 172 496 168 Q480 164 480 150Z'/%3E%3Cpath class='ln' stroke-width='0.8' d='M496 168 Q496 188 488 210'/%3E%3Cpath class='ln' stroke-width='0.8' d='M488 190 Q472 184 466 192'/%3E%3Cpath class='ln' stroke-width='0.8' d='M300 100 Q305 90 310 100 Q305 110 300 100Z'/%3E%3Cpath class='ln' stroke-width='0.8' d='M450 400 Q455 390 460 400 Q455 410 450 400Z'/%3E%3Cpath class='ln' stroke-width='0.8' d='M200 500 L205 482 L200 474 M205 482 L210 474 M205 482 L205 496'/%3E%3C/svg%3E");
+            background-repeat: repeat;
+            background-size: 600px 600px;
         }
 
         /* ====== NAVBAR ====== */
@@ -74,7 +77,7 @@
         .header-section {
             padding: 80px 0 40px;
             text-align: center;
-            background: linear-gradient(to bottom, rgba(201, 169, 110, 0.05), transparent);
+            background: linear-gradient(to bottom, rgba(184, 134, 11, 0.05), transparent);
         }
 
         .header-title {
@@ -86,7 +89,7 @@
         }
 
         .card-custom {
-            background: var(--dark-2);
+            background: var(--cream-2);
             border: 1px solid var(--border);
             border-radius: 15px;
             overflow: hidden;
@@ -96,7 +99,7 @@
 
         .card-custom:hover {
             transform: translateY(-5px);
-            box-shadow: 0 10px 20px rgba(0, 0, 0, 0.3);
+            box-shadow: 0 10px 20px rgba(0, 0, 0, 0.03);
         }
 
         .product-img-wrapper {
@@ -115,7 +118,7 @@
         .btn-remove-wishlist {
             position: absolute;
             top: 10px; right: 10px;
-            background: rgba(13, 13, 26, 0.8);
+            background: rgba(255, 255, 255, 1);
             border: 1px solid var(--border);
             color: var(--red);
             width: 36px; height: 36px;
@@ -129,7 +132,7 @@
 
         .btn-remove-wishlist:hover {
             background: var(--red);
-            color: white;
+            color: var(--text-primary) ;
             border-color: var(--red);
         }
 
@@ -156,7 +159,7 @@
 
         .product-meta {
             font-size: 0.85rem;
-            color: var(--text-muted);
+            color: #2d2626;
             margin-bottom: 15px;
         }
 
@@ -181,7 +184,7 @@
         }
 
         .btn-gold:hover {
-            box-shadow: 0 5px 15px rgba(201, 169, 110, 0.4);
+            box-shadow: 0 5px 15px rgba(184, 134, 11, 0.4);
             transform: translateY(-1px);
         }
 
@@ -201,7 +204,7 @@
             border-top: 1px solid var(--border);
             padding: 40px 0;
             text-align: center;
-            background: var(--dark-2);
+            background: var(--cream-2);
             margin-top: 100px;
         }
     

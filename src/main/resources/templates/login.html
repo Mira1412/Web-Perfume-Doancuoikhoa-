@@ -14,9 +14,9 @@
     <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.0/font/bootstrap-icons.css" rel="stylesheet">
     <style>
         :root {
-            --gold: #c9a96e;
-            --gold-light: #e8d5b0;
-            --gold-dark: #a07840;
+            --gold: #b8860b;
+            --gold-light: #daa520;
+            --gold-dark: #8b6914;
         }
 
         * {
@@ -27,13 +27,16 @@
 
         body {
             min-height: 100vh;
-            background: linear-gradient(135deg, #0f0c29 0%, #302b63 50%, #24243e 100%);
+            background: linear-gradient(135deg, #FFF8F0 0%, #FDF2E9 50%, #FAE8D4 100%);
             font-family: 'Inter', sans-serif;
             display: flex;
             align-items: center;
             justify-content: center;
             padding: 30px 16px;
             position: relative;
+            background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='600' height='600' viewBox='0 0 600 600'%3E%3Cdefs%3E%3Cstyle%3E.ln%7Bfill:none;stroke:%23daa520;stroke-linecap:round;stroke-linejoin:round;opacity:0.05%7D%3C/style%3E%3C/defs%3E%3Cpath class='ln' stroke-width='1.2' d='M80 480 L80 380 Q80 360 95 355 L95 340 Q88 337 88 328 L88 315 Q88 308 95 308 L110 308 Q117 308 117 315 L117 328 Q117 337 110 340 L110 355 Q125 360 125 380 L125 480 Q125 488 117 488 L88 488 Q80 488 80 480Z'/%3E%3Cpath class='ln' stroke-width='0.8' d='M95 295 Q85 278 90 260'/%3E%3Cpath class='ln' stroke-width='0.8' d='M110 295 Q118 278 114 260'/%3E%3Cpath class='ln' stroke-width='1' d='M480 150 Q488 134 504 138 Q518 142 514 158 Q510 172 496 168 Q480 164 480 150Z'/%3E%3Cpath class='ln' stroke-width='0.8' d='M300 100 Q305 90 310 100 Q305 110 300 100Z'/%3E%3C/svg%3E");
+            background-repeat: repeat;
+            background-size: 600px 600px;
         }
 
         body::before {
@@ -41,7 +44,7 @@
             position: fixed;
             width: 400px;
             height: 400px;
-            background: radial-gradient(circle, rgba(201, 169, 110, 0.12) 0%, transparent 70%);
+            background: radial-gradient(circle, rgba(184, 134, 11, 0.12) 0%, transparent 70%);
             top: -100px;
             left: -100px;
             border-radius: 50%;
@@ -68,15 +71,15 @@
         }
 
         .login-card {
-            background: rgba(255, 255, 255, 0.06);
+            background: var(--cream-2);
             backdrop-filter: blur(20px);
             -webkit-backdrop-filter: blur(20px);
-            border: 1px solid rgba(201, 169, 110, 0.2);
+            border: 1px solid rgba(184, 134, 11, 0.2);
             border-radius: 24px;
             padding: 48px 40px;
             box-shadow:
-                0 25px 60px rgba(0, 0, 0, 0.5),
-                inset 0 1px 0 rgba(255, 255, 255, 0.1);
+                0 25px 60px rgba(0, 0, 0, 0.06),
+                none;
             animation: slideUp 0.6s ease-out;
         }
 
@@ -107,14 +110,14 @@
             justify-content: center;
             font-size: 26px;
             margin-bottom: 16px;
-            box-shadow: 0 8px 24px rgba(201, 169, 110, 0.4);
+            box-shadow: 0 8px 24px rgba(184, 134, 11, 0.4);
         }
 
         .card-title-main {
             font-family: 'Inter', sans-serif;
             font-size: 2rem;
             font-weight: 600;
-            color: #ffffff;
+            color: var(--text-primary);
             text-align: center;
             margin-bottom: 4px;
             letter-spacing: 0.5px;
@@ -122,7 +125,7 @@
 
         .card-subtitle {
             text-align: center;
-            color: rgba(255, 255, 255, 0.45);
+            color: #2d2626;
             font-size: 0.85rem;
             margin-bottom: 32px;
             font-weight: 300;
@@ -154,13 +157,13 @@
         .alert-error {
             background: rgba(220, 53, 69, 0.15);
             border: 1px solid rgba(220, 53, 69, 0.4);
-            color: #ff8a8a;
+            color: #e05656;
         }
 
         .alert-success {
             background: rgba(40, 167, 69, 0.15);
             border: 1px solid rgba(40, 167, 69, 0.4);
-            color: #6fcf97;
+            color: #3dab54;
         }
 
         .form-group-custom {
@@ -171,7 +174,7 @@
             display: block;
             font-size: 0.82rem;
             font-weight: 500;
-            color: rgba(255, 255, 255, 0.65);
+            color: var(--text-primary);
             margin-bottom: 8px;
             letter-spacing: 0.3px;
         }
@@ -192,10 +195,10 @@
 
         .form-input {
             width: 100%;
-            background: rgba(255, 255, 255, 0.07);
-            border: 1px solid rgba(201, 169, 110, 0.25);
+            background: #ffffff;
+            border: 1px solid rgba(184, 134, 11, 0.25);
             border-radius: 12px;
-            color: #ffffff;
+            color: var(--text-primary);
             font-size: 0.9rem;
             padding: 14px 16px 14px 46px;
             transition: all 0.3s ease;
@@ -204,13 +207,13 @@
         }
 
         .form-input::placeholder {
-            color: rgba(255, 255, 255, 0.25);
+            color: #2d2626;
         }
 
         .form-input:focus {
-            background: rgba(255, 255, 255, 0.1);
+            background: #ffffff;
             border-color: var(--gold);
-            box-shadow: 0 0 0 3px rgba(201, 169, 110, 0.15);
+            box-shadow: 0 0 0 3px rgba(184, 134, 11, 0.15);
         }
 
         .toggle-password {
@@ -220,7 +223,7 @@
             transform: translateY(-50%);
             background: none;
             border: none;
-            color: rgba(255, 255, 255, 0.35);
+            color: #2d2626;
             cursor: pointer;
             font-size: 16px;
             padding: 0;
@@ -234,10 +237,10 @@
         .btn-login {
             width: 100%;
             padding: 15px;
-            background: linear-gradient(135deg, var(--gold) 0%, var(--gold-dark) 100%);
+            background: linear-gradient(135deg, var(--gold-light), var(--gold));
             border: none;
             border-radius: 12px;
-            color: #1a1a1a;
+            color: var(--text-primary) ;
             font-size: 0.95rem;
             font-weight: 600;
             font-family: 'Inter', sans-serif;
@@ -254,7 +257,7 @@
         .btn-login:hover {
             background: linear-gradient(135deg, #d4b880 0%, #b8863a 100%);
             transform: translateY(-2px);
-            box-shadow: 0 8px 25px rgba(201, 169, 110, 0.4);
+            box-shadow: 0 8px 25px rgba(184, 134, 11, 0.4);
         }
 
         .btn-login:active {
@@ -267,7 +270,7 @@
         }
 
         .footer-links p {
-            color: rgba(255, 255, 255, 0.45);
+            color: #2d2626;
             font-size: 0.875rem;
             margin-bottom: 10px;
         }
@@ -285,14 +288,14 @@
         }
 
         .footer-links a.link-muted {
-            color: rgba(255, 255, 255, 0.3);
+            color: rgba(184, 134, 11, 0.2);
             font-size: 0.8rem;
             text-decoration: none;
             transition: color 0.2s;
         }
 
         .footer-links a.link-muted:hover {
-            color: rgba(255, 255, 255, 0.6);
+            color: rgba(0, 0, 0, 0.8) ;
         }
 
         @media (max-width: 480px) {
@@ -543,7 +546,7 @@
                 <span th:text="${errorMsg}"></span>
             </div>
             
-            <div th:if="${successMsg}" class="alert alert-success" style="background: rgba(111,207,154,0.1); border-color: #6fcf97; color: #6fcf97; border-radius: 10px; font-size: 0.9rem;" th:text="${successMsg}"></div>
+            <div th:if="${successMsg}" class="alert alert-success" style="background: rgba(111,207,154,0.1); border-color: #3dab54; color: #3dab54; border-radius: 10px; font-size: 0.9rem;" th:text="${successMsg}"></div>
 
             <!-- Form Đăng nhập -->
             <form action="/login" method="post">
@@ -560,7 +563,7 @@
 
                 <!-- Mật khẩu -->
                 <div class="form-group-custom">
-                    <label class="form-label d-flex justify-content-between w-100" style="font-size: 0.9rem; color: rgba(255,255,255,0.7);" for="password">
+                    <label class="form-label d-flex justify-content-between w-100" style="font-size: 0.9rem; color: rgba(0, 0, 0, 0.85) ;" for="password">
                         <span>Mật khẩu</span>
                         <a href="/forgot-password" style="color: var(--gold); text-decoration: none; font-size: 0.85rem;">Quên mật khẩu?</a>
                     </label>

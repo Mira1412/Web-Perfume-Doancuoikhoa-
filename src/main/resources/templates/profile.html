@@ -23,24 +23,24 @@
     </script>
     <style>
         :root {
-            --gold: #c9a96e;
-            --gold-light: #e8d5b0;
-            --gold-dark: #a07840;
-            --dark: #0d0d1a;
-            --dark-2: #141428;
-            --dark-3: #1c1c35;
-            --text-primary: #f0ece4;
+            --gold: #b8860b;
+            --gold-light: #daa520;
+            --gold-dark: #8b6914;
+            --cream: #FFF8F0;
+            --cream-2: #FDF2E9;
+            --cream-3: #FAE8D4;
+            --text-primary: #000000;
             --text-muted: rgba(240, 236, 228, 0.7);
-            --border: rgba(201, 169, 110, 0.2);
+            --border: rgba(184, 134, 11, 0.15);
         }
 
         body {
-            background-color: var(--dark);
+            background-color: var(--text-primary) ;
             font-family: 'Inter', sans-serif;
             color: var(--text-primary);
         }
         .navbar-custom {
-            background: rgba(13, 13, 26, 0.95);
+            background: rgba(255, 248, 240, 0.92);
             border-bottom: 1px solid var(--border);
             padding: 15px 0;
         }
@@ -52,7 +52,7 @@
             color: var(--gold) !important;
             text-decoration: none;
             letter-spacing: 1.5px;
-            text-shadow: 0 0 10px rgba(201, 169, 110, 0.2);
+            text-shadow: 0 0 10px rgba(184, 134, 11, 0.2);
         }
         .profile-container {
             margin-top: 50px;
@@ -60,29 +60,29 @@
         }
 
         .card-custom {
-            background: var(--dark-2);
+            background: var(--cream-2);
             border: 1px solid var(--border);
             border-radius: 16px;
             padding: 30px;
         }
 
         .form-control {
-            background: var(--dark-3);
+            background: var(--cream-3);
             border: 1px solid rgba(255, 255, 255, 0.1);
-            color: #fff;
+            color: var(--text-primary) ;
         }
 
         .form-control:focus {
-            background: var(--dark-3);
+            background: var(--cream-3);
             border-color: var(--gold);
-            color: #fff;
+            color: var(--text-primary) ;
             box-shadow: none;
         }
 
         .form-control:disabled,
         .form-control[readonly] {
             background: rgba(0, 0, 0, 0.2);
-            color: var(--text-muted);
+            color: #2d2626;
         }
 
         .btn-gold {
@@ -97,7 +97,7 @@
 
         .btn-gold:hover {
             transform: translateY(-2px);
-            box-shadow: 0 5px 15px rgba(201, 169, 110, 0.3);
+            box-shadow: 0 5px 15px rgba(184, 134, 11, 0.3);
         }
 
         .section-title {
@@ -336,10 +336,10 @@
     <div class="container profile-container">
         <!-- Flash Messages -->
         <div th:if="${successMsg}" class="alert alert-success"
-            style="background: rgba(111,207,154,0.1); border-color: #6fcf97; color: #6fcf97;" th:text="${successMsg}">
+            style="background: rgba(111,207,154,0.1); border-color: #3dab54; color: #3dab54;" th:text="${successMsg}">
         </div>
         <div th:if="${errorMsg}" class="alert alert-danger"
-            style="background: rgba(220,53,69,0.1); border-color: #ff6b6b; color: #ff6b6b;" th:text="${errorMsg}"></div>
+            style="background: rgba(220,53,69,0.1); border-color: #dc3545; color: #dc3545;" th:text="${errorMsg}"></div>
 
         <div class="row g-4">
             <!-- Cột 1: Thông tin cá nhân -->

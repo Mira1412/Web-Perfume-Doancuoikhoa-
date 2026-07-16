@@ -12,15 +12,15 @@
     <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.0/font/bootstrap-icons.css" rel="stylesheet">
     <style>
         :root {
-            --gold: #c9a96e;
-            --gold-light: #e8d5b0;
-            --gold-dark: #a07840;
-            --dark: #0d0d1a;
-            --dark-2: #141428;
-            --dark-3: #1c1c35;
-            --text-primary: #f0ece4;
+            --gold: #b8860b;
+            --gold-light: #daa520;
+            --gold-dark: #8b6914;
+            --cream: #FFF8F0;
+            --cream-2: #FDF2E9;
+            --cream-3: #FAE8D4;
+            --text-primary: #000000;
             --text-muted: rgba(240, 236, 228, 0.7);
-            --border: rgba(201, 169, 110, 0.2);
+            --border: rgba(184, 134, 11, 0.15);
         }
 
         * {
@@ -30,15 +30,18 @@
         }
 
         body {
-            background-color: var(--dark);
+            background-color: var(--text-primary) ;
             font-family: 'Inter', sans-serif;
             color: var(--text-primary);
             min-height: 100vh;
+            background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='600' height='600' viewBox='0 0 600 600'%3E%3Cdefs%3E%3Cstyle%3E.ln%7Bfill:none;stroke:%23daa520;stroke-linecap:round;stroke-linejoin:round;opacity:0.05%7D%3C/style%3E%3C/defs%3E%3Cpath class='ln' stroke-width='1.2' d='M80 480 L80 380 Q80 360 95 355 L95 340 Q88 337 88 328 L88 315 Q88 308 95 308 L110 308 Q117 308 117 315 L117 328 Q117 337 110 340 L110 355 Q125 360 125 380 L125 480 Q125 488 117 488 L88 488 Q80 488 80 480Z'/%3E%3Cpath class='ln' stroke-width='0.8' d='M92 308 L92 296 Q92 288 102 288 Q112 288 112 296 L112 308'/%3E%3Cpath class='ln' stroke-width='0.8' d='M95 295 Q85 278 90 260 Q95 245 88 230'/%3E%3Cpath class='ln' stroke-width='0.8' d='M102 288 Q102 268 98 250 Q94 235 100 220'/%3E%3Cpath class='ln' stroke-width='0.8' d='M110 295 Q118 278 114 260 Q110 245 118 230'/%3E%3Cpath class='ln' stroke-width='1' d='M480 150 Q488 134 504 138 Q518 142 514 158 Q510 172 496 168 Q480 164 480 150Z'/%3E%3Cpath class='ln' stroke-width='0.8' d='M496 168 Q496 188 488 210'/%3E%3Cpath class='ln' stroke-width='0.8' d='M488 190 Q472 184 466 192'/%3E%3Cpath class='ln' stroke-width='0.8' d='M300 100 Q305 90 310 100 Q305 110 300 100Z'/%3E%3Cpath class='ln' stroke-width='0.8' d='M450 400 Q455 390 460 400 Q455 410 450 400Z'/%3E%3Cpath class='ln' stroke-width='0.8' d='M200 500 L205 482 L200 474 M205 482 L210 474 M205 482 L205 496'/%3E%3C/svg%3E");
+            background-repeat: repeat;
+            background-size: 600px 600px;
         }
 
         /* ====== NAVBAR ====== */
         .navbar-custom {
-            background: rgba(13, 13, 26, 0.95);
+            background: rgba(255, 248, 240, 0.92);
             backdrop-filter: blur(20px);
             border-bottom: 1px solid var(--border);
             position: sticky;
@@ -71,7 +74,7 @@
         }
 
         .nav-link-item {
-            color: rgba(240, 236, 228, 0.75);
+            color: var(--text-primary);
             text-decoration: none;
             font-size: 0.875rem;
             padding: 8px 16px;
@@ -84,12 +87,12 @@
 
         .nav-link-item:hover {
             color: var(--gold);
-            background: rgba(201, 169, 110, 0.1);
+            background: rgba(184, 134, 11, 0.1);
         }
 
         .btn-home-nav {
-            background: rgba(201, 169, 110, 0.12);
-            border: 1px solid rgba(201, 169, 110, 0.3);
+            background: rgba(184, 134, 11, 0.12);
+            border: 1px solid rgba(184, 134, 11, 0.3);
             color: var(--gold) !important;
         }
 
@@ -102,7 +105,7 @@
             display: inline-flex;
             align-items: center;
             gap: 6px;
-            color: var(--text-muted);
+            color: #2d2626;
             text-decoration: none;
             font-size: 0.875rem;
             margin-bottom: 30px;
@@ -114,7 +117,7 @@
         }
 
         .product-container {
-            background: var(--dark-2);
+            background: var(--cream-2);
             border: 1px solid var(--border);
             border-radius: 20px;
             overflow: hidden;
@@ -136,7 +139,7 @@
             max-width: 100%;
             max-height: 500px;
             object-fit: contain;
-            filter: drop-shadow(0 20px 30px rgba(0, 0, 0, 0.5));
+            filter: drop-shadow(0 20px 30px rgba(0, 0, 0, 0.06));
             transition: transform 0.4s;
         }
 
@@ -156,7 +159,7 @@
             font-family: 'Playfair Display', Georgia, serif;
             font-size: 2.5rem;
             font-weight: 700;
-            color: #ffffff;
+            color: var(--text-primary) ;
             margin-bottom: 12px;
             line-height: 1.25;
             letter-spacing: -0.5px;
@@ -164,7 +167,7 @@
         .product-price-wrapper {
             margin-bottom: 20px;
             padding-bottom: 20px;
-            border-bottom: 1px solid rgba(255, 255, 255, 0.06);
+            border-bottom: 1px solid rgba(184, 134, 11, 0.08);
         }
 
         .product-price {
@@ -202,7 +205,7 @@
         }
 
         .specs-list li strong {
-            color: #ffffff;
+            color: var(--text-primary) ;
             font-weight: 600;
             min-width: 130px;
             display: inline-block;
@@ -216,7 +219,7 @@
             font-size: 0.85rem;
             font-weight: 600;
             text-transform: uppercase;
-            color: var(--text-muted);
+            color: #2d2626;
             margin-bottom: 12px;
             letter-spacing: 1px;
         }
@@ -229,7 +232,7 @@
 
         .btn-variant {
             background: rgba(255, 255, 255, 0.03);
-            border: 1px solid rgba(201, 169, 110, 0.2);
+            border: 1px solid rgba(184, 134, 11, 0.2);
             color: var(--text-primary);
             padding: 12px 28px;
             border-radius: 12px;
@@ -243,7 +246,7 @@
         .btn-variant:hover {
             border-color: var(--gold);
             color: var(--gold);
-            background: rgba(201, 169, 110, 0.08);
+            background: rgba(184, 134, 11, 0.08);
             transform: translateY(-1px);
         }
 
@@ -252,7 +255,7 @@
             border-color: transparent;
             color: #1a1a1a !important;
             font-weight: 700;
-            box-shadow: 0 8px 20px rgba(201, 169, 110, 0.3);
+            box-shadow: 0 8px 20px rgba(184, 134, 11, 0.3);
         }
         .action-row {
             display: flex;
@@ -264,7 +267,7 @@
         .qty-wrapper {
             display: flex;
             align-items: center;
-            background: rgba(0, 0, 0, 0.3);
+            background: rgba(0, 0, 0, 0.03);
             border: 1px solid rgba(255, 255, 255, 0.1);
             border-radius: 12px;
             padding: 0 5px;
@@ -286,7 +289,7 @@
             text-align: center;
             background: transparent;
             border: none;
-            color: #ffffff;
+            color: var(--text-primary) ;
             font-weight: 600;
         }
 
@@ -305,7 +308,7 @@
             background: #b85c5c;
             border: none;
             border-radius: 12px;
-            color: #ffffff;
+            color: var(--text-primary) ;
             font-size: 1rem;
             font-weight: 600;
             cursor: pointer;
@@ -324,7 +327,7 @@
 
         .btn-wishlist-detail {
             width: 50px;
-            background: rgba(255, 255, 255, 0.05);
+            background: rgba(184, 134, 11, 0.08);
             border: 1px solid var(--border);
             border-radius: 12px;
             color: var(--text-primary);
@@ -360,7 +363,7 @@
         }
 
         .toast-custom {
-            background: rgba(13, 13, 26, 0.95);
+            background: rgba(255, 248, 240, 0.92);
             border: 1px solid var(--border);
             padding: 14px 20px;
             border-radius: 12px;
@@ -371,11 +374,11 @@
         }
 
         .toast-success {
-            border-left: 4px solid #6fcf97;
+            border-left: 4px solid #3dab54;
         }
 
         .toast-error {
-            border-left: 4px solid #ff6b6b;
+            border-left: 4px solid #dc3545;
         }
 
         @keyframes slideInRight {
@@ -405,7 +408,7 @@
         .review-section-title {
             font-size: 1.5rem;
             font-weight: 600;
-            color: #fff;
+            color: var(--text-primary) ;
             margin-bottom: 30px;
             display: flex;
             align-items: center;
@@ -413,7 +416,7 @@
         }
 
         .review-section-title span {
-            background: rgba(201,169,110,0.12);
+            background: rgba(184,134,11,0.12);
             border: 1px solid var(--border);
             border-radius: 20px;
             font-size: 0.8rem;
@@ -427,7 +430,7 @@
             display: flex;
             gap: 32px;
             align-items: center;
-            background: var(--dark-2);
+            background: var(--cream-2);
             border: 1px solid var(--border);
             border-radius: 18px;
             padding: 28px 32px;
@@ -450,7 +453,7 @@
 
         .avg-count {
             font-size: 0.78rem;
-            color: var(--text-muted);
+            color: #2d2626;
         }
 
         .star-bars { flex: 1; }
@@ -461,7 +464,7 @@
             gap: 10px;
             margin-bottom: 8px;
             font-size: 0.82rem;
-            color: var(--text-muted);
+            color: #2d2626;
         }
 
         .star-bar-label { min-width: 40px; text-align: right; }
@@ -485,20 +488,20 @@
 
         /* --- Stars display --- */
         .stars-display { color: var(--gold); font-size: 1rem; letter-spacing: 1px; }
-        .stars-display .star-empty { color: rgba(201,169,110,0.25); }
+        .stars-display .star-empty { color: rgba(184,134,11,0.25); }
 
         /* --- Review card --- */
         .review-list { display: flex; flex-direction: column; gap: 16px; margin-bottom: 32px; }
 
         .review-card {
-            background: var(--dark-2);
-            border: 1px solid rgba(255,255,255,0.06);
+            background: var(--cream-2);
+            border: 1px solid rgba(184,134,11,0.08);
             border-radius: 14px;
             padding: 20px 24px;
             transition: border-color 0.2s;
         }
 
-        .review-card:hover { border-color: rgba(201,169,110,0.2); }
+        .review-card:hover { border-color: rgba(184,134,11,0.2); }
 
         .review-card-header {
             display: flex;
@@ -517,13 +520,13 @@
 
         .review-user-name {
             font-weight: 600;
-            color: #fff;
+            color: var(--text-primary) ;
             font-size: 0.9rem;
         }
 
         .review-date {
             font-size: 0.75rem;
-            color: var(--text-muted);
+            color: #2d2626;
             margin-top: 2px;
         }
 
@@ -538,7 +541,7 @@
 
         /* --- Form đánh giá --- */
         .review-form-wrapper {
-            background: var(--dark-2);
+            background: var(--cream-2);
             border: 1px solid var(--border);
             border-radius: 18px;
             padding: 28px 32px;
@@ -547,7 +550,7 @@
         .review-form-title {
             font-size: 1.1rem;
             font-weight: 600;
-            color: #fff;
+            color: var(--text-primary) ;
             margin-bottom: 20px;
             display: flex; align-items: center; gap: 8px;
         }
@@ -565,7 +568,7 @@
 
         .star-picker label {
             font-size: 2rem;
-            color: rgba(201,169,110,0.25);
+            color: rgba(184,134,11,0.25);
             cursor: pointer;
             transition: color 0.15s, transform 0.15s;
         }
@@ -580,8 +583,8 @@
 
         .review-textarea {
             width: 100%;
-            background: var(--dark-3);
-            border: 1px solid rgba(255,255,255,0.08);
+            background: var(--cream-3);
+            border: 1px solid rgba(184,134,11,0.1);
             border-radius: 10px;
             color: var(--text-primary);
             font-size: 0.9rem;
@@ -594,7 +597,7 @@
         }
 
         .review-textarea:focus { outline: none; border-color: var(--gold); }
-        .review-textarea::placeholder { color: var(--text-muted); }
+        .review-textarea::placeholder { color: #2d2626; }
 
         .btn-submit-review {
             background: linear-gradient(135deg, var(--gold), var(--gold-dark));
@@ -609,7 +612,7 @@
             display: inline-flex; align-items: center; gap: 7px;
         }
 
-        .btn-submit-review:hover { transform: translateY(-1px); box-shadow: 0 6px 20px rgba(201,169,110,0.35); }
+        .btn-submit-review:hover { transform: translateY(-1px); box-shadow: 0 6px 20px rgba(184,134,11,0.35); }
 
         .alert-review {
             padding: 12px 16px;
@@ -622,19 +625,19 @@
         .alert-success-review {
             background: rgba(111,207,154,0.1);
             border: 1px solid rgba(111,207,154,0.3);
-            color: #6fcf97;
+            color: #3dab54;
         }
 
         .alert-error-review {
             background: rgba(220,53,69,0.1);
             border: 1px solid rgba(220,53,69,0.3);
-            color: #ff8a8a;
+            color: #e05656;
         }
 
         .alert-info-review {
-            background: rgba(201,169,110,0.08);
-            border: 1px solid rgba(201,169,110,0.2);
-            color: var(--text-muted);
+            background: rgba(184,134,11,0.08);
+            border: 1px solid rgba(184,134,11,0.2);
+            color: #2d2626;
         }
 
         /* ==================== LUXURY FLOATING BACKGROUND ==================== */
@@ -866,7 +869,7 @@
                 </li>                <!-- User Account Section -->
                 <li th:if="${session.loggedInUser != null}" class="dropdown user-dropdown ms-2">
                     <a class="dropdown-toggle" href="#" role="button" data-bs-toggle="dropdown" aria-expanded="false" style="text-decoration: none; color: var(--gold); display: flex; align-items: center; gap: 6px;">
-                        <div class="user-avatar" style="width: 24px; height: 24px; border-radius: 50%; background: var(--gold); color: #fff; display: flex; align-items: center; justify-content: center; font-size: 12px;">
+                        <div class="user-avatar" style="width: 24px; height: 24px; border-radius: 50%; background: var(--gold); color: var(--text-primary) ; display: flex; align-items: center; justify-content: center; font-size: 12px;">
                             <span th:text="${session.loggedInUser.fullName != null ? #strings.substring(session.loggedInUser.fullName, 0, 1) : 'U'}">U</span>
                         </div>
                         <span th:text="${session.loggedInUser.fullName != null ? session.loggedInUser.fullName : session.loggedInUser.email}">User</span>
@@ -874,8 +877,8 @@
                     <ul class="dropdown-menu dropdown-menu-end dropdown-menu-custom" style="background-color: var(--dark-light); border: 1px solid var(--gold);">
                         <li><a class="dropdown-item" href="/profile" style="color: var(--text-light);"><i class="bi bi-person-circle"></i> Hồ sơ cá nhân</a></li>
                         <li><a class="dropdown-item" href="/orders" style="color: var(--text-light);"><i class="bi bi-receipt-cutoff"></i> Đơn hàng của tôi</a></li>
-                        <li><hr class="dropdown-divider" style="border-color: rgba(201,169,110,0.2);"></li>
-                        <li><a class="dropdown-item" href="/logout" style="color: #ff6b6b;"><i class="bi bi-box-arrow-right"></i> Đăng xuất</a></li>
+                        <li><hr class="dropdown-divider" style="border-color: rgba(184,134,11,0.2);"></li>
+                        <li><a class="dropdown-item" href="/logout" style="color: #dc3545;"><i class="bi bi-box-arrow-right"></i> Đăng xuất</a></li>
                     </ul>
                 </li>
                 <li th:if="${session.loggedInUser == null}">
@@ -1017,7 +1020,7 @@
                     <input type="hidden" name="perfumeId" th:value="${perfume.id_nuoc_hoa}">
 
                     <!-- Star picker -->
-                    <p style="color: var(--text-muted); font-size: 0.85rem; margin-bottom: 10px;">Chọn số sao:</p>
+                    <p style="color: #2d2626; font-size: 0.85rem; margin-bottom: 10px;">Chọn số sao:</p>
                     <div class="star-picker">
                         <input type="radio" id="star5" name="soSao" value="5" required>
                         <label for="star5" title="Xuất sắc">★</label>
@@ -1057,7 +1060,7 @@
             </div>
 
             <!-- Danh sách reviews -->
-            <div th:if="${reviewCount == 0}" style="text-align:center; padding: 40px 0; color: var(--text-muted);">
+            <div th:if="${reviewCount == 0}" style="text-align:center; padding: 40px 0; color: #2d2626;">
                 <i class="bi bi-chat-dots" style="font-size: 2.5rem; display:block; margin-bottom:12px; opacity:0.3;"></i>
                 Chưa có đánh giá nào. Hãy là người đầu tiên!
             </div>
@@ -1082,7 +1085,7 @@
                         <div class="review-stars" style="margin-left: auto;">
                             <th:block th:each="i : ${#numbers.sequence(1, 5)}">
                                 <span th:text="${i <= review.so_sao ? '★' : '☆'}"
-                                      th:style="${i <= review.so_sao ? 'color: var(--gold)' : 'color: rgba(201,169,110,0.2)'}"></span>
+                                      th:style="${i <= review.so_sao ? 'color: var(--gold)' : 'color: rgba(184,134,11,0.2)'}"></span>
                             </th:block>
                         </div>
                     </div>

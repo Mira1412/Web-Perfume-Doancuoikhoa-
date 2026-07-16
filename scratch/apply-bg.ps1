@@ -1,26 +1,8 @@
-<!DOCTYPE html>
-<html xmlns:th="http://www.thymeleaf.org" lang="vi">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Đăng ký — Halo</title>
-    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
-    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
-    <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.0/font/bootstrap-icons.css" rel="stylesheet">
-    <style>
-        :root {
-            --gold: #b8860b; --cream: #FFF8F0; --cream-2: #FDF2E9; --border: rgba(184, 134, 11, 0.15);
-        }
-        body { background-color: var(--text-primary); font-family: 'Inter', sans-serif; color: var(--text-primary); display: flex; align-items: center; justify-content: center; min-height: 100vh; margin: 0; padding: 20px 0; }
-        .login-card { background: var(--cream-2); border: 1px solid var(--border); border-radius: 20px; padding: 40px; width: 100%; max-width: 500px; box-shadow: 0 20px 40px rgba(0,0,0,0.06); }
-        .brand-name { font-size: 2rem; font-weight: 700; color: var(--gold); text-align: center; margin-bottom: 20px; display: block; text-decoration: none;}
-        .form-control { background: #ffffff; border: 1px solid var(--border); color: var(--text-primary); padding: 12px 16px; border-radius: 10px; }
-        .form-control:focus { background: #ffffff; border-color: var(--gold); color: var(--text-primary); box-shadow: none; }
-        .btn-gold { background: linear-gradient(135deg, var(--gold-light), var(--gold)); color: #ffffff ; font-weight: 600; border: none; padding: 12px; border-radius: 10px; transition: all 0.3s; width: 100%; margin-top: 10px; }
-        .btn-gold:hover { transform: translateY(-2px); box-shadow: 0 5px 15px rgba(184,134,11,0.3); }
-        .text-muted a { color: var(--gold); text-decoration: none; font-weight: 500; }
-        .text-muted a:hover { text-decoration: underline; }
-    
+$templatesDir = "d:\ThucTapCuoikhoa\perfume-thesis\src\main\resources\templates"
+$files = Get-ChildItem -Path $templatesDir -Filter "*.html" | Where-Object { $_.Name -notin @("index.html", "detail.html", "products.html") }
+
+$cssInsert = @"
+
         /* ==================== LUXURY FLOATING BACKGROUND ==================== */
         .floating-bg {
             position: fixed;
@@ -41,7 +23,7 @@
             will-change: transform, opacity;
         }
 
-        /* Silver bokeh orbs â€” bright shimmering */
+        /* Silver bokeh orbs — bright shimmering */
         .floating-particle.bokeh {
             border-radius: 50%;
             background: radial-gradient(circle at 35% 35%, 
@@ -55,7 +37,7 @@
                 0 0 60px rgba(180, 200, 245, 0.06);
         }
 
-        /* Elegant petals â€” visible silver shimmer */
+        /* Elegant petals — visible silver shimmer */
         .floating-particle.petal {
             border-radius: 80% 0 55% 50% / 55% 0 80% 50%;
             background: linear-gradient(135deg, 
@@ -66,7 +48,7 @@
             box-shadow: 0 0 12px rgba(200, 215, 250, 0.1);
         }
 
-        /* Diamond sparkle â€” brilliant white-silver glints */
+        /* Diamond sparkle — brilliant white-silver glints */
         .floating-particle.sparkle {
             background: rgba(240, 245, 255, 1);
             border-radius: 50%;
@@ -77,7 +59,7 @@
                 0 0 45px rgba(160, 185, 240, 0.1);
         }
 
-        /* Ambient mist â€” visible cool silver glow */
+        /* Ambient mist — visible cool silver glow */
         .floating-particle.mist {
             border-radius: 50%;
             background: radial-gradient(ellipse at center,
@@ -87,7 +69,7 @@
             filter: blur(25px);
         }
 
-        /* Silver thread â€” visible shimmering lines */
+        /* Silver thread — visible shimmering lines */
         .floating-particle.thread {
             width: 1px;
             background: linear-gradient(to bottom,
@@ -144,7 +126,9 @@
             100% { transform: translate(var(--mist-x2, -30px), -60vh) scale(0.8); opacity: 0; }
         }
     </style>
-</head>
+"@
+
+$htmlInsert = @"
 <body>
     <!-- ==================== FLOATING BACKGROUND ==================== -->
     <div class="floating-bg" id="floatingBg"></div>
@@ -173,7 +157,7 @@
             el.style.setProperty('--sway-4', (rand(5, 15) * randSign()) + 'px');
             const dur = rand(18, 35);
             const delay = rand(0, 15);
-            el.style.animation = loatUpLuxury s s linear infinite;
+            el.style.animation = `floatUpLuxury ${dur}s ${delay}s linear infinite`;
             container.appendChild(el);
         }
 
@@ -193,9 +177,9 @@
             el.style.height = (size * rand(0.7, 1.3)) + 'px';
             el.style.left = rand(0, 100) + '%';
             const c = petalColors[Math.floor(Math.random() * petalColors.length)];
-            el.style.background = linear-gradient(deg,
-                rgba(, , , ) 0%,
-                rgba(, , , ) 100%);
+            el.style.background = `linear-gradient(${rand(90, 200)}deg,
+                rgba(${c[0]}, ${c[1]}, ${c[2]}, ${rand(0.2, 0.4).toFixed(2)}) 0%,
+                rgba(${c[0]}, ${c[1]}, ${c[2]}, ${rand(0.05, 0.15).toFixed(2)}) 100%)`;
             el.style.setProperty('--max-opacity', rand(0.6, 0.9).toFixed(2));
             el.style.setProperty('--mid-opacity', rand(0.35, 0.6).toFixed(2));
             el.style.setProperty('--fade-opacity', rand(0.1, 0.25).toFixed(2));
@@ -208,7 +192,7 @@
             const dur = rand(14, 28);
             const delay = rand(0, 15);
             const driftDur = rand(8, 16);
-            el.style.animation = loatUpLuxury s s linear infinite, driftSlow s s ease-in-out infinite;
+            el.style.animation = `floatUpLuxury ${dur}s ${delay}s linear infinite, driftSlow ${driftDur}s ${delay}s ease-in-out infinite`;
             container.appendChild(el);
         }
 
@@ -230,59 +214,27 @@
             const dur = rand(10, 25);
             const delay = rand(0, 15);
             const pulseDur = rand(2, 5);
-            el.style.animation = loatUpLuxury s s linear infinite, pulseSparkle s s ease-in-out infinite;
+            el.style.animation = `floatUpLuxury ${dur}s ${delay}s linear infinite, pulseSparkle ${pulseDur}s ${delay}s ease-in-out infinite`;
             container.appendChild(el);
         }
     })();
     </script>
+"@
 
-    <div class="login-card">
-        <a href="/" class="brand-name">🌸 Halo</a>
-        <h4 class="text-center mb-4" style="font-weight: 600;">Đăng ký tài khoản</h4>
+$utf8NoBom = New-Object System.Text.UTF8Encoding($false)
 
-        <div th:if="${errorMsg}" class="alert alert-danger" style="background: rgba(220,53,69,0.1); border-color: #dc3545; color: #dc3545; border-radius: 10px; font-size: 0.9rem;" th:text="${errorMsg}"></div>
-
-        <form action="/register" method="POST">
-            <div class="mb-3">
-                <label class="form-label" style="font-size: 0.9rem; color: rgba(0, 0, 0, 0.85) ;">Họ và tên</label>
-                <div class="input-group">
-                    <span class="input-group-text" style="background: #ffffff; border-color: rgba(31, 22, 22, 0.1) ; color: var(--gold); border-right: none;"><i class="bi bi-person"></i></span>
-                    <input type="text" name="fullName" class="form-control" style="border-left: none;" placeholder="Nhập họ và tên" required>
-                </div>
-            </div>
-
-            <div class="mb-3">
-                <label class="form-label" style="font-size: 0.9rem; color: rgba(0, 0, 0, 0.85) ;">Email</label>
-                <div class="input-group">
-                    <span class="input-group-text" style="background: #ffffff; border-color: rgba(31, 22, 22, 0.1) ; color: var(--gold); border-right: none;"><i class="bi bi-envelope"></i></span>
-                    <input type="email" name="email" class="form-control" style="border-left: none;" placeholder="vidu@gmail.com" required>
-                </div>
-            </div>
-            
-            <div class="mb-3">
-                <label class="form-label" style="font-size: 0.9rem; color: rgba(0, 0, 0, 0.85) ;">Mật khẩu</label>
-                <div class="input-group">
-                    <span class="input-group-text" style="background: #ffffff; border-color: rgba(31, 22, 22, 0.1) ; color: var(--gold); border-right: none;"><i class="bi bi-lock"></i></span>
-                    <input type="password" name="password" class="form-control" style="border-left: none;" placeholder="Tạo mật khẩu (ít nhất 6 ký tự)" required minlength="6">
-                </div>
-            </div>
-
-            <div class="mb-4">
-                <label class="form-label" style="font-size: 0.9rem; color: rgba(0, 0, 0, 0.85) ;">Xác nhận mật khẩu</label>
-                <div class="input-group">
-                    <span class="input-group-text" style="background: #ffffff; border-color: rgba(31, 22, 22, 0.1) ; color: var(--gold); border-right: none;"><i class="bi bi-shield-lock"></i></span>
-                    <input type="password" name="confirmPassword" class="form-control" style="border-left: none;" placeholder="Nhập lại mật khẩu" required minlength="6">
-                </div>
-            </div>
-
-            <button type="submit" class="btn btn-gold">Đăng Ký</button>
-        </form>
-
-        <div class="text-center mt-4 text-muted" style="font-size: 0.9rem;">
-            Đã có tài khoản? <a href="/login">Đăng nhập</a><br><br>
-            <a href="/" style="color: rgba(0, 0, 0, 0.75) ;"><i class="bi bi-arrow-left"></i> Quay lại cửa hàng</a>
-        </div>
-    </div>
-
-</body>
-</html>
+foreach ($file in $files) {
+    # Sử dụng .NET System.IO.File để đọc file với mã UTF-8 chính xác
+    $content = [System.IO.File]::ReadAllText($file.FullName, [System.Text.Encoding]::UTF8)
+    
+    if ($content -notlike "*floating-bg*") {
+        Write-Host "Ghi đè UTF-8 file: $($file.Name)"
+        
+        $content = $content.Replace("</style>", $cssInsert)
+        $content = $content.Replace("<body>", $htmlInsert)
+        
+        # Ghi đè file với UTF-8 không có BOM (hoặc có BOM) bằng phương thức .NET an toàn
+        [System.IO.File]::WriteAllText($file.FullName, $content, $utf8NoBom)
+    }
+}
+Write-Host "Xử lý thành công!"

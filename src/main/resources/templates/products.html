@@ -15,29 +15,32 @@
     <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.0/font/bootstrap-icons.css" rel="stylesheet">
     <style>
         :root {
-            --gold: #c9a96e;
-            --gold-light: #e8d5b0;
-            --gold-dark: #a07840;
-            --dark: #0d0d1a;
-            --dark-2: #141428;
-            --dark-3: #1c1c35;
-            --text-primary: #f0ece4;
-            --text-muted: rgba(240, 236, 228, 0.5);
-            --border: rgba(201, 169, 110, 0.2);
+            --gold: #b8860b;
+            --gold-light: #daa520;
+            --gold-dark: #8b6914;
+            --cream: #FFF8F0;
+            --cream-2: #FDF2E9;
+            --cream-3: #FAE8D4;
+            --text-primary: #000000;
+            --text-muted: #2d2626;
+            --border: rgba(184, 134, 11, 0.15);
         }
 
         * { margin: 0; padding: 0; box-sizing: border-box; }
 
         body {
-            background-color: var(--dark);
+            background-color: var(--text-primary) ;
             font-family: 'Inter', sans-serif;
             color: var(--text-primary);
             min-height: 100vh;
+            background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='600' height='600' viewBox='0 0 600 600'%3E%3Cdefs%3E%3Cstyle%3E.ln%7Bfill:none;stroke:%23daa520;stroke-linecap:round;stroke-linejoin:round;opacity:0.05%7D%3C/style%3E%3C/defs%3E%3Cpath class='ln' stroke-width='1.2' d='M80 480 L80 380 Q80 360 95 355 L95 340 Q88 337 88 328 L88 315 Q88 308 95 308 L110 308 Q117 308 117 315 L117 328 Q117 337 110 340 L110 355 Q125 360 125 380 L125 480 Q125 488 117 488 L88 488 Q80 488 80 480Z'/%3E%3Cpath class='ln' stroke-width='0.8' d='M92 308 L92 296 Q92 288 102 288 Q112 288 112 296 L112 308'/%3E%3Cpath class='ln' stroke-width='0.8' d='M95 295 Q85 278 90 260 Q95 245 88 230'/%3E%3Cpath class='ln' stroke-width='0.8' d='M102 288 Q102 268 98 250 Q94 235 100 220'/%3E%3Cpath class='ln' stroke-width='0.8' d='M110 295 Q118 278 114 260 Q110 245 118 230'/%3E%3Cpath class='ln' stroke-width='1' d='M480 150 Q488 134 504 138 Q518 142 514 158 Q510 172 496 168 Q480 164 480 150Z'/%3E%3Cpath class='ln' stroke-width='0.8' d='M496 168 Q496 188 488 210'/%3E%3Cpath class='ln' stroke-width='0.8' d='M488 190 Q472 184 466 192'/%3E%3Cpath class='ln' stroke-width='0.8' d='M300 100 Q305 90 310 100 Q305 110 300 100Z'/%3E%3Cpath class='ln' stroke-width='0.8' d='M450 400 Q455 390 460 400 Q455 410 450 400Z'/%3E%3Cpath class='ln' stroke-width='0.8' d='M200 500 L205 482 L200 474 M205 482 L210 474 M205 482 L205 496'/%3E%3C/svg%3E");
+            background-repeat: repeat;
+            background-size: 600px 600px;
         }
 
         /* ==================== NAVBAR ==================== */
         .navbar-custom {
-            background: rgba(13, 13, 26, 0.95);
+            background: rgba(255, 248, 240, 0.92);
             backdrop-filter: blur(20px);
             -webkit-backdrop-filter: blur(20px);
             border-bottom: 1px solid var(--border);
@@ -58,7 +61,7 @@
             font-family: 'Playfair Display', Georgia, serif;
             font-size: 1.9rem;
             font-weight: 800;
-            color: #f3f4f6 !important; /* Silver/White text */
+            color: var(--gold) !important; /* Silver/White text */
             text-decoration: none;
             letter-spacing: 2px;
             display: flex;
@@ -69,7 +72,7 @@
         }
 
         .brand-name:hover {
-            color: #ffffff !important;
+            color: var(--text-primary) !important;
             text-shadow: 0 0 12px rgba(255, 255, 255, 0.6), 0 0 30px rgba(200, 220, 255, 0.4);
         }
 
@@ -83,7 +86,7 @@
         }
 
         .nav-links .nav-link-item {
-            color: rgba(240, 236, 228, 0.75);
+            color: var(--text-primary);
             text-decoration: none;
             font-size: 0.875rem;
             font-weight: 400;
@@ -97,12 +100,12 @@
 
         .nav-links .nav-link-item:hover {
             color: var(--gold);
-            background: rgba(201, 169, 110, 0.1);
+            background: rgba(184, 134, 11, 0.1);
         }
 
         .btn-cart {
-            background: rgba(201, 169, 110, 0.12);
-            border: 1px solid rgba(201, 169, 110, 0.3);
+            background: rgba(184, 134, 11, 0.12);
+            border: 1px solid rgba(184, 134, 11, 0.3);
             color: var(--gold) !important;
             padding: 8px 18px !important;
             border-radius: 10px !important;
@@ -110,7 +113,7 @@
         }
 
         .btn-cart:hover {
-            background: rgba(201, 169, 110, 0.22) !important;
+            background: rgba(184, 134, 11, 0.22) !important;
             border-color: var(--gold) !important;
         }
 
@@ -126,14 +129,14 @@
 
         .btn-login-nav:hover {
             transform: translateY(-1px);
-            box-shadow: 0 4px 16px rgba(201, 169, 110, 0.4);
+            box-shadow: 0 4px 16px rgba(184, 134, 11, 0.4);
             background: linear-gradient(135deg, #d4b880, #b8863a) !important;
         }
 
         /* User dropdown */
         .user-dropdown .dropdown-toggle {
-            background: rgba(201, 169, 110, 0.1);
-            border: 1px solid rgba(201, 169, 110, 0.25);
+            background: rgba(184, 134, 11, 0.1);
+            border: 1px solid rgba(184, 134, 11, 0.25);
             border-radius: 10px;
             padding: 8px 16px;
             color: var(--text-primary);
@@ -165,12 +168,12 @@
         }
 
         .dropdown-menu-custom {
-            background: var(--dark-3);
+            background: var(--cream-3);
             border: 1px solid var(--border);
             border-radius: 12px;
             padding: 8px;
             min-width: 200px;
-            box-shadow: 0 16px 40px rgba(0, 0, 0, 0.5);
+            box-shadow: 0 16px 40px rgba(0, 0, 0, 0.06);
         }
 
         .dropdown-menu-custom .dropdown-item {
@@ -184,25 +187,25 @@
         }
 
         .dropdown-menu-custom .dropdown-item:hover {
-            background: rgba(201, 169, 110, 0.1);
+            background: rgba(184, 134, 11, 0.1);
             color: var(--gold);
         }
 
         /* ==================== BỘ LỌC NGANG CAO CẤP ==================== */
         .filter-form-horizontal {
-            background: rgba(20, 20, 40, 0.55);
+            background: rgba(255, 255, 255, 0.75);
             backdrop-filter: blur(25px);
             -webkit-backdrop-filter: blur(25px);
-            border: 1px solid rgba(201, 169, 110, 0.18);
+            border: 1px solid rgba(184, 134, 11, 0.18);
             border-radius: 24px;
-            box-shadow: 0 15px 45px rgba(0, 0, 0, 0.4), inset 0 1px 1px rgba(255, 255, 255, 0.05);
+            box-shadow: 0 15px 45px rgba(0, 0, 0, 0.05), inset 0 1px 1px rgba(184, 134, 11, 0.08);
             padding: 24px 30px !important;
             transition: all 0.4s ease;
         }
 
         .filter-form-horizontal:hover {
-            border-color: rgba(201, 169, 110, 0.35);
-            box-shadow: 0 20px 50px rgba(0, 0, 0, 0.5), 0 0 15px rgba(201, 169, 110, 0.1);
+            border-color: rgba(184, 134, 11, 0.35);
+            box-shadow: 0 20px 50px rgba(0, 0, 0, 0.06), 0 0 15px rgba(184, 134, 11, 0.1);
         }
 
         .form-label-horizontal {
@@ -219,8 +222,8 @@
         }
 
         .form-select-dark {
-            background-color: rgba(13, 13, 26, 0.75) !important;
-            border: 1px solid rgba(201, 169, 110, 0.2) !important;
+            background-color: rgba(255, 255, 255, 1) !important;
+            border: 1px solid rgba(184, 134, 11, 0.2) !important;
             color: var(--text-primary) !important;
             border-radius: 12px !important;
             padding: 12px 16px !important;
@@ -231,14 +234,14 @@
         }
 
         .form-select-dark:hover {
-            border-color: rgba(201, 169, 110, 0.5) !important;
-            background-color: rgba(13, 13, 26, 0.9) !important;
+            border-color: rgba(184, 134, 11, 0.5) !important;
+            background-color: rgba(255, 255, 255, 1) !important;
         }
 
         .form-select-dark:focus {
             border-color: var(--gold) !important;
-            box-shadow: 0 0 0 3px rgba(201, 169, 110, 0.25) !important;
-            background-color: rgba(13, 13, 26, 0.95) !important;
+            box-shadow: 0 0 0 3px rgba(184, 134, 11, 0.25) !important;
+            background-color: rgba(255, 248, 240, 0.92) !important;
         }
 
         .btn-filter-submit-horizontal {
@@ -255,20 +258,20 @@
             justify-content: center;
             gap: 8px;
             letter-spacing: 0.5px;
-            box-shadow: 0 4px 15px rgba(201, 169, 110, 0.25);
+            box-shadow: 0 4px 15px rgba(184, 134, 11, 0.25);
             height: 48px;
         }
 
         .btn-filter-submit-horizontal:hover {
             transform: translateY(-2px);
-            box-shadow: 0 8px 25px rgba(201, 169, 110, 0.45);
+            box-shadow: 0 8px 25px rgba(184, 134, 11, 0.45);
             background: linear-gradient(135deg, #e8d5b0, #c9a96e);
         }
 
         .btn-clear-filter-horizontal {
             background: rgba(220, 53, 69, 0.08);
             border: 1px solid rgba(220, 53, 69, 0.25);
-            color: #ff8a8a;
+            color: #e05656;
             border-radius: 12px;
             font-weight: 500;
             font-size: 0.875rem;
@@ -281,7 +284,7 @@
         .btn-clear-filter-horizontal:hover {
             background: rgba(220, 53, 69, 0.25);
             border-color: rgba(220, 53, 69, 0.45);
-            color: #ffb3b3;
+            color: #ed8080;
             transform: translateY(-2px);
             box-shadow: 0 4px 15px rgba(220, 53, 69, 0.2);
         }
@@ -302,7 +305,7 @@
             left: 10%;
             width: 350px;
             height: 350px;
-            background: radial-gradient(circle, rgba(201, 169, 110, 0.05) 0%, transparent 70%);
+            background: radial-gradient(circle, rgba(184, 134, 11, 0.05) 0%, transparent 70%);
             z-index: 1;
             pointer-events: none;
         }
@@ -314,7 +317,7 @@
             right: 5%;
             width: 450px;
             height: 450px;
-            background: radial-gradient(circle, rgba(201, 169, 110, 0.04) 0%, transparent 70%);
+            background: radial-gradient(circle, rgba(184, 134, 11, 0.04) 0%, transparent 70%);
             z-index: 1;
             pointer-events: none;
         }
@@ -325,17 +328,17 @@
         }
 
         .product-card {
-            background: linear-gradient(135deg, rgba(25, 25, 48, 0.6) 0%, rgba(13, 13, 26, 0.85) 100%);
+            background: linear-gradient(135deg, rgba(25, 25, 48, 0.6) 0%, rgba(255, 255, 255, 0.9) 100%);
             backdrop-filter: blur(20px);
             -webkit-backdrop-filter: blur(20px);
-            border: 1px solid rgba(201, 169, 110, 0.12);
+            border: 1px solid rgba(184, 134, 11, 0.12);
             border-radius: 24px;
             overflow: hidden;
             display: flex;
             flex-direction: column;
             height: 100%;
             transition: all 0.45s cubic-bezier(0.25, 1, 0.5, 1);
-            box-shadow: 0 15px 35px rgba(0, 0, 0, 0.4);
+            box-shadow: 0 15px 35px rgba(0, 0, 0, 0.05);
             position: relative;
             z-index: 2;
             animation: cardEntrance 0.65s cubic-bezier(0.25, 1, 0.5, 1) both;
@@ -351,8 +354,8 @@
             position: relative;
             overflow: hidden;
             height: 250px;
-            background: #090912;
-            border-bottom: 1px solid rgba(201, 169, 110, 0.06);
+            background: #FDF2E9;
+            border-bottom: 1px solid rgba(184, 134, 11, 0.06);
         }
 
         .product-img {
@@ -365,7 +368,7 @@
         .product-img-overlay {
             position: absolute;
             inset: 0;
-            background: rgba(13, 13, 26, 0.45);
+            background: rgba(255, 255, 255, 0.5);
             backdrop-filter: blur(2px);
             display: flex;
             align-items: center;
@@ -383,7 +386,7 @@
             width: 44px;
             height: 44px;
             border-radius: 50%;
-            background: rgba(201, 169, 110, 0.9);
+            background: rgba(184, 134, 11, 0.9);
             color: #0d0d1a;
             display: flex;
             align-items: center;
@@ -406,8 +409,8 @@
             position: absolute;
             top: 14px;
             left: 14px;
-            background: rgba(13, 13, 26, 0.85);
-            border: 1px solid rgba(201, 169, 110, 0.3);
+            background: rgba(255, 255, 255, 0.9);
+            border: 1px solid rgba(184, 134, 11, 0.3);
             border-radius: 20px;
             padding: 4px 12px;
             font-size: 0.65rem;
@@ -415,7 +418,7 @@
             font-weight: 600;
             text-transform: uppercase;
             letter-spacing: 1px;
-            box-shadow: 0 4px 12px rgba(0,0,0,0.3);
+            box-shadow: 0 4px 12px rgba(0,0,0,0.03);
             z-index: 5;
         }
 
@@ -429,14 +432,14 @@
             font-weight: 600;
             text-transform: uppercase;
             letter-spacing: 0.5px;
-            box-shadow: 0 4px 12px rgba(0,0,0,0.3);
+            box-shadow: 0 4px 12px rgba(0,0,0,0.03);
             backdrop-filter: blur(10px);
             z-index: 5;
         }
 
-        .badge-in-stock { background: rgba(40, 167, 69, 0.2); border: 1px solid rgba(40, 167, 69, 0.4); color: #6fcf97; }
-        .badge-low-stock { background: rgba(255, 152, 0, 0.2); border: 1px solid rgba(255, 152, 0, 0.4); color: #ffb74d; }
-        .badge-out-stock { background: rgba(220, 53, 69, 0.2); border: 1px solid rgba(220, 53, 69, 0.4); color: #ff8a8a; }
+        .badge-in-stock { background: rgba(40, 167, 69, 0.2); border: 1px solid rgba(40, 167, 69, 0.4); color: #3dab54; }
+        .badge-low-stock { background: rgba(255, 152, 0, 0.2); border: 1px solid rgba(255, 152, 0, 0.4); color: #e09030; }
+        .badge-out-stock { background: rgba(220, 53, 69, 0.2); border: 1px solid rgba(220, 53, 69, 0.4); color: #e05656; }
 
         .product-body {
             padding: 20px 20px 12px;
@@ -449,7 +452,7 @@
             font-family: 'Inter', sans-serif;
             font-size: 0.95rem;
             font-weight: 600;
-            color: #ffffff;
+            color: var(--text-primary) ;
             margin-bottom: 8px;
             line-height: 1.4;
             display: -webkit-box;
@@ -472,8 +475,8 @@
         .product-meta-tag {
             font-size: 0.7rem;
             color: var(--gold-light);
-            background: rgba(201, 169, 110, 0.08);
-            border: 1px solid rgba(201, 169, 110, 0.18);
+            background: rgba(184, 134, 11, 0.08);
+            border: 1px solid rgba(184, 134, 11, 0.18);
             border-radius: 6px;
             padding: 3px 10px;
             font-weight: 500;
@@ -491,8 +494,8 @@
         .btn-add-cart {
             width: 100%;
             padding: 12px;
-            background: rgba(201, 169, 110, 0.05);
-            border: 1px solid rgba(201, 169, 110, 0.3);
+            background: rgba(184, 134, 11, 0.05);
+            border: 1px solid rgba(184, 134, 11, 0.3);
             border-radius: 12px;
             color: var(--gold-light);
             font-size: 0.85rem;
@@ -509,7 +512,7 @@
             background: linear-gradient(135deg, var(--gold), var(--gold-dark));
             color: #0d0d1a;
             transform: translateY(-2px);
-            box-shadow: 0 8px 24px rgba(201, 169, 110, 0.3);
+            box-shadow: 0 8px 24px rgba(184, 134, 11, 0.3);
         }
 
         .product-footer { padding: 0 20px 20px; }
@@ -520,9 +523,9 @@
             padding: 4px 12px;
             font-size: 0.7rem;
             font-weight: 600;
-            border: 1px solid rgba(201, 169, 110, 0.25);
+            border: 1px solid rgba(184, 134, 11, 0.25);
             border-radius: 20px;
-            color: var(--text-muted);
+            color: #2d2626;
             cursor: pointer;
             transition: all 0.25s ease;
             user-select: none;
@@ -532,32 +535,32 @@
         .variant-btn:hover {
             border-color: var(--gold);
             color: var(--gold-light);
-            background: rgba(201, 169, 110, 0.12);
+            background: rgba(184, 134, 11, 0.12);
         }
 
         .variant-btn.selected {
             border-color: var(--gold);
-            background: linear-gradient(135deg, rgba(201, 169, 110, 0.25), rgba(160, 120, 64, 0.25));
+            background: linear-gradient(135deg, rgba(184, 134, 11, 0.25), rgba(160, 120, 64, 0.25));
             color: var(--gold-light);
-            box-shadow: 0 0 10px rgba(201, 169, 110, 0.15);
+            box-shadow: 0 0 10px rgba(184, 134, 11, 0.15);
         }
 
         /* ====== SEARCH / FILTERS CONTAINER ====== */
         .search-container {
-            background: rgba(20, 20, 40, 0.45);
+            background: rgba(255, 255, 255, 0.7);
             backdrop-filter: blur(15px);
             -webkit-backdrop-filter: blur(15px);
-            border: 1px solid rgba(201, 169, 110, 0.15);
+            border: 1px solid rgba(184, 134, 11, 0.15);
             border-radius: 30px;
             padding: 4px 6px 4px 20px;
-            box-shadow: 0 8px 32px 0 rgba(0, 0, 0, 0.3);
+            box-shadow: 0 8px 32px 0 rgba(0, 0, 0, 0.03);
             transition: all 0.3s ease;
         }
 
         .search-container:focus-within {
             border-color: var(--gold);
-            box-shadow: 0 8px 32px 0 rgba(0, 0, 0, 0.4), 0 0 15px rgba(201, 169, 110, 0.2);
-            background: rgba(20, 20, 40, 0.65);
+            box-shadow: 0 8px 32px 0 rgba(0, 0, 0, 0.05), 0 0 15px rgba(184, 134, 11, 0.2);
+            background: rgba(255, 255, 255, 0.9);
         }
 
         .search-form-custom {
@@ -576,7 +579,7 @@
         }
 
         .search-input-custom::placeholder {
-            color: var(--text-muted);
+            color: #2d2626;
             opacity: 0.8;
         }
 
@@ -594,7 +597,7 @@
 
         .search-btn-custom:hover {
             transform: scale(1.03);
-            box-shadow: 0 4px 15px rgba(201, 169, 110, 0.4);
+            box-shadow: 0 4px 15px rgba(184, 134, 11, 0.4);
         }
 
         /* ====== PAGINATION ====== */
@@ -609,7 +612,7 @@
             width: 42px;
             height: 42px;
             border-radius: 10px;
-            background: rgba(20, 20, 40, 0.6);
+            background: rgba(255, 255, 255, 0.85);
             border: 1px solid var(--border);
             color: var(--text-primary);
             display: flex;
@@ -638,7 +641,7 @@
 
         /* ==================== FOOTER ==================== */
         .footer {
-            background: #090912;
+            background: #FDF2E9;
             border-top: 1px solid var(--border);
             padding: 50px 0 30px;
             margin-top: 100px;
@@ -652,17 +655,17 @@
         }
 
         .footer-desc {
-            color: var(--text-muted);
+            color: #2d2626;
             font-size: 0.85rem;
             line-height: 1.6;
         }
 
         .footer-bottom {
-            border-top: 1px solid rgba(255, 255, 255, 0.05);
+            border-top: 1px solid rgba(184, 134, 11, 0.08);
             padding-top: 20px;
             margin-top: 40px;
             font-size: 0.78rem;
-            color: var(--text-muted);
+            color: #2d2626;
             text-align: center;
         }
 
@@ -677,16 +680,16 @@
         }
 
         .toast-custom {
-            background: var(--dark-2);
+            background: var(--cream-2);
             border: 1px solid var(--border);
             border-radius: 12px;
             padding: 14px 20px;
-            color: #fff;
+            color: var(--text-primary) ;
             font-size: 0.85rem;
             display: flex;
             align-items: center;
             gap: 10px;
-            box-shadow: 0 10px 30px rgba(0,0,0,0.5);
+            box-shadow: 0 10px 30px rgba(0,0,0,0.06);
             animation: slideIn 0.3s ease;
         }
 
@@ -696,17 +699,17 @@
         }
         /* ==================== PRODUCTS JUMBOTRON ==================== */
         .products-hero-jumbotron {
-            background: linear-gradient(180deg, #090912 0%, rgba(20, 20, 40, 0.4) 100%);
-            border-bottom: 1px solid rgba(201, 169, 110, 0.1);
+            background: linear-gradient(180deg, #FDF2E9 0%, rgba(20, 20, 40, 0.4) 100%);
+            border-bottom: 1px solid rgba(184, 134, 11, 0.1);
         }
 
         .jumbotron-glass-card {
-            background: rgba(20, 20, 40, 0.45);
+            background: rgba(255, 255, 255, 0.7);
             backdrop-filter: blur(15px);
             -webkit-backdrop-filter: blur(15px);
-            border: 1px solid rgba(201, 169, 110, 0.2);
+            border: 1px solid rgba(184, 134, 11, 0.2);
             border-radius: 28px;
-            box-shadow: 0 20px 45px rgba(0, 0, 0, 0.4);
+            box-shadow: 0 20px 45px rgba(0, 0, 0, 0.05);
         }
 
         .jumbotron-sub {
@@ -720,25 +723,25 @@
         .jumbotron-title {
             font-family: 'Playfair Display', serif;
             font-size: 2.2rem;
-            color: #ffffff;
+            color: var(--text-primary) ;
             font-weight: 700;
             letter-spacing: 0.5px;
         }
 
         .jumbotron-desc {
             font-size: 0.9rem;
-            color: var(--text-muted);
+            color: #2d2626;
             line-height: 1.6;
         }
 
         .jumbotron-badge {
-            background: rgba(201, 169, 110, 0.1);
-            border: 1px solid rgba(201, 169, 110, 0.3);
+            background: rgba(184, 134, 11, 0.1);
+            border: 1px solid rgba(184, 134, 11, 0.3);
             border-radius: 20px;
             padding: 6px 16px;
             font-size: 0.8rem;
             font-weight: 600;
-            color: #ffffff;
+            color: var(--text-primary) ;
         }
 
         /* ==================== GENDER COLOR BADGES ==================== */
@@ -756,8 +759,8 @@
 
         .product-meta-tag.gender-unisex {
             color: var(--gold-light) !important;
-            background: rgba(201, 169, 110, 0.08) !important;
-            border-color: rgba(201, 169, 110, 0.25) !important;
+            background: rgba(184, 134, 11, 0.08) !important;
+            border-color: rgba(184, 134, 11, 0.25) !important;
         }
 
         /* ==================== HOT RIBBON ==================== */
@@ -772,7 +775,7 @@
             text-transform: uppercase;
             padding: 4px 35px;
             transform: rotate(-45deg);
-            box-shadow: 0 4px 10px rgba(0, 0, 0, 0.4);
+            box-shadow: 0 4px 10px rgba(0, 0, 0, 0.05);
             z-index: 6;
             letter-spacing: 1px;
         }
@@ -1022,8 +1025,8 @@
                     <ul class="dropdown-menu dropdown-menu-end dropdown-menu-custom">
                         <li><a class="dropdown-item" href="/profile"><i class="bi bi-person-circle"></i> Hồ sơ cá nhân</a></li>
                         <li><a class="dropdown-item" href="/orders"><i class="bi bi-receipt-cutoff"></i> Đơn hàng của tôi</a></li>
-                        <li><hr class="dropdown-divider" style="border-color: rgba(255,255,255,0.08);"></li>
-                        <li><a class="dropdown-item" href="/logout" style="color: #ff6b6b;"><i class="bi bi-box-arrow-right"></i> Đăng xuất</a></li>
+                        <li><hr class="dropdown-divider" style="border-color: rgba(184,134,11,0.1);"></li>
+                        <li><a class="dropdown-item" href="/logout" style="color: #dc3545;"><i class="bi bi-box-arrow-right"></i> Đăng xuất</a></li>
                     </ul>
                 </li>
 
@@ -1133,7 +1136,7 @@
                         <div class="empty-state" th:if="${perfumes == null or #lists.isEmpty(perfumes)}">
                             <div class="empty-icon">🔍</div>
                             <h4>Không tìm thấy nước hoa phù hợp</h4>
-                            <p style="color: var(--text-muted); font-size: 0.875rem; margin-top: 8px;">
+                            <p style="color: #2d2626; font-size: 0.875rem; margin-top: 8px;">
                                 Thử thay đổi bộ lọc hoặc <a href="/products" style="color: var(--gold);">xem tất cả sản phẩm</a>.
                             </p>
                         </div>
@@ -1176,12 +1179,12 @@
                                         <div class="product-price">
                                             <span th:text="${perfume.variants[0].gia_ban != null ? (perfume.variants[0].gia_ban.contains('đ') ? perfume.variants[0].gia_ban : perfume.variants[0].gia_ban + ' đ') : 'Liên hệ'}">0 đ</span>
                                         </div>
-                                        <div style="font-size: 0.75rem; color: var(--text-muted); margin-top: 4px;">
+                                        <div style="font-size: 0.75rem; color: #2d2626; margin-top: 4px;">
                                             <i class="bi bi-droplet"></i> <span th:text="${perfume.variants[0].dung_tich}">100ml</span>
                                         </div>
                                     </div>
                                     <div th:if="${perfume.variants.size() > 1}">
-                                        <div style="font-size: 0.72rem; color: var(--text-muted); margin-bottom: 6px;">Chọn dung tích:</div>
+                                        <div style="font-size: 0.72rem; color: #2d2626; margin-bottom: 6px;">Chọn dung tích:</div>
                                         <div style="display: flex; flex-wrap: wrap; gap: 5px; margin-bottom: 8px;">
                                             <span th:each="v, vst : ${perfume.variants}"
                                                   th:text="${v.dung_tich}"
@@ -1226,7 +1229,7 @@
                                th:href="@{/products(page=${i}, thuong_hieu=${selectedThuongHieu}, nhom_huong=${selectedNhomHuong}, gia_range=${selectedGiaRange}, gioi_tinh=${selectedGioiTinh}, keyword=${keyword})}">
                             </a>
                             <span th:if="${(i == 1 and currentPage > 3) or (i == totalPages - 2 and currentPage < totalPages - 4)}"
-                                  style="color: var(--text-muted); align-self: center;">…</span>
+                                  style="color: #2d2626; align-self: center;">…</span>
                         </th:block>
 
                         <a class="page-btn page-btn-wide" th:classappend="${currentPage >= totalPages - 1} ? 'disabled' : ''"
