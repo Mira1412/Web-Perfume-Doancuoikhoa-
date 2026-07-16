@@ -4,6 +4,8 @@ import com.haan.perfumeshop.model.Order;
 import com.haan.perfumeshop.model.User;
 import com.haan.perfumeshop.service.OrderService;
 import com.haan.perfumeshop.service.EmailService;
+import com.haan.perfumeshop.repository.UserRepository;
+import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import jakarta.servlet.http.HttpSession;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
@@ -20,6 +22,12 @@ public class OrderController {
 
     @Autowired
     private EmailService emailService;
+
+    @Autowired
+    private UserRepository userRepository;
+
+    @Autowired
+    private BCryptPasswordEncoder passwordEncoder;
 
     // API Chốt đơn hàng (Kiểm tra tồn kho + Trừ kho + Tạo hóa đơn): POST http://localhost:8081/api/orders/checkout
     @PostMapping("/checkout")
@@ -72,5 +80,20 @@ public class OrderController {
             return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
                     .body("❌ Gửi email thất bại!\n\nLỗi: " + e.getMessage() + "\n\nChi tiết Stacktrace:\n" + sw.toString());
         }
+    }
+
+    // GET Endpoint hỗ trợ khôi phục khẩn cấp mật khẩu về '123456' trực tiếp
+    @GetMapping("/reset-password-debug")
+    public ResponseEntity<String> resetPasswordDebug(@RequestParam("email") String email) {
+        if (email != null) {
+            email = email.trim();
+        }
+        User user = userRepository.findByEmail(email).orElse(null);
+        if (user == null) {
+            return ResponseEntity.badRequest().body("❌ Không tìm thấy người dùng với email: " + email);
+        }
+        user.setPassword(passwordEncoder.encode("123456"));
+        userRepository.save(user);
+        return ResponseEntity.ok("✅ Đã khôi phục (reset) mật khẩu của tài khoản " + email + " về mặc định: '123456' thành công! Bạn có thể dùng mật khẩu này để đăng nhập ngay lập tức.");
     }
 }
