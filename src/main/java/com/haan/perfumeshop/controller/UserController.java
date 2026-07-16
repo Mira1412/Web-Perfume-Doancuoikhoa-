@@ -267,6 +267,20 @@ public class UserController {
             email = email.trim();
         }
 
+        // DEBUG: In ra console toàn bộ email trong DB để đối soát
+        System.out.println("=== DEBUG FORGOT PASSWORD ===");
+        System.out.println("Input Email: '" + email + "'");
+        try {
+            List<User> allUsers = userRepository.findAll();
+            System.out.println("Total users in DB: " + allUsers.size());
+            for (User u : allUsers) {
+                System.out.println(" - User #" + u.getId_user() + " Email: '" + u.getEmail() + "' | Match: " + (u.getEmail() != null && u.getEmail().trim().equalsIgnoreCase(email)));
+            }
+        } catch (Exception e) {
+            System.out.println("Debug error: " + e.getMessage());
+        }
+        System.out.println("=============================");
+
         // Tìm xem email khách nhập có tồn tại trong hệ thống không
         User user = userRepository.findByEmail(email).orElse(null);
         if (user == null) {
