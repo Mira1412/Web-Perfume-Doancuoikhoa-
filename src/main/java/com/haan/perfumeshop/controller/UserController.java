@@ -3,6 +3,8 @@ package com.haan.perfumeshop.controller;
 import com.haan.perfumeshop.model.User;
 import com.haan.perfumeshop.repository.UserRepository;
 import jakarta.servlet.http.HttpSession;
+
+import org.apache.xmlbeans.impl.xb.xsdschema.ListDocument.List;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Controller;
@@ -274,7 +276,8 @@ public class UserController {
             List<User> allUsers = userRepository.findAll();
             System.out.println("Total users in DB: " + allUsers.size());
             for (User u : allUsers) {
-                System.out.println(" - User #" + u.getId_user() + " Email: '" + u.getEmail() + "' | Match: " + (u.getEmail() != null && u.getEmail().trim().equalsIgnoreCase(email)));
+                System.out.println(" - User #" + u.getId_user() + " Email: '" + u.getEmail() + "' | Match: "
+                        + (u.getEmail() != null && u.getEmail().trim().equalsIgnoreCase(email)));
             }
         } catch (Exception e) {
             System.out.println("Debug error: " + e.getMessage());
@@ -298,13 +301,16 @@ public class UserController {
         // Thực thi gửi mail chứa mật khẩu tạm thời cho khách
         try {
             emailService.sendForgotPasswordEmail(email, tempPassword);
-            redirectAttributes.addFlashAttribute("successMsg", "Mật khẩu mới đã được gửi vào Gmail của bạn. Vui lòng kiểm tra hộp thư!");
+            redirectAttributes.addFlashAttribute("successMsg",
+                    "Mật khẩu mới đã được gửi vào Gmail của bạn. Vui lòng kiểm tra hộp thư!");
         } catch (Exception e) {
-            redirectAttributes.addFlashAttribute("errorMsg", "Có lỗi xảy ra trong quá trình gửi mail: " + e.getMessage());
+            redirectAttributes.addFlashAttribute("errorMsg",
+                    "Có lỗi xảy ra trong quá trình gửi mail: " + e.getMessage());
             return "redirect:/forgot-password";
         }
 
-        // Gửi thành công thì chuyển hướng khách về trang Login để họ đăng nhập bằng pass mới
+        // Gửi thành công thì chuyển hướng khách về trang Login để họ đăng nhập bằng
+        // pass mới
         return "redirect:/login";
     }
 }
