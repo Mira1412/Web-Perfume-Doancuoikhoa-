@@ -212,4 +212,15 @@ public class EmailService {
     public void sendOrderCancellationEmail(Order order) {
         sendOrderStatusUpdateEmail(order);
     }
+
+    // Phương thức gửi thử nghiệm đồng bộ để lấy Exception chi tiết
+    public void sendTestEmailSync(String toEmail) throws Exception {
+        jakarta.mail.internet.MimeMessage mimeMessage = mailSender.createMimeMessage();
+        org.springframework.mail.javamail.MimeMessageHelper helper = new org.springframework.mail.javamail.MimeMessageHelper(mimeMessage, true, "UTF-8");
+        helper.setFrom(senderEmail);
+        helper.setTo(toEmail);
+        helper.setSubject("🌸 Kiểm tra kết nối SMTP từ Halo Shop");
+        helper.setText("<h3>Kết nối SMTP hoạt động tốt!</h3><p>Email này được gửi tự động để kiểm tra cấu hình.</p>", true);
+        mailSender.send(mimeMessage);
+    }
 }
